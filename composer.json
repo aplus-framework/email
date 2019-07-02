@@ -1,0 +1,62 @@
+{
+	"name": "framework/email",
+	"type": "library",
+	"description": "The Email package",
+	"keywords": [
+		"email"
+	],
+	"homepage": "https://gitlab.com/the-framework/email",
+	"license": "proprietary",
+	"authors": [
+		{
+			"name": "Natan Felles",
+			"email": "natanfelles@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=7.3",
+		"ext-imap": "*",
+		"ext-openssl": "*"
+	},
+	"require-dev": {
+		"ext-xdebug": "*",
+		"framework/coding-standard": "dev-master",
+		"localheinz/composer-normalize": "^1.1",
+		"phpmd/phpmd": "^2.6",
+		"phpstan/phpstan": "^0.11",
+		"phpunit/phpunit": "^7.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"Framework\\Email\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\Email\\": "tests/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://the-framework.gitlab.io/satis/"
+		}
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"scripts": {
+		"post-install-cmd": [
+			".hooks/init"
+		],
+		"post-update-cmd": [
+			"composer dump-autoload"
+		]
+	},
+	"support": {
+		"email": "natanfelles@gmail.com",
+		"issues": "https://gitlab.com/the-framework/email/issues",
+		"wiki": "https://gitlab.com/the-framework/packages/email",
+		"source": "https://gitlab.com/the-framework/email",
+		"docs": "https://the-framework.gitlab.io/the-framework/packages/email/docs"
+	}
+}
