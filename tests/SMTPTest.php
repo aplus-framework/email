@@ -12,13 +12,16 @@ class SMTPTest extends TestCase
 
 	public function setup()
 	{
-		$this->smtp = new SMTP('localhost');
+		$this->smtp = new SMTP('user');
 	}
 
 	public function testCRLF()
 	{
 		$this->assertEquals("\r\n", $this->smtp->getCRLF());
-		$this->smtp->setCRLF("\n");
-		$this->assertEquals("\n", $this->smtp->getCRLF());
+	}
+
+	public function testCharset()
+	{
+		$this->assertEquals('utf-8', $this->smtp->getCharset());
 	}
 }
