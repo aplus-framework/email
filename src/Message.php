@@ -6,9 +6,9 @@
 class Message
 {
 	/**
-	 * @var SMTP
+	 * @var Mailer
 	 */
-	protected $smtp;
+	protected $mailer;
 	/**
 	 * @var string
 	 */
@@ -32,9 +32,9 @@ class Message
 	protected $date;
 	protected $priority = 3;
 
-	public function __construct(SMTP $smtp, string $boundary = null)
+	public function __construct(Mailer $mailer, string $boundary = null)
 	{
-		$this->smtp = $smtp;
+		$this->mailer = $mailer;
 		if ($boundary === null) {
 			$this->boundary = \md5(\uniqid(\microtime(true), true));
 			//$this->boundary = \bin2hex(\random_bytes(10));
@@ -74,7 +74,7 @@ class Message
 			if ($value !== null) {
 				$name .= ': ' . $value;
 			}
-			$result .= $name . $this->smtp->getCRLF();
+			$result .= $name . $this->mailer->getCRLF();
 		}
 		return $result;
 	}
@@ -84,7 +84,7 @@ class Message
 		if ($value !== null) {
 			$name .= ': ' . $value;
 		}
-		return \mb_encode_mimeheader($name, 'UTF-8', 'B', $this->smtp->getCRLF());
+		return \mb_encode_mimeheader($name, 'UTF-8', 'B', $this->mailer->getCRLF());
 	}
 
 	protected function prepareHeaders() : void
@@ -126,14 +126,14 @@ class Message
 	{
 		$this->prepareHeaders();
 		$data = '';
-		$data .= '--mixed-' . $this->getBoundary() . $this->smtp->getCRLF();
-		$data .= 'Content-Type: multipart/alternative; boundary="alt-' . $this->getBoundary() . '"' . $this->smtp->getCRLF() . $this->smtp->getCRLF();
+		$data .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+		$data .= 'Content-Type: multipart/alternative; boundary="alt-' . $this->getBoundary() . '"' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$data .= $this->renderPlainMessage();
 		$data .= $this->renderHTMLMessage();
-		$data .= '--alt-' . $this->getBoundary() . '--' . $this->smtp->getCRLF() . $this->smtp->getCRLF();
+		$data .= '--alt-' . $this->getBoundary() . '--' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$data .= $this->renderAttachments();
 		$data .= '--mixed-' . $this->getBoundary() . '--';
-		return $this->renderHeaders() . $this->smtp->getCRLF() . $data;
+		return $this->renderHeaders() . $this->mailer->getCRLF() . $data;
 	}
 
 	public function setPlainMessage(string $message)
@@ -174,10 +174,10 @@ class Message
 		string $message,
 		string $content_type = 'text/html'
 	) : string {
-		$part = '--alt-' . $this->getBoundary() . $this->smtp->getCRLF();
-		$part .= 'Content-Type: ' . $content_type . '; charset=' . $this->smtp->getCharset() . $this->smtp->getCRLF();
-		$part .= 'Content-Transfer-Encoding: base64' . $this->smtp->getCRLF() . $this->smtp->getCRLF();
-		$part .= \chunk_split(\base64_encode($message)) . $this->smtp->getCRLF();
+		$part = '--alt-' . $this->getBoundary() . $this->mailer->getCRLF();
+		$part .= 'Content-Type: ' . $content_type . '; charset=' . $this->mailer->getCharset() . $this->mailer->getCRLF();
+		$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+		$part .= \chunk_split(\base64_encode($message)) . $this->mailer->getCRLF();
 		return $part;
 	}
 
@@ -212,11 +212,11 @@ class Message
 			}
 			$filename = \pathinfo($attachment, \PATHINFO_BASENAME);
 			$contents = \file_get_contents($attachment);
-			$part .= '--mixed-' . $this->getBoundary() . $this->smtp->getCRLF();
-			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $this->smtp->getCRLF();
-			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->smtp->getCRLF();
-			$part .= 'Content-Transfer-Encoding: base64' . $this->smtp->getCRLF() . $this->smtp->getCRLF();
-			$part .= \chunk_split(\base64_encode($contents)) . $this->smtp->getCRLF();
+			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $this->mailer->getCRLF();
+			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->mailer->getCRLF();
+			$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+			$part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
 		}
 		return $part;
 	}
