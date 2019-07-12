@@ -10,7 +10,7 @@ class SMTPTest extends TestCase
 	 */
 	protected $smtp;
 
-	public function setup()
+	public function setup() : void
 	{
 		$this->smtp = new SMTP('user');
 	}

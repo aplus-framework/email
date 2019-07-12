@@ -11,7 +11,7 @@ class MessageTest extends TestCase
 	 */
 	protected $message;
 
-	public function setup()
+	public function setup() : void
 	{
 		$this->message = new Message(new SMTP('localhost'));
 	}
