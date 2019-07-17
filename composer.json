@@ -1,11 +1,11 @@
 {
 	"name": "framework/email",
 	"type": "library",
-	"description": "The Email package",
+	"description": "The Framework Email Library",
 	"keywords": [
 		"email"
 	],
-	"homepage": "https://gitlab.com/the-framework/email",
+	"homepage": "https://the-framework.gitlab.io/libraries/email.html",
 	"license": "proprietary",
 	"authors": [
 		{
@@ -54,9 +54,9 @@
 	},
 	"support": {
 		"email": "natanfelles@gmail.com",
-		"issues": "https://gitlab.com/the-framework/email/issues",
-		"wiki": "https://gitlab.com/the-framework/packages/email",
-		"source": "https://gitlab.com/the-framework/email",
-		"docs": "https://the-framework.gitlab.io/the-framework/packages/email/docs"
+		"issues": "https://gitlab.com/the-framework/libraries/email/issues",
+		"wiki": "https://gitlab.com/the-framework/libraries/email/wikis/home",
+		"source": "https://gitlab.com/the-framework/libraries/email",
+		"docs": "https://the-framework.gitlab.io/libraries/email/docs/"
 	}
 }
