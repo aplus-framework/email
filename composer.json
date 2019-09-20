@@ -6,7 +6,7 @@
 		"email"
 	],
 	"homepage": "https://the-framework.gitlab.io/libraries/email.html",
-	"license": "proprietary",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Natan Felles",
