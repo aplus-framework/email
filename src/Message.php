@@ -31,10 +31,23 @@ class Message
 	 */
 	protected $date;
 	protected $priority = 3;
+	protected static $standardHeaders = [
+		'bcc' => 'Bcc',
+		'cc' => 'Cc',
+		'content-type' => 'Content-Type',
+		'date' => 'Date',
+		'from' => 'From',
+		'mime-version' => 'MIME-Version',
+		'reply-to' => 'Reply-To',
+		'subject' => 'Subject',
+		'to' => 'To',
+		'x-priority' => 'X-Priority',
+	];
 
 	public function __construct(Mailer $mailer, string $boundary = null)
 	{
 		$this->mailer = $mailer;
+		$this->boundary = $boundary;
 		if ($boundary === null) {
 			$this->boundary = \md5(\uniqid(\microtime(true), true));
 			//$this->boundary = \bin2hex(\random_bytes(10));
@@ -53,13 +66,13 @@ class Message
 
 	public function setHeader(string $name, ?string $value)
 	{
-		$this->headers[$name] = $value;
+		$this->headers[static::getHeaderName($name)] = $value;
 		return $this;
 	}
 
 	public function getHeader(string $name) : ?string
 	{
-		return $this->headers[$name] ?? null;
+		return $this->headers[static::getHeaderName($name)] ?? null;
 	}
 
 	public function getHeaders() : array
@@ -341,6 +354,11 @@ class Message
 	public function getPriority() : int
 	{
 		return $this->priority;
+	}
+
+	public static function getHeaderName(string $header) : string
+	{
+		return static::$standardHeaders[\strtolower($header)] ?? $header;
 	}
 
 	public static function formatAddress(string $address, string $name = null) : string
