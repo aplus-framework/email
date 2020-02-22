@@ -6,10 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class SMTPTest extends TestCase
 {
-	/**
-	 * @var SMTP
-	 */
-	protected $smtp;
+	protected SMTP $smtp;
 
 	public function setup() : void
 	{

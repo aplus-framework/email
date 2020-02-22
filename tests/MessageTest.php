@@ -6,10 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {
-	/**
-	 * @var Message
-	 */
-	protected $message;
+	protected Message $message;
 
 	public function setup() : void
 	{

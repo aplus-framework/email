@@ -5,33 +5,24 @@
  */
 class Message
 {
-	/**
-	 * @var Mailer
-	 */
-	protected $mailer;
-	/**
-	 * @var string
-	 */
-	protected $boundary;
-	protected $headers = [
+	protected Mailer $mailer;
+	protected ?string $boundary;
+	protected array $headers = [
 		'MIME-Version' => '1.0',
 	];
-	protected $attachments = [];
-	protected $inlineAttachments = [];
-	protected $plainMessage;
-	protected $htmlMessage;
-	protected $to = [];
-	protected $cc = [];
-	protected $bcc = [];
-	protected $replyTo = [];
-	protected $from = [];
-	protected $subject;
-	/**
-	 * @var string
-	 */
-	protected $date;
-	protected $priority = 3;
-	protected static $standardHeaders = [
+	protected array $attachments = [];
+	protected array $inlineAttachments = [];
+	protected ?string $plainMessage = null;
+	protected ?string $htmlMessage = null;
+	protected array $to = [];
+	protected array $cc = [];
+	protected array $bcc = [];
+	protected array $replyTo = [];
+	protected array $from = [];
+	protected ?string $subject = null;
+	protected ?string $date = null;
+	protected int $priority = 3;
+	protected static array $standardHeaders = [
 		'bcc' => 'Bcc',
 		'cc' => 'Cc',
 		'content-type' => 'Content-Type',

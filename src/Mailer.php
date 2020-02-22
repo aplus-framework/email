@@ -5,14 +5,8 @@
  */
 abstract class Mailer
 {
-	/**
-	 * @var array
-	 */
-	protected $config = [];
-	/**
-	 * @var array $logs
-	 */
-	protected $logs = [];
+	protected array $config = [];
+	protected array $logs = [];
 
 	/**
 	 * Mailer constructor.
