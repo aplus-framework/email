@@ -31,7 +31,6 @@
 		<env name="SMTP_PORT" value="2525"/>
 		<env name="SMTP_USERNAME" value="3f1f9d67ca1da5"/>
 		<env name="SMTP_PASSWORD" value="b7a520a5b089bc"/>
-		<env name="SMTP_PASSWORD" value="b7a520a5b089bc"/>
 		<env name="SMTP_ADDRESS" value="db20690ae8-23245c@inbox.mailtrap.io"/>
 	</php>
 
