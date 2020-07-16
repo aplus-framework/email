@@ -154,11 +154,29 @@ class MessageTest extends TestCase
 	public function testInlineAttachments()
 	{
 		$this->assertEmpty($this->message->getInlineAttachments());
-		$contents = \file_get_contents(__FILE__);
-		$this->message->setInlineAttachment($contents, 'abc123');
+		$this->message->setInlineAttachment(__FILE__, 'abc123');
 		$this->assertEquals([
-			'abc123' => $contents,
+			'abc123' => __FILE__,
 		], $this->message->getInlineAttachments());
+	}
+
+	public function testInvalidInlineAttachmentPath()
+	{
+		$this->message->setInlineAttachment(__DIR__, 'foobar');
+		$this->expectException(\LogicException::class);
+		$this->expectExceptionMessage('Inline attachment file not found: ' . __DIR__);
+		$this->message->renderInlineAttachments();
+	}
+
+	public function testInlineAttachmentsContents()
+	{
+		$this->assertEmpty($this->message->getInlineAttachments());
+		$this->message->setInlineAttachment(__FILE__, 'foobar');
+		$this->assertEquals(['foobar' => __FILE__], $this->message->getInlineAttachments());
+		$this->assertStringContainsString(
+			'Content-ID: foobar',
+			$this->message->renderInlineAttachments()
+		);
 	}
 
 	public function testRecipients()

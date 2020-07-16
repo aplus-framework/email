@@ -1,5 +1,7 @@
 <?php namespace Framework\Email;
 
+use LogicException;
+
 /**
  * Class Message.
  */
@@ -136,6 +138,7 @@ class Message
 		$data .= $this->renderHTMLMessage();
 		$data .= '--alt-' . $this->getBoundary() . '--' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$data .= $this->renderAttachments();
+		$data .= $this->renderInlineAttachments();
 		$data .= '--mixed-' . $this->getBoundary() . '--';
 		return $this->renderHeaders() . $this->mailer->getCRLF() . $data;
 	}
@@ -196,9 +199,9 @@ class Message
 		return $this;
 	}
 
-	public function setInlineAttachment(string $contents, string $cid)
+	public function setInlineAttachment(string $filename, string $cid)
 	{
-		$this->inlineAttachments[$cid] = $contents;
+		$this->inlineAttachments[$cid] = $filename;
 		return $this;
 	}
 
@@ -212,13 +215,31 @@ class Message
 		$part = '';
 		foreach ($this->getAttachments() as $attachment) {
 			if ( ! \is_file($attachment)) {
-				throw new \LogicException('Attachment file not found: ' . $attachment);
+				throw new LogicException('Attachment file not found: ' . $attachment);
 			}
 			$filename = \pathinfo($attachment, \PATHINFO_BASENAME);
 			$contents = \file_get_contents($attachment);
 			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
 			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $this->mailer->getCRLF();
 			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->mailer->getCRLF();
+			$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+			$part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
+		}
+		return $part;
+	}
+
+	public function renderInlineAttachments() : string
+	{
+		$part = '';
+		foreach ($this->getInlineAttachments() as $cid => $filename) {
+			if ( ! \is_file($filename)) {
+				throw new LogicException('Inline attachment file not found: ' . $filename);
+			}
+			$contents = \file_get_contents($filename);
+			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+			$part .= 'Content-ID: ' . $cid . $this->mailer->getCRLF();
+			$part .= 'Content-Type: ' . \mime_content_type($filename) . $this->mailer->getCRLF();
+			$part .= 'Content-Disposition: inline' . $this->mailer->getCRLF();
 			$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
 			$part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
 		}

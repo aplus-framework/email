@@ -33,8 +33,10 @@ class SMTPTest extends TestCase
 		return (new Message($this->smtp))
 			->addTo(\getenv('SMTP_ADDRESS'))
 			->setFrom(\getenv('SMTP_ADDRESS'))
-			->setPlainMessage('<b>Hello!</b>')
-			->setHTMLMessage('<b>Hello!</b>');
+			->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
+			->setHTMLMessage('<b>Hello!</b><img src="cid:abc123">')
+			->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
+			->addAttachment(__FILE__);
 	}
 
 	public function testSend()
