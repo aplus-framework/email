@@ -73,7 +73,7 @@ class Message
 		return $this->headers;
 	}
 
-	public function renderHeaders() : string
+	protected function renderHeaders() : string
 	{
 		$result = '';
 		foreach ($this->getHeaders() as $name => $value) {
@@ -85,7 +85,7 @@ class Message
 		return $result;
 	}
 
-	public function encodeHeader(string $name, string $value = null) : string
+	protected function encodeHeader(string $name, string $value = null) : string
 	{
 		if ($value !== null) {
 			$name .= ': ' . $value;
@@ -128,7 +128,7 @@ class Message
 		}
 	}
 
-	public function renderData() : string
+	protected function renderData() : string
 	{
 		$this->prepareHeaders();
 		$data = '';
@@ -154,7 +154,7 @@ class Message
 		return $this->plainMessage;
 	}
 
-	public function renderPlainMessage() : ?string
+	protected function renderPlainMessage() : ?string
 	{
 		$message = $this->getPlainMessage();
 		return $message ? $this->renderMessage($message, 'text/plain') : null;
@@ -171,7 +171,7 @@ class Message
 		return $this->htmlMessage;
 	}
 
-	public function renderHTMLMessage() : ?string
+	protected function renderHTMLMessage() : ?string
 	{
 		$message = $this->getHTMLMessage();
 		return $message ? $this->renderMessage($message) : null;
@@ -210,7 +210,7 @@ class Message
 		return $this->inlineAttachments;
 	}
 
-	public function renderAttachments() : string
+	protected function renderAttachments() : string
 	{
 		$part = '';
 		foreach ($this->getAttachments() as $attachment) {
@@ -228,7 +228,7 @@ class Message
 		return $part;
 	}
 
-	public function renderInlineAttachments() : string
+	protected function renderInlineAttachments() : string
 	{
 		$part = '';
 		foreach ($this->getInlineAttachments() as $cid => $filename) {
@@ -368,17 +368,17 @@ class Message
 		return $this->priority;
 	}
 
-	public static function getHeaderName(string $header) : string
+	protected static function getHeaderName(string $header) : string
 	{
 		return static::$standardHeaders[\strtolower($header)] ?? $header;
 	}
 
-	public static function formatAddress(string $address, string $name = null) : string
+	protected static function formatAddress(string $address, string $name = null) : string
 	{
 		return $name !== null ? '"' . $name . '" <' . $address . '>' : $address;
 	}
 
-	public static function formatAddressList(array $addresses) : string
+	protected static function formatAddressList(array $addresses) : string
 	{
 		$data = [];
 		foreach ($addresses as $address => $name) {

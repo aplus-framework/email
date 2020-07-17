@@ -92,7 +92,7 @@ class SMTP extends Mailer
 		}
 		$this->sendCommand('DATA');
 		$code = $this->sendCommand(
-			$message->renderData() . $this->getCRLF() . '.'
+			$message . $this->getCRLF() . '.'
 		);
 		if ($this->getConfig('keep_alive') !== true) {
 			$this->disconnect();

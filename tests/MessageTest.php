@@ -10,7 +10,7 @@ class MessageTest extends TestCase
 
 	public function setup() : void
 	{
-		$this->message = new Message(new SMTP('localhost'), 'abc123');
+		$this->message = new MessageMock(new SMTP('localhost'), 'abc123');
 	}
 
 	public function testBoundary()
@@ -216,15 +216,15 @@ class MessageTest extends TestCase
 
 	public function testFormatAddress()
 	{
-		$this->assertEquals('foo@bar', Message::formatAddress('foo@bar'));
-		$this->assertEquals('"Foo Bar" <foo@bar>', Message::formatAddress('foo@bar', 'Foo Bar'));
+		$this->assertEquals('foo@bar', MessageMock::formatAddress('foo@bar'));
+		$this->assertEquals('"Foo Bar" <foo@bar>', MessageMock::formatAddress('foo@bar', 'Foo Bar'));
 	}
 
 	public function testFormatAddressList()
 	{
 		$this->assertEquals(
 			'foo@bar, "Baz" <foo@baz>, "Foo" <foo@foo>',
-			Message::formatAddressList([
+			MessageMock::formatAddressList([
 				'foo@bar' => null,
 				'foo@baz' => 'Baz',
 				'foo@foo' => 'Foo',
