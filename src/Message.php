@@ -1,5 +1,6 @@
 <?php namespace Framework\Email;
 
+use DateTime;
 use LogicException;
 
 /**
@@ -9,21 +10,48 @@ class Message
 {
 	protected Mailer $mailer;
 	protected ?string $boundary;
+	/**
+	 * @var array|string[]
+	 */
 	protected array $headers = [
 		'MIME-Version' => '1.0',
 	];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $attachments = [];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $inlineAttachments = [];
 	protected ?string $plainMessage = null;
 	protected ?string $htmlMessage = null;
+	/**
+	 * @var array|string[]
+	 */
 	protected array $to = [];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $cc = [];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $bcc = [];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $replyTo = [];
+	/**
+	 * @var array|string[]
+	 */
 	protected array $from = [];
 	protected ?string $subject = null;
 	protected ?string $date = null;
 	protected int $priority = 3;
+	/**
+	 * @var array|string[]
+	 */
 	protected static array $standardHeaders = [
 		'bcc' => 'Bcc',
 		'cc' => 'Cc',
@@ -42,7 +70,7 @@ class Message
 		$this->mailer = $mailer;
 		$this->boundary = $boundary;
 		if ($boundary === null) {
-			$this->boundary = \md5(\uniqid(\microtime(true), true));
+			$this->boundary = \md5(\uniqid((string) \microtime(true), true));
 			//$this->boundary = \bin2hex(\random_bytes(10));
 		}
 	}
@@ -57,6 +85,12 @@ class Message
 		return $this->boundary;
 	}
 
+	/**
+	 * @param string      $name
+	 * @param string|null $value
+	 *
+	 * @return $this
+	 */
 	public function setHeader(string $name, ?string $value)
 	{
 		$this->headers[static::getHeaderName($name)] = $value;
@@ -68,6 +102,9 @@ class Message
 		return $this->headers[static::getHeaderName($name)] ?? null;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getHeaders() : array
 	{
 		return $this->headers;
@@ -143,6 +180,11 @@ class Message
 		return $this->renderHeaders() . $this->mailer->getCRLF() . $data;
 	}
 
+	/**
+	 * @param string $message
+	 *
+	 * @return $this
+	 */
 	public function setPlainMessage(string $message)
 	{
 		$this->plainMessage = $message;
@@ -160,6 +202,11 @@ class Message
 		return $message ? $this->renderMessage($message, 'text/plain') : null;
 	}
 
+	/**
+	 * @param string $message
+	 *
+	 * @return $this
+	 */
 	public function setHTMLMessage(string $message)
 	{
 		$this->htmlMessage = $message;
@@ -188,23 +235,40 @@ class Message
 		return $part;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getAttachments() : array
 	{
 		return $this->attachments;
 	}
 
+	/**
+	 * @param string $filename
+	 *
+	 * @return $this
+	 */
 	public function addAttachment(string $filename)
 	{
 		$this->attachments[] = $filename;
 		return $this;
 	}
 
+	/**
+	 * @param string $filename
+	 * @param string $cid
+	 *
+	 * @return $this
+	 */
 	public function setInlineAttachment(string $filename, string $cid)
 	{
 		$this->inlineAttachments[$cid] = $filename;
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getInlineAttachments() : array
 	{
 		return $this->inlineAttachments;
@@ -218,7 +282,7 @@ class Message
 				throw new LogicException('Attachment file not found: ' . $attachment);
 			}
 			$filename = \pathinfo($attachment, \PATHINFO_BASENAME);
-			$contents = \file_get_contents($attachment);
+			$contents = (string) \file_get_contents($attachment);
 			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
 			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $this->mailer->getCRLF();
 			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->mailer->getCRLF();
@@ -235,7 +299,7 @@ class Message
 			if ( ! \is_file($filename)) {
 				throw new LogicException('Inline attachment file not found: ' . $filename);
 			}
-			$contents = \file_get_contents($filename);
+			$contents = (string) \file_get_contents($filename);
 			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
 			$part .= 'Content-ID: ' . $cid . $this->mailer->getCRLF();
 			$part .= 'Content-Type: ' . \mime_content_type($filename) . $this->mailer->getCRLF();
@@ -246,6 +310,11 @@ class Message
 		return $part;
 	}
 
+	/**
+	 * @param string $subject
+	 *
+	 * @return $this
+	 */
 	public function setSubject(string $subject)
 	{
 		$this->subject = $subject;
@@ -257,12 +326,21 @@ class Message
 		return $this->subject;
 	}
 
+	/**
+	 * @param string      $address
+	 * @param string|null $name
+	 *
+	 * @return $this
+	 */
 	public function addTo(string $address, string $name = null)
 	{
 		$this->to[$address] = $name;
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getTo() : array
 	{
 		return $this->to;
@@ -282,11 +360,17 @@ class Message
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getCc() : array
 	{
 		return $this->cc;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getRecipients() : array
 	{
 		$recipients = \array_merge($this->getTo(), $this->getCc());
@@ -307,28 +391,49 @@ class Message
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getBcc() : array
 	{
 		return $this->bcc;
 	}
 
+	/**
+	 * @param string      $address
+	 * @param string|null $name
+	 *
+	 * @return $this
+	 */
 	public function addReplyTo(string $address, string $name = null)
 	{
 		$this->replyTo[$address] = $name;
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getReplyTo() : array
 	{
 		return $this->replyTo;
 	}
 
+	/**
+	 * @param string      $address
+	 * @param string|null $name
+	 *
+	 * @return $this
+	 */
 	public function setFrom(string $address, string $name = null)
 	{
 		$this->from = [$address, $name];
 		return $this;
 	}
 
+	/**
+	 * @return array|string[]
+	 */
 	public function getFrom() : array
 	{
 		return $this->from;
@@ -344,7 +449,12 @@ class Message
 		return $this->from[1] ?? null;
 	}
 
-	public function setDate(\DateTime $datetime = null)
+	/**
+	 * @param DateTime|null $datetime
+	 *
+	 * @return $this
+	 */
+	public function setDate(DateTime $datetime = null)
 	{
 		$this->date = $datetime ? $datetime->format('r') : \date('r');
 		$this->setHeader('Date', $this->date);
@@ -356,10 +466,15 @@ class Message
 		return $this->date;
 	}
 
+	/**
+	 * @param int $priority from 1 to 5
+	 *
+	 * @return $this
+	 */
 	public function setPriority(int $priority)
 	{
 		$this->priority = $priority;
-		$this->setHeader('X-Priority', $priority);
+		$this->setHeader('X-Priority', (string) $priority);
 		return $this;
 	}
 
@@ -378,6 +493,11 @@ class Message
 		return $name !== null ? '"' . $name . '" <' . $address . '>' : $address;
 	}
 
+	/**
+	 * @param array|string[] $addresses
+	 *
+	 * @return string
+	 */
 	protected static function formatAddressList(array $addresses) : string
 	{
 		$data = [];

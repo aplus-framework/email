@@ -5,17 +5,23 @@
  */
 abstract class Mailer
 {
+	/**
+	 * @var array|mixed[]
+	 */
 	protected array $config = [];
+	/**
+	 * @var array|array[]
+	 */
 	protected array $logs = [];
 
 	/**
 	 * Mailer constructor.
 	 *
-	 * @param array|string $username
-	 * @param string       $password
-	 * @param string       $server
-	 * @param int          $port
-	 * @param string|null  $hostname
+	 * @param array|mixed[]|string $username
+	 * @param string|null          $password
+	 * @param string               $server
+	 * @param int                  $port
+	 * @param string|null          $hostname
 	 */
 	public function __construct(
 		$username,
@@ -38,9 +44,9 @@ abstract class Mailer
 	/**
 	 * Make Base configurations.
 	 *
-	 * @param array $config
+	 * @param array|mixed[] $config
 	 *
-	 * @return array
+	 * @return array|mixed[]
 	 */
 	protected function makeConfig(array $config) : array
 	{
@@ -59,6 +65,11 @@ abstract class Mailer
 		], $config);
 	}
 
+	/**
+	 * @param string $key
+	 *
+	 * @return mixed
+	 */
 	protected function getConfig(string $key)
 	{
 		return $this->config[$key];
@@ -66,25 +77,31 @@ abstract class Mailer
 
 	public function getCRLF() : string
 	{
-		return $this->getConfig('crlf');
+		return (string) $this->getConfig('crlf');
 	}
 
 	public function getCharset() : string
 	{
-		return $this->getConfig('charset');
+		return (string) $this->getConfig('charset');
 	}
 
 	/**
 	 * Get log array
 	 * -- contains commands and responses from Mailer server.
 	 *
-	 * @return array
+	 * @return array|array[]
 	 */
 	public function getLogs() : array
 	{
 		return $this->logs;
 	}
 
+	/**
+	 * @param string $command
+	 * @param string $response
+	 *
+	 * @return $this
+	 */
 	protected function addLog(string $command, string $response)
 	{
 		$this->logs[] = [$command, $response];

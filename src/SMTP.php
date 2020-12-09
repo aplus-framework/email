@@ -8,7 +8,7 @@
 class SMTP extends Mailer
 {
 	/**
-	 * @var resource|null $socket
+	 * @var false|resource|null $socket
 	 */
 	protected $socket;
 
@@ -19,7 +19,7 @@ class SMTP extends Mailer
 
 	protected function connect() : bool
 	{
-		if ($this->socket && $this->getConfig('keep_alive') === true) {
+		if ($this->socket && ($this->getConfig('keep_alive') === true)) {
 			return $this->sendCommand('EHLO ' . $this->getConfig('hostname')) === 250;
 		}
 		$this->disconnect();
@@ -31,7 +31,7 @@ class SMTP extends Mailer
 			$this->getConfig('connection_timeout')
 		);
 		if (empty($this->socket)) {
-			$this->addLog('', $error_string);
+			$this->addLog('', $error_number . ': ' . $error_string);
 			return false;
 		}
 		$this->addLog('', $this->getResponse());
@@ -55,7 +55,7 @@ class SMTP extends Mailer
 
 	protected function authenticate() : bool
 	{
-		if ($this->getConfig('username') === null && $this->getConfig('password') === null) {
+		if (($this->getConfig('username') === null) && ($this->getConfig('password') === null)) {
 			return false;
 		}
 		$code = $this->sendCommand('AUTH LOGIN');
@@ -142,6 +142,6 @@ class SMTP extends Mailer
 	 */
 	private function makeResponseCode(string $response) : int
 	{
-		return \substr($response, 0, 3);
+		return (int) \substr($response, 0, 3);
 	}
 }
