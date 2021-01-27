@@ -49,11 +49,11 @@ class SMTPTest extends TestCase
 		$this->smtp->send($this->getMessage());
 		$this->assertEquals([
 			0 => '',
-			1 => '220 mailtrap.io ESMTP ready',
+			1 => '220 smtp.mailtrap.io ESMTP ready',
 		], $this->smtp->getLogs()[0]);
 		$this->assertEquals([
 			0 => 'EHLO ' . \gethostname(),
-			1 => '250-mailtrap.io
+			1 => '250-smtp.mailtrap.io
 250-SIZE 5242880
 250-PIPELINING
 250-ENHANCEDSTATUSCODES
@@ -68,7 +68,7 @@ class SMTPTest extends TestCase
 		], $this->smtp->getLogs()[2]);
 		$this->assertEquals([
 			0 => 'EHLO ' . \gethostname(),
-			1 => '250-mailtrap.io
+			1 => '250-smtp.mailtrap.io
 250-SIZE 5242880
 250-PIPELINING
 250-ENHANCEDSTATUSCODES
