@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdocumentor>
-    <title>Framework Email Library</title>
+    <title>The Framework Email Library</title>
     <parser>
         <target>build/docs-cache</target>
         <markers>

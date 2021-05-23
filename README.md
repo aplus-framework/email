@@ -1,4 +1,4 @@
-# Framework Email Library
+# The Framework Email Library
 
 - [Homepage](https://the-framework.gitlab.io/libraries/email.html)
 - [API Documentation](https://the-framework.gitlab.io/libraries/email/docs/)
