@@ -4,7 +4,7 @@ use Framework\Email\Message;
 use Framework\Email\SMTP;
 use PHPUnit\Framework\TestCase;
 
-class MessageTest extends TestCase
+final class MessageTest extends TestCase
 {
 	protected Message $message;
 
@@ -13,14 +13,14 @@ class MessageTest extends TestCase
 		$this->message = new MessageMock(new SMTP('localhost'), 'abc123');
 	}
 
-	public function testBoundary()
+	public function testBoundary() : void
 	{
 		$this->assertEquals('abc123', $this->message->getBoundary());
 		$this->message = new Message(new SMTP('localhost'));
 		$this->assertEquals(32, \strlen($this->message->getBoundary()));
 	}
 
-	public function testFrom()
+	public function testFrom() : void
 	{
 		$this->assertEquals([], $this->message->getFrom());
 		$this->assertNull($this->message->getFromAddress());
@@ -31,7 +31,7 @@ class MessageTest extends TestCase
 		$this->assertEquals('Foo', $this->message->getFromName());
 	}
 
-	public function testHeaders()
+	public function testHeaders() : void
 	{
 		$this->assertEquals(['MIME-Version' => '1.0'], $this->message->getHeaders());
 		$this->assertEquals('1.0', $this->message->getHeader('MIME-Version'));
@@ -51,7 +51,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testDate()
+	public function testDate() : void
 	{
 		$this->assertNull($this->message->getDate());
 		$this->assertNull($this->message->getHeader('Date'));
@@ -60,7 +60,7 @@ class MessageTest extends TestCase
 		$this->assertEquals(\date('r'), $this->message->getHeader('Date'));
 	}
 
-	public function testPriority()
+	public function testPriority() : void
 	{
 		$this->assertEquals(3, $this->message->getPriority());
 		$this->assertNull($this->message->getHeader('X-Priority'));
@@ -69,7 +69,7 @@ class MessageTest extends TestCase
 		$this->assertEquals(4, $this->message->getHeader('X-Priority'));
 	}
 
-	public function testReplyTo()
+	public function testReplyTo() : void
 	{
 		$this->assertEquals([], $this->message->getReplyTo());
 		$this->message->addReplyTo('foo@bar');
@@ -83,7 +83,7 @@ class MessageTest extends TestCase
 		], $this->message->getReplyTo());
 	}
 
-	public function testBcc()
+	public function testBcc() : void
 	{
 		$this->assertEquals([], $this->message->getBcc());
 		$this->message->addBcc('foo@bar');
@@ -97,7 +97,7 @@ class MessageTest extends TestCase
 		], $this->message->getBcc());
 	}
 
-	public function testCc()
+	public function testCc() : void
 	{
 		$this->assertEquals([], $this->message->getCc());
 		$this->message->addCc('foo@bar');
@@ -111,7 +111,7 @@ class MessageTest extends TestCase
 		], $this->message->getCc());
 	}
 
-	public function testTo()
+	public function testTo() : void
 	{
 		$this->assertEquals([], $this->message->getTo());
 		$this->message->addTo('foo@bar');
@@ -125,14 +125,14 @@ class MessageTest extends TestCase
 		], $this->message->getTo());
 	}
 
-	public function testSubject()
+	public function testSubject() : void
 	{
 		$this->assertNull($this->message->getSubject());
 		$this->message->setSubject('Hello');
 		$this->assertEquals('Hello', $this->message->getSubject());
 	}
 
-	public function testAttachments()
+	public function testAttachments() : void
 	{
 		$this->assertEmpty($this->message->getAttachments());
 		$this->message->addAttachment(__FILE__);
@@ -143,7 +143,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testInvalidAttachmentPath()
+	public function testInvalidAttachmentPath() : void
 	{
 		$this->message->addAttachment(__DIR__);
 		$this->expectException(\LogicException::class);
@@ -151,7 +151,7 @@ class MessageTest extends TestCase
 		$this->message->renderAttachments();
 	}
 
-	public function testInlineAttachments()
+	public function testInlineAttachments() : void
 	{
 		$this->assertEmpty($this->message->getInlineAttachments());
 		$this->message->setInlineAttachment(__FILE__, 'abc123');
@@ -160,7 +160,7 @@ class MessageTest extends TestCase
 		], $this->message->getInlineAttachments());
 	}
 
-	public function testInvalidInlineAttachmentPath()
+	public function testInvalidInlineAttachmentPath() : void
 	{
 		$this->message->setInlineAttachment(__DIR__, 'foobar');
 		$this->expectException(\LogicException::class);
@@ -168,7 +168,7 @@ class MessageTest extends TestCase
 		$this->message->renderInlineAttachments();
 	}
 
-	public function testInlineAttachmentsContents()
+	public function testInlineAttachmentsContents() : void
 	{
 		$this->assertEmpty($this->message->getInlineAttachments());
 		$this->message->setInlineAttachment(__FILE__, 'foobar');
@@ -179,7 +179,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testRecipients()
+	public function testRecipients() : void
 	{
 		$this->assertEquals([], $this->message->getRecipients());
 		$this->message->addTo('foo@bar');
@@ -192,7 +192,7 @@ class MessageTest extends TestCase
 		], $this->message->getRecipients());
 	}
 
-	public function testPlainMessage()
+	public function testPlainMessage() : void
 	{
 		$this->assertNull($this->message->getPlainMessage());
 		$this->message->setPlainMessage('Hi');
@@ -203,7 +203,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testHTMLMessage()
+	public function testHTMLMessage() : void
 	{
 		$this->assertNull($this->message->getHTMLMessage());
 		$this->message->setHTMLMessage('<b>Hi</b>');
@@ -214,13 +214,13 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testFormatAddress()
+	public function testFormatAddress() : void
 	{
 		$this->assertEquals('foo@bar', MessageMock::formatAddress('foo@bar'));
 		$this->assertEquals('"Foo Bar" <foo@bar>', MessageMock::formatAddress('foo@bar', 'Foo Bar'));
 	}
 
-	public function testFormatAddressList()
+	public function testFormatAddressList() : void
 	{
 		$this->assertEquals(
 			'foo@bar, "Baz" <foo@baz>, "Foo" <foo@foo>',
@@ -232,7 +232,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testRenderData()
+	public function testRenderData() : void
 	{
 		$this->message->setFrom('foo@bar');
 		$this->assertStringContainsString(
@@ -241,7 +241,7 @@ class MessageTest extends TestCase
 		);
 	}
 
-	public function testToString()
+	public function testToString() : void
 	{
 		$this->message->setFrom('foo@bar');
 		$this->assertStringContainsString(

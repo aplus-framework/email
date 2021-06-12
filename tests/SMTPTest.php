@@ -4,7 +4,7 @@ use Framework\Email\Message;
 use Framework\Email\SMTP;
 use PHPUnit\Framework\TestCase;
 
-class SMTPTest extends TestCase
+final class SMTPTest extends TestCase
 {
 	protected SMTP $smtp;
 
@@ -18,12 +18,12 @@ class SMTPTest extends TestCase
 		]);
 	}
 
-	public function testCRLF()
+	public function testCRLF() : void
 	{
 		$this->assertEquals("\r\n", $this->smtp->getCRLF());
 	}
 
-	public function testCharset()
+	public function testCharset() : void
 	{
 		$this->assertEquals('utf-8', $this->smtp->getCharset());
 	}
@@ -39,12 +39,12 @@ class SMTPTest extends TestCase
 			->addAttachment(__FILE__);
 	}
 
-	public function testSend()
+	public function testSend() : void
 	{
 		$this->assertTrue($this->smtp->send($this->getMessage()));
 	}
 
-	public function testLogs()
+	public function testLogs() : void
 	{
 		$this->smtp->send($this->getMessage());
 		$this->assertEquals([
