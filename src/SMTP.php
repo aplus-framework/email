@@ -48,9 +48,10 @@ class SMTP extends Mailer
 	{
 		if (\is_resource($this->socket)) {
 			$this->sendCommand('QUIT');
-			return \fclose($this->socket);
+			$closed = \fclose($this->socket);
 		}
-		return true;
+		$this->socket = false;
+		return $closed ?? true;
 	}
 
 	/**
