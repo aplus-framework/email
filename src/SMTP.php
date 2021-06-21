@@ -92,6 +92,7 @@ class SMTP extends Mailer
 		if ( ! $this->connect()) {
 			return false;
 		}
+		$message->setMailer($this);
 		$from = $message->getFromAddress() ?? $this->getConfig('username');
 		$this->sendCommand('MAIL FROM: <' . $from . '>');
 		foreach ($message->getRecipients() as $address) {

@@ -4,6 +4,11 @@ use Framework\Email\Message;
 
 class MessageMock extends Message
 {
+	public function getBoundary() : string
+	{
+		return parent::getBoundary();
+	}
+
 	public function renderHeaders() : string
 	{
 		return parent::renderHeaders();

@@ -8,13 +8,18 @@ use LogicException;
  */
 class Message
 {
+	/**
+	 * The Mailer instance.
+	 *
+	 * @var Mailer
+	 */
 	protected Mailer $mailer;
 	/**
 	 * The message boundary.
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	protected ?string $boundary;
+	protected string $boundary;
 	/**
 	 * @var array<string,string>
 	 */
@@ -117,14 +122,9 @@ class Message
 		'x-priority' => 'X-Priority',
 	];
 
-	public function __construct(Mailer $mailer, string $boundary = null)
+	public function __construct()
 	{
-		$this->mailer = $mailer;
-		$this->boundary = $boundary;
-		if ($boundary === null) {
-			$this->boundary = \md5(\uniqid((string) \microtime(true), true));
-			//$this->boundary = \bin2hex(\random_bytes(10));
-		}
+		$this->setBoundary();
 	}
 
 	public function __toString() : string
@@ -132,7 +132,23 @@ class Message
 		return $this->renderData();
 	}
 
-	public function getBoundary() : string
+	/**
+	 * @param Mailer $mailer The Mailer instance
+	 *
+	 * @return $this
+	 */
+	public function setMailer(Mailer $mailer)
+	{
+		$this->mailer = $mailer;
+		return $this;
+	}
+
+	protected function setBoundary() : void
+	{
+		$this->boundary = \bin2hex(\random_bytes(16));
+	}
+
+	protected function getBoundary() : string
 	{
 		return $this->boundary;
 	}

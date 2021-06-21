@@ -1,6 +1,5 @@
 <?php namespace Tests\Email;
 
-use Framework\Email\Message;
 use Framework\Email\SMTP;
 use PHPUnit\Framework\TestCase;
 
@@ -10,14 +9,13 @@ final class MessageTest extends TestCase
 
 	public function setup() : void
 	{
-		$this->message = new MessageMock(new SMTP('localhost'), 'abc123');
+		$this->message = new MessageMock();
+		$this->message->setMailer(new SMTP('localhost'));
 	}
 
 	public function testBoundary() : void
 	{
-		self::assertSame('abc123', $this->message->getBoundary());
-		$message = new Message(new SMTP('localhost'));
-		self::assertSame(32, \strlen($message->getBoundary()));
+		self::assertSame(32, \strlen($this->message->getBoundary()));
 	}
 
 	public function testFrom() : void
@@ -232,20 +230,34 @@ final class MessageTest extends TestCase
 		);
 	}
 
-	public function testRenderData() : void
+	protected function getRenderedResult() : string
 	{
 		$this->message->setFrom('foo@bar');
+		$boundary = $this->message->getBoundary();
+		return "From: foo@bar\r\n"
+			. "To: \r\n"
+			. "Content-Type: multipart/mixed; boundary=\"mixed-{$boundary}\"\r\n"
+			. "\r\n"
+			. "--mixed-{$boundary}\r\n"
+			. "Content-Type: multipart/alternative; boundary=\"alt-{$boundary}\"\r\n"
+			. "\r\n"
+			. "--alt-{$boundary}--\r\n"
+			. "\r\n"
+			. "--mixed-{$boundary}--";
+	}
+
+	public function testRenderData() : void
+	{
 		self::assertStringContainsString(
-			"From: foo@bar\r\nTo: \r\nContent-Type: multipart/mixed; boundary=\"mixed-abc123\"\r\n\r\n--mixed-abc123\r\nContent-Type: multipart/alternative; boundary=\"alt-abc123\"\r\n\r\n--alt-abc123--\r\n\r\n--mixed-abc123--",
+			$this->getRenderedResult(),
 			$this->message->renderData()
 		);
 	}
 
 	public function testToString() : void
 	{
-		$this->message->setFrom('foo@bar');
 		self::assertStringContainsString(
-			"From: foo@bar\r\nTo: \r\nContent-Type: multipart/mixed; boundary=\"mixed-abc123\"\r\n\r\n--mixed-abc123\r\nContent-Type: multipart/alternative; boundary=\"alt-abc123\"\r\n\r\n--alt-abc123--\r\n\r\n--mixed-abc123--",
+			$this->getRenderedResult(),
 			(string) $this->message
 		);
 	}

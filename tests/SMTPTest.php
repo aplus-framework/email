@@ -30,7 +30,7 @@ final class SMTPTest extends TestCase
 
 	protected function getMessage() : Message
 	{
-		return (new Message($this->smtp))
+		return (new Message())
 			->addTo((string) \getenv('SMTP_ADDRESS'))
 			->setFrom((string) \getenv('SMTP_ADDRESS'))
 			->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
