@@ -353,6 +353,7 @@ class Message
 				throw new LogicException('Attachment file not found: ' . $attachment);
 			}
 			$filename = \pathinfo($attachment, \PATHINFO_BASENAME);
+			$filename = \htmlspecialchars($filename, \ENT_QUOTES | \ENT_HTML5);
 			$contents = (string) \file_get_contents($attachment);
 			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
 			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"'
