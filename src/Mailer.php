@@ -6,25 +6,25 @@
 abstract class Mailer
 {
 	/**
-	 * @var array|mixed[]
+	 * @var array<string,mixed>
 	 */
 	protected array $config = [];
 	/**
-	 * @var array|array[]
+	 * @var array<int,array>
 	 */
 	protected array $logs = [];
 
 	/**
 	 * Mailer constructor.
 	 *
-	 * @param array|mixed[]|string $username
-	 * @param string|null          $password
-	 * @param string               $server
-	 * @param int                  $port
-	 * @param string|null          $hostname
+	 * @param array<string,mixed>|string $username
+	 * @param string|null $password
+	 * @param string $server
+	 * @param int $port
+	 * @param string|null $hostname
 	 */
 	public function __construct(
-		$username,
+		array | string $username,
 		string $password = null,
 		string $server = 'localhost',
 		int $port = 587,
@@ -44,9 +44,9 @@ abstract class Mailer
 	/**
 	 * Make Base configurations.
 	 *
-	 * @param array|mixed[] $config
+	 * @param array<string,mixed> $config
 	 *
-	 * @return array|mixed[]
+	 * @return array<string,mixed>
 	 */
 	protected function makeConfig(array $config) : array
 	{
@@ -70,7 +70,7 @@ abstract class Mailer
 	 *
 	 * @return mixed
 	 */
-	protected function getConfig(string $key)
+	protected function getConfig(string $key) : mixed
 	{
 		return $this->config[$key];
 	}
@@ -86,10 +86,11 @@ abstract class Mailer
 	}
 
 	/**
-	 * Get log array
-	 * -- contains commands and responses from Mailer server.
+	 * Get an array of logs.
 	 *
-	 * @return array|array[]
+	 * Contains commands and responses from the Mailer server.
+	 *
+	 * @return array<int,array>
 	 */
 	public function getLogs() : array
 	{

@@ -8,9 +8,9 @@
 class SMTP extends Mailer
 {
 	/**
-	 * @var false|resource|null $socket
+	 * @var false|resource $socket
 	 */
-	protected $socket;
+	protected $socket = false;
 
 	public function __destruct()
 	{
@@ -30,7 +30,7 @@ class SMTP extends Mailer
 			$error_string,
 			$this->getConfig('connection_timeout')
 		);
-		if (empty($this->socket)) {
+		if ($this->socket === false) {
 			$this->addLog('', $error_number . ': ' . $error_string);
 			return false;
 		}
@@ -53,6 +53,12 @@ class SMTP extends Mailer
 		return true;
 	}
 
+	/**
+	 * @see https://datatracker.ietf.org/doc/html/rfc2821#section-4.2.3
+	 * @see https://datatracker.ietf.org/doc/html/rfc4954#section-4.1
+	 *
+	 * @return bool
+	 */
 	protected function authenticate() : bool
 	{
 		if (($this->getConfig('username') === null) && ($this->getConfig('password') === null)) {
@@ -108,7 +114,9 @@ class SMTP extends Mailer
 	protected function getResponse() : string
 	{
 		$response = '';
+		// @phpstan-ignore-next-line
 		\stream_set_timeout($this->socket, $this->getConfig('response_timeout'));
+		// @phpstan-ignore-next-line
 		while (($line = \fgets($this->socket, 512)) !== false) {
 			$response .= \trim($line) . "\n";
 			if (isset($line[3]) && $line[3] === ' ') {
@@ -127,6 +135,7 @@ class SMTP extends Mailer
 	 */
 	protected function sendCommand(string $command) : int
 	{
+		// @phpstan-ignore-next-line
 		\fwrite($this->socket, $command . $this->getCRLF());
 		$response = $this->getResponse();
 		$this->addLog($command, $response);
@@ -135,6 +144,7 @@ class SMTP extends Mailer
 
 	/**
 	 * @see https://tools.ietf.org/html/rfc2821#section-4.2.3
+	 * @see https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes
 	 *
 	 * @param string $response
 	 *

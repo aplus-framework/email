@@ -9,48 +9,100 @@ use LogicException;
 class Message
 {
 	protected Mailer $mailer;
+	/**
+	 * The message boundary.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $boundary;
 	/**
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected array $headers = [
 		'MIME-Version' => '1.0',
 	];
 	/**
-	 * @var array|string[]
+	 * A list of attachments with Content-Disposition equals `attachment`.
+	 *
+	 * @var array<int,string> The filenames
 	 */
 	protected array $attachments = [];
 	/**
-	 * @var array|string[]
+	 * An associative array of attachments with Content-Disposition equals `inline`.
+	 *
+	 * @var array<string,string> The Content-ID's as keys and the filenames as values
 	 */
 	protected array $inlineAttachments = [];
+	/**
+	 * The plain text message.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $plainMessage = null;
+	/**
+	 * The HTML message.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $htmlMessage = null;
 	/**
-	 * @var array|string[]
+	 * An associative array used in the `To` header.
+	 *
+	 * @var array<string,string|null> The email addresses as keys and the optional
+	 * name as values
 	 */
 	protected array $to = [];
 	/**
-	 * @var array|string[]
+	 * An associative array used in the `Cc` header.
+	 *
+	 * @var array<string,string|null> The email addresses as keys and the optional
+	 * name as values
 	 */
 	protected array $cc = [];
 	/**
-	 * @var array|string[]
+	 * An associative array used in the `Bcc` header.
+	 *
+	 * @var array<string,string|null> The email addresses as keys and the optional
+	 * name as values
 	 */
 	protected array $bcc = [];
 	/**
-	 * @var array|string[]
+	 * An associative array used in the `Reply-To` header.
+	 *
+	 * @var array<string,string|null> The email addresses as keys and the optional
+	 * name as values
 	 */
 	protected array $replyTo = [];
 	/**
-	 * @var array|string[]
+	 * The values used in the `From` header.
+	 *
+	 * @var array<int,string|null> The email address as in the index 0 and the
+	 * optional name in the index 1
 	 */
 	protected array $from = [];
+	/**
+	 * The message Subject.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $subject = null;
+	/**
+	 * The message Date.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $date = null;
+	/**
+	 * The message X-Priority.
+	 *
+	 * @var int An integer from 1 to 5
+	 */
 	protected int $priority = 3;
 	/**
-	 * @var array|string[]
+	 * An associative array of Standard Headers.
+	 *
+	 * @var array<string,string> The lowercased names as keys and the Standard
+	 * Header name as values
 	 */
 	protected static array $standardHeaders = [
 		'bcc' => 'Bcc',
@@ -86,7 +138,7 @@ class Message
 	}
 
 	/**
-	 * @param string      $name
+	 * @param string $name
 	 * @param string|null $value
 	 *
 	 * @return $this
@@ -103,7 +155,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string>
 	 */
 	public function getHeaders() : array
 	{
@@ -168,12 +220,13 @@ class Message
 	protected function renderData() : string
 	{
 		$this->prepareHeaders();
-		$data = '';
-		$data .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
-		$data .= 'Content-Type: multipart/alternative; boundary="alt-' . $this->getBoundary() . '"' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+		$data = '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+		$data .= 'Content-Type: multipart/alternative; boundary="alt-' . $this->getBoundary() . '"'
+			. $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$data .= $this->renderPlainMessage();
 		$data .= $this->renderHTMLMessage();
-		$data .= '--alt-' . $this->getBoundary() . '--' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+		$data .= '--alt-' . $this->getBoundary() . '--'
+			. $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$data .= $this->renderAttachments();
 		$data .= $this->renderInlineAttachments();
 		$data .= '--mixed-' . $this->getBoundary() . '--';
@@ -229,14 +282,16 @@ class Message
 		string $contentType = 'text/html'
 	) : string {
 		$part = '--alt-' . $this->getBoundary() . $this->mailer->getCRLF();
-		$part .= 'Content-Type: ' . $contentType . '; charset=' . $this->mailer->getCharset() . $this->mailer->getCRLF();
-		$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+		$part .= 'Content-Type: ' . $contentType . '; charset='
+			. $this->mailer->getCharset() . $this->mailer->getCRLF();
+		$part .= 'Content-Transfer-Encoding: base64'
+			. $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$part .= \chunk_split(\base64_encode($message)) . $this->mailer->getCRLF();
 		return $part;
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	public function getAttachments() : array
 	{
@@ -244,7 +299,7 @@ class Message
 	}
 
 	/**
-	 * @param string $filename
+	 * @param string $filename The filename
 	 *
 	 * @return $this
 	 */
@@ -255,8 +310,8 @@ class Message
 	}
 
 	/**
-	 * @param string $filename
-	 * @param string $cid
+	 * @param string $filename The filename
+	 * @param string $cid The Content-ID
 	 *
 	 * @return $this
 	 */
@@ -267,7 +322,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string>
 	 */
 	public function getInlineAttachments() : array
 	{
@@ -284,9 +339,12 @@ class Message
 			$filename = \pathinfo($attachment, \PATHINFO_BASENAME);
 			$contents = (string) \file_get_contents($attachment);
 			$part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
-			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $this->mailer->getCRLF();
-			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->mailer->getCRLF();
-			$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+			$part .= 'Content-Type: application/octet-stream; name="' . $filename . '"'
+				. $this->mailer->getCRLF();
+			$part .= 'Content-Disposition: attachment; filename="' . $filename . '"'
+				. $this->mailer->getCRLF();
+			$part .= 'Content-Transfer-Encoding: base64'
+				. $this->mailer->getCRLF() . $this->mailer->getCRLF();
 			$part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
 		}
 		return $part;
@@ -327,7 +385,7 @@ class Message
 	}
 
 	/**
-	 * @param string      $address
+	 * @param string $address
 	 * @param string|null $name
 	 *
 	 * @return $this
@@ -339,7 +397,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string|null>
 	 */
 	public function getTo() : array
 	{
@@ -349,7 +407,7 @@ class Message
 	/**
 	 * Add Carbon Copy email address.
 	 *
-	 * @param string      $address
+	 * @param string $address
 	 * @param string|null $name
 	 *
 	 * @return $this
@@ -361,7 +419,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string|null>
 	 */
 	public function getCc() : array
 	{
@@ -369,18 +427,18 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string>
 	 */
 	public function getRecipients() : array
 	{
-		$recipients = \array_merge($this->getTo(), $this->getCc());
+		$recipients = \array_replace($this->getTo(), $this->getCc());
 		return \array_keys($recipients);
 	}
 
 	/**
 	 * Add Blind Carbon Copy email address.
 	 *
-	 * @param string      $address
+	 * @param string $address
 	 * @param string|null $name
 	 *
 	 * @return $this
@@ -392,7 +450,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string|null>
 	 */
 	public function getBcc() : array
 	{
@@ -400,7 +458,7 @@ class Message
 	}
 
 	/**
-	 * @param string      $address
+	 * @param string $address
 	 * @param string|null $name
 	 *
 	 * @return $this
@@ -412,7 +470,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<string,string|null>
 	 */
 	public function getReplyTo() : array
 	{
@@ -420,7 +478,7 @@ class Message
 	}
 
 	/**
-	 * @param string      $address
+	 * @param string $address
 	 * @param string|null $name
 	 *
 	 * @return $this
@@ -432,7 +490,7 @@ class Message
 	}
 
 	/**
-	 * @return array|string[]
+	 * @return array<int,string|null>
 	 */
 	public function getFrom() : array
 	{
@@ -494,7 +552,7 @@ class Message
 	}
 
 	/**
-	 * @param array|string[] $addresses
+	 * @param array<string,string|null> $addresses
 	 *
 	 * @return string
 	 */

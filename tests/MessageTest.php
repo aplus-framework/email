@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 final class MessageTest extends TestCase
 {
-	protected Message $message;
+	protected MessageMock $message;
 
 	public function setup() : void
 	{
@@ -16,8 +16,8 @@ final class MessageTest extends TestCase
 	public function testBoundary() : void
 	{
 		self::assertSame('abc123', $this->message->getBoundary());
-		$this->message = new Message(new SMTP('localhost'));
-		self::assertSame(32, \strlen($this->message->getBoundary()));
+		$message = new Message(new SMTP('localhost'));
+		self::assertSame(32, \strlen($message->getBoundary()));
 	}
 
 	public function testFrom() : void
