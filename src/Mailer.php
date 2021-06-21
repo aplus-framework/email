@@ -98,6 +98,17 @@ abstract class Mailer
 	}
 
 	/**
+	 * Reset logs.
+	 *
+	 * @return $this
+	 */
+	public function resetLogs()
+	{
+		$this->logs = [];
+		return $this;
+	}
+
+	/**
 	 * @param string $command
 	 * @param string $response
 	 *
@@ -105,7 +116,10 @@ abstract class Mailer
 	 */
 	protected function addLog(string $command, string $response)
 	{
-		$this->logs[] = [$command, $response];
+		$this->logs[] = [
+			'command' => $command,
+			'responses' => \explode(\PHP_EOL, $response),
+		];
 		return $this;
 	}
 

@@ -48,57 +48,79 @@ final class SMTPTest extends TestCase
 	{
 		$this->smtp->send($this->getMessage());
 		self::assertSame([
-			0 => '',
-			1 => '220 smtp.mailtrap.io ESMTP ready',
+			'command' => '',
+			'responses' => [
+				'220 smtp.mailtrap.io ESMTP ready',
+			],
 		], $this->smtp->getLogs()[0]);
 		self::assertSame([
-			0 => 'EHLO ' . \gethostname(),
-			1 => '250-smtp.mailtrap.io
-250-SIZE 5242880
-250-PIPELINING
-250-ENHANCEDSTATUSCODES
-250-8BITMIME
-250-DSN
-250-AUTH PLAIN LOGIN CRAM-MD5
-250 STARTTLS',
+			'command' => 'EHLO ' . \gethostname(),
+			'responses' => [
+				'250-smtp.mailtrap.io',
+				'250-SIZE 5242880',
+				'250-PIPELINING',
+				'250-ENHANCEDSTATUSCODES',
+				'250-8BITMIME',
+				'250-DSN',
+				'250-AUTH PLAIN LOGIN CRAM-MD5',
+				'250 STARTTLS',
+			],
 		], $this->smtp->getLogs()[1]);
 		self::assertSame([
-			0 => 'STARTTLS',
-			1 => '220 2.0.0 Start TLS',
+			'command' => 'STARTTLS',
+			'responses' => [
+				'220 2.0.0 Start TLS',
+			],
 		], $this->smtp->getLogs()[2]);
 		self::assertSame([
-			0 => 'EHLO ' . \gethostname(),
-			1 => '250-smtp.mailtrap.io
-250-SIZE 5242880
-250-PIPELINING
-250-ENHANCEDSTATUSCODES
-250-8BITMIME
-250-DSN
-250 AUTH PLAIN LOGIN CRAM-MD5',
+			'command' => 'EHLO ' . \gethostname(),
+			'responses' => [
+				'250-smtp.mailtrap.io',
+				'250-SIZE 5242880',
+				'250-PIPELINING',
+				'250-ENHANCEDSTATUSCODES',
+				'250-8BITMIME',
+				'250-DSN',
+				'250 AUTH PLAIN LOGIN CRAM-MD5',
+			],
 		], $this->smtp->getLogs()[3]);
 		self::assertSame([
-			0 => 'AUTH LOGIN',
-			1 => '334 VXNlcm5hbWU6',
+			'command' => 'AUTH LOGIN',
+			'responses' => [
+				'334 VXNlcm5hbWU6',
+			],
 		], $this->smtp->getLogs()[4]);
 		self::assertSame([
-			0 => 'M2YxZjlkNjdjYTFkYTU=',
-			1 => '334 UGFzc3dvcmQ6',
+			'command' => 'M2YxZjlkNjdjYTFkYTU=',
+			'responses' => [
+				'334 UGFzc3dvcmQ6',
+			],
 		], $this->smtp->getLogs()[5]);
 		self::assertSame([
-			0 => 'YjdhNTIwYTViMDg5YmM=',
-			1 => '235 2.0.0 OK',
+			'command' => 'YjdhNTIwYTViMDg5YmM=',
+			'responses' => [
+				'235 2.0.0 OK',
+			],
 		], $this->smtp->getLogs()[6]);
 		self::assertSame([
-			0 => 'MAIL FROM: <db20690ae8-23245c@inbox.mailtrap.io>',
-			1 => '250 2.1.0 Ok',
+			'command' => 'MAIL FROM: <db20690ae8-23245c@inbox.mailtrap.io>',
+			'responses' => [
+				'250 2.1.0 Ok',
+			],
 		], $this->smtp->getLogs()[7]);
 		self::assertSame([
-			0 => 'RCPT TO: <db20690ae8-23245c@inbox.mailtrap.io>',
-			1 => '250 2.1.0 Ok',
+			'command' => 'RCPT TO: <db20690ae8-23245c@inbox.mailtrap.io>',
+			'responses' => [
+				'250 2.1.0 Ok',
+			],
 		], $this->smtp->getLogs()[8]);
 		self::assertSame([
-			0 => 'DATA',
-			1 => '354 Go ahead',
+			'command' => 'DATA',
+			'responses' => [
+				'354 Go ahead',
+			],
 		], $this->smtp->getLogs()[9]);
+		$this->smtp->resetLogs();
+		self::assertEmpty($this->smtp->getLogs());
 	}
 }
