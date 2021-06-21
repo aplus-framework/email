@@ -226,10 +226,10 @@ class Message
 
 	protected function renderMessage(
 		string $message,
-		string $content_type = 'text/html'
+		string $contentType = 'text/html'
 	) : string {
 		$part = '--alt-' . $this->getBoundary() . $this->mailer->getCRLF();
-		$part .= 'Content-Type: ' . $content_type . '; charset=' . $this->mailer->getCharset() . $this->mailer->getCRLF();
+		$part .= 'Content-Type: ' . $contentType . '; charset=' . $this->mailer->getCharset() . $this->mailer->getCRLF();
 		$part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
 		$part .= \chunk_split(\base64_encode($message)) . $this->mailer->getCRLF();
 		return $part;
