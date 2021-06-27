@@ -109,9 +109,9 @@ abstract class Mailer
 	/**
 	 * Reset logs.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function resetLogs()
+	public function resetLogs() : static
 	{
 		$this->logs = [];
 		return $this;
@@ -121,9 +121,9 @@ abstract class Mailer
 	 * @param string $command
 	 * @param string $response
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function addLog(string $command, string $response)
+	protected function addLog(string $command, string $response) : static
 	{
 		$this->logs[] = [
 			'command' => $command,

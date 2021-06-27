@@ -144,9 +144,9 @@ class Message
 	/**
 	 * @param Mailer $mailer The Mailer instance
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setMailer(Mailer $mailer)
+	public function setMailer(Mailer $mailer) : static
 	{
 		$this->mailer = $mailer;
 		return $this;
@@ -166,9 +166,9 @@ class Message
 	 * @param string $name
 	 * @param string|null $value
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setHeader(string $name, ?string $value)
+	public function setHeader(string $name, ?string $value) : static
 	{
 		$this->headers[static::getHeaderName($name)] = $value;
 		return $this;
@@ -261,9 +261,9 @@ class Message
 	/**
 	 * @param string $message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setPlainMessage(string $message)
+	public function setPlainMessage(string $message) : static
 	{
 		$this->plainMessage = $message;
 		return $this;
@@ -283,9 +283,9 @@ class Message
 	/**
 	 * @param string $message
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setHTMLMessage(string $message)
+	public function setHTMLMessage(string $message) : static
 	{
 		$this->htmlMessage = $message;
 		return $this;
@@ -326,9 +326,9 @@ class Message
 	/**
 	 * @param string $filename The filename
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addAttachment(string $filename)
+	public function addAttachment(string $filename) : static
 	{
 		$this->attachments[] = $filename;
 		return $this;
@@ -338,9 +338,9 @@ class Message
 	 * @param string $filename The filename
 	 * @param string $cid The Content-ID
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setInlineAttachment(string $filename, string $cid)
+	public function setInlineAttachment(string $filename, string $cid) : static
 	{
 		$this->inlineAttachments[$cid] = $filename;
 		return $this;
@@ -397,9 +397,9 @@ class Message
 	/**
 	 * @param string $subject
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setSubject(string $subject)
+	public function setSubject(string $subject) : static
 	{
 		$this->subject = $subject;
 		return $this;
@@ -414,9 +414,9 @@ class Message
 	 * @param string $address
 	 * @param string|null $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addTo(string $address, string $name = null)
+	public function addTo(string $address, string $name = null) : static
 	{
 		$this->to[$address] = $name;
 		return $this;
@@ -436,9 +436,9 @@ class Message
 	 * @param string $address
 	 * @param string|null $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addCc(string $address, string $name = null)
+	public function addCc(string $address, string $name = null) : static
 	{
 		$this->cc[$address] = $name;
 		return $this;
@@ -467,9 +467,9 @@ class Message
 	 * @param string $address
 	 * @param string|null $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addBcc(string $address, string $name = null)
+	public function addBcc(string $address, string $name = null) : static
 	{
 		$this->bcc[$address] = $name;
 		return $this;
@@ -487,9 +487,9 @@ class Message
 	 * @param string $address
 	 * @param string|null $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function addReplyTo(string $address, string $name = null)
+	public function addReplyTo(string $address, string $name = null) : static
 	{
 		$this->replyTo[$address] = $name;
 		return $this;
@@ -507,9 +507,9 @@ class Message
 	 * @param string $address
 	 * @param string|null $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setFrom(string $address, string $name = null)
+	public function setFrom(string $address, string $name = null) : static
 	{
 		$this->from = [$address, $name];
 		return $this;
@@ -536,9 +536,9 @@ class Message
 	/**
 	 * @param DateTime|null $datetime
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setDate(DateTime $datetime = null)
+	public function setDate(DateTime $datetime = null) : static
 	{
 		$this->date = $datetime ? $datetime->format('r') : \date('r');
 		$this->setHeader('Date', $this->date);
@@ -553,9 +553,9 @@ class Message
 	/**
 	 * @param int $priority from 1 to 5
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setPriority(int $priority)
+	public function setPriority(int $priority) : static
 	{
 		$this->priority = $priority;
 		$this->setHeader('X-Priority', (string) $priority);
