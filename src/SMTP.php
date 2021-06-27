@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of The Framework Email Library.
  *
@@ -34,13 +34,13 @@ class SMTP extends Mailer
 		$this->disconnect();
 		$this->socket = \fsockopen(
 			$this->getConfig('server'),
-			$this->getConfig('port'),
-			$error_number,
-			$error_string,
-			$this->getConfig('connection_timeout')
+			(int) $this->getConfig('port'),
+			$error_code,
+			$error_message,
+			(float) $this->getConfig('connection_timeout')
 		);
 		if ($this->socket === false) {
-			$this->addLog('', $error_number . ': ' . $error_string);
+			$this->addLog('', $error_code . ': ' . $error_message);
 			return false;
 		}
 		$this->addLog('', $this->getResponse());
