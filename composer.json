@@ -3,7 +3,8 @@
 	"type": "library",
 	"description": "The Framework Email Library",
 	"keywords": [
-		"email"
+		"email",
+		"smtp"
 	],
 	"homepage": "https://the-framework.gitlab.io/libraries/email.html",
 	"license": "MIT",
@@ -23,7 +24,7 @@
 	"require-dev": {
 		"ext-xdebug": "*",
 		"ergebnis/composer-normalize": "^2.15",
-		"natanfelles/coding-standard": "^1.6",
+		"natanfelles/coding-standard": "^1.7",
 		"phpmd/phpmd": "^2.10",
 		"phpstan/phpstan": "^0.12",
 		"phpunit/phpunit": "^9.5"
