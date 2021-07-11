@@ -4,25 +4,25 @@
          convertNoticesToExceptions="true" convertWarningsToExceptions="true" stopOnError="false"
          stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-	<coverage processUncoveredFiles="true">
-		<include>
-			<directory suffix=".php">src</directory>
-		</include>
-		<report>
-			<clover outputFile="build/coverage/clover.xml"/>
-			<html outputDirectory="build/coverage"/>
-			<text outputFile="php://stdout"/>
-		</report>
-	</coverage>
-	<testsuite name="Tests">
-		<directory suffix="Test.php">tests</directory>
-	</testsuite>
-	<logging/>
-	<php>
-		<env name="SMTP_SERVER" value="smtp.mailtrap.io"/>
-		<env name="SMTP_PORT" value="2525"/>
-		<env name="SMTP_USERNAME" value="3f1f9d67ca1da5"/>
-		<env name="SMTP_PASSWORD" value="b7a520a5b089bc"/>
-		<env name="SMTP_ADDRESS" value="db20690ae8-23245c@inbox.mailtrap.io"/>
-	</php>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <report>
+            <clover outputFile="build/coverage/clover.xml"/>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="php://stdout"/>
+        </report>
+    </coverage>
+    <testsuite name="Tests">
+        <directory suffix="Test.php">tests</directory>
+    </testsuite>
+    <logging/>
+    <php>
+        <env name="SMTP_SERVER" value="smtp.mailtrap.io"/>
+        <env name="SMTP_PORT" value="2525"/>
+        <env name="SMTP_USERNAME" value="3f1f9d67ca1da5"/>
+        <env name="SMTP_PASSWORD" value="b7a520a5b089bc"/>
+        <env name="SMTP_ADDRESS" value="db20690ae8-23245c@inbox.mailtrap.io"/>
+    </php>
 </phpunit>
