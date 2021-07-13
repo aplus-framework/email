@@ -1,14 +1,14 @@
 {
-    "name": "natanfelles/email",
+    "name": "aplus/email",
     "type": "library",
-    "description": "The Framework Email Library",
+    "description": "Aplus Framework Email Library",
     "keywords": [
         "email",
         "smtp",
         "mailer",
         "message"
     ],
-    "homepage": "https://the-framework.gitlab.io/libraries/email.html",
+    "homepage": "https://aplus-framework.com/docs/email",
     "license": "MIT",
     "authors": [
         {
@@ -50,9 +50,9 @@
     "prefer-stable": true,
     "support": {
         "email": "natanfelles@gmail.com",
-        "issues": "https://gitlab.com/the-framework/libraries/email/issues",
-        "wiki": "https://gitlab.com/the-framework/libraries/email/wikis/home",
-        "source": "https://gitlab.com/the-framework/libraries/email",
-        "docs": "https://the-framework.gitlab.io/libraries/email/docs/"
+        "issues": "https://gitlab.com/aplus-framework/libraries/email/issues",
+        "wiki": "https://gitlab.com/aplus-framework/libraries/email/wikis/home",
+        "source": "https://gitlab.com/aplus-framework/libraries/email",
+        "docs": "https://aplus-framework.gitlab.io/libraries/email/docs/"
     }
 }
