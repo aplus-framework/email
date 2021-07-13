@@ -4,7 +4,9 @@
     "description": "The Framework Email Library",
     "keywords": [
         "email",
-        "smtp"
+        "smtp",
+        "mailer",
+        "message"
     ],
     "homepage": "https://the-framework.gitlab.io/libraries/email.html",
     "license": "MIT",
