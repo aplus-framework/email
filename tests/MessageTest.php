@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of The Framework Email Library.
+ * This file is part of Aplus Framework Email Library.
  *
  * (c) Natan Felles <natanfelles@gmail.com>
  *
