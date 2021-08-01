@@ -35,12 +35,12 @@ class SMTP extends Mailer
         $this->socket = \fsockopen(
             $this->getConfig('server'),
             (int) $this->getConfig('port'),
-            $error_code,
-            $error_message,
+            $errorCode,
+            $errorMessage,
             (float) $this->getConfig('connection_timeout')
         );
         if ($this->socket === false) {
-            $this->addLog('', $error_code . ': ' . $error_message);
+            $this->addLog('', $errorCode . ': ' . $errorMessage);
             return false;
         }
         $this->addLog('', $this->getResponse());
