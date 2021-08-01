@@ -19,9 +19,7 @@
     ],
     "require": {
         "php": ">=8.0",
-        "ext-fileinfo": "*",
-        "ext-imap": "*",
-        "ext-openssl": "*"
+        "ext-fileinfo": "*"
     },
     "require-dev": {
         "ext-xdebug": "*",
