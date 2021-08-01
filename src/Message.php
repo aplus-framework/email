@@ -194,7 +194,7 @@ class Message
             if ($value !== null) {
                 $name .= ': ' . $value;
             }
-            $result .= $name . $this->mailer->getCRLF();
+            $result .= $name . $this->mailer->getCrlf();
         }
         return $result;
     }
@@ -204,7 +204,7 @@ class Message
         if ($value !== null) {
             $name .= ': ' . $value;
         }
-        return \mb_encode_mimeheader($name, 'UTF-8', 'B', $this->mailer->getCRLF());
+        return \mb_encode_mimeheader($name, 'UTF-8', 'B', $this->mailer->getCrlf());
     }
 
     protected function prepareHeaders() : void
@@ -245,17 +245,17 @@ class Message
     protected function renderData() : string
     {
         $this->prepareHeaders();
-        $data = '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+        $data = '--mixed-' . $this->getBoundary() . $this->mailer->getCrlf();
         $data .= 'Content-Type: multipart/alternative; boundary="alt-' . $this->getBoundary() . '"'
-            . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+            . $this->mailer->getCrlf() . $this->mailer->getCrlf();
         $data .= $this->renderPlainMessage();
-        $data .= $this->renderHTMLMessage();
+        $data .= $this->renderHtmlMessage();
         $data .= '--alt-' . $this->getBoundary() . '--'
-            . $this->mailer->getCRLF() . $this->mailer->getCRLF();
+            . $this->mailer->getCrlf() . $this->mailer->getCrlf();
         $data .= $this->renderAttachments();
         $data .= $this->renderInlineAttachments();
         $data .= '--mixed-' . $this->getBoundary() . '--';
-        return $this->renderHeaders() . $this->mailer->getCRLF() . $data;
+        return $this->renderHeaders() . $this->mailer->getCrlf() . $data;
     }
 
     /**
@@ -285,20 +285,20 @@ class Message
      *
      * @return static
      */
-    public function setHTMLMessage(string $message) : static
+    public function setHtmlMessage(string $message) : static
     {
         $this->htmlMessage = $message;
         return $this;
     }
 
-    public function getHTMLMessage() : ?string
+    public function getHtmlMessage() : ?string
     {
         return $this->htmlMessage;
     }
 
-    protected function renderHTMLMessage() : ?string
+    protected function renderHtmlMessage() : ?string
     {
-        $message = $this->getHTMLMessage();
+        $message = $this->getHtmlMessage();
         return $message ? $this->renderMessage($message) : null;
     }
 
@@ -306,12 +306,12 @@ class Message
         string $message,
         string $contentType = 'text/html'
     ) : string {
-        $part = '--alt-' . $this->getBoundary() . $this->mailer->getCRLF();
+        $part = '--alt-' . $this->getBoundary() . $this->mailer->getCrlf();
         $part .= 'Content-Type: ' . $contentType . '; charset='
-            . $this->mailer->getCharset() . $this->mailer->getCRLF();
+            . $this->mailer->getCharset() . $this->mailer->getCrlf();
         $part .= 'Content-Transfer-Encoding: base64'
-            . $this->mailer->getCRLF() . $this->mailer->getCRLF();
-        $part .= \chunk_split(\base64_encode($message)) . $this->mailer->getCRLF();
+            . $this->mailer->getCrlf() . $this->mailer->getCrlf();
+        $part .= \chunk_split(\base64_encode($message)) . $this->mailer->getCrlf();
         return $part;
     }
 
@@ -364,14 +364,14 @@ class Message
             $filename = \pathinfo($attachment, \PATHINFO_BASENAME);
             $filename = \htmlspecialchars($filename, \ENT_QUOTES | \ENT_HTML5);
             $contents = (string) \file_get_contents($attachment);
-            $part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
+            $part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCrlf();
             $part .= 'Content-Type: application/octet-stream; name="' . $filename . '"'
-                . $this->mailer->getCRLF();
+                . $this->mailer->getCrlf();
             $part .= 'Content-Disposition: attachment; filename="' . $filename . '"'
-                . $this->mailer->getCRLF();
+                . $this->mailer->getCrlf();
             $part .= 'Content-Transfer-Encoding: base64'
-                . $this->mailer->getCRLF() . $this->mailer->getCRLF();
-            $part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
+                . $this->mailer->getCrlf() . $this->mailer->getCrlf();
+            $part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCrlf();
         }
         return $part;
     }
@@ -384,12 +384,12 @@ class Message
                 throw new LogicException('Inline attachment file not found: ' . $filename);
             }
             $contents = (string) \file_get_contents($filename);
-            $part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCRLF();
-            $part .= 'Content-ID: ' . $cid . $this->mailer->getCRLF();
-            $part .= 'Content-Type: ' . \mime_content_type($filename) . $this->mailer->getCRLF();
-            $part .= 'Content-Disposition: inline' . $this->mailer->getCRLF();
-            $part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCRLF() . $this->mailer->getCRLF();
-            $part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCRLF();
+            $part .= '--mixed-' . $this->getBoundary() . $this->mailer->getCrlf();
+            $part .= 'Content-ID: ' . $cid . $this->mailer->getCrlf();
+            $part .= 'Content-Type: ' . \mime_content_type($filename) . $this->mailer->getCrlf();
+            $part .= 'Content-Disposition: inline' . $this->mailer->getCrlf();
+            $part .= 'Content-Transfer-Encoding: base64' . $this->mailer->getCrlf() . $this->mailer->getCrlf();
+            $part .= \chunk_split(\base64_encode($contents)) . $this->mailer->getCrlf();
         }
         return $part;
     }

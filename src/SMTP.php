@@ -109,7 +109,7 @@ class SMTP extends Mailer
         }
         $this->sendCommand('DATA');
         $code = $this->sendCommand(
-            $message . $this->getCRLF() . '.'
+            $message . $this->getCrlf() . '.'
         );
         if ($this->getConfig('keep_alive') !== true) {
             $this->disconnect();
@@ -147,7 +147,7 @@ class SMTP extends Mailer
     protected function sendCommand(string $command) : int
     {
         // @phpstan-ignore-next-line
-        \fwrite($this->socket, $command . $this->getCRLF());
+        \fwrite($this->socket, $command . $this->getCrlf());
         $response = $this->getResponse();
         $this->addLog($command, $response);
         return $this->makeResponseCode($response);

@@ -38,9 +38,9 @@ class MessageMock extends Message
         return parent::renderPlainMessage();
     }
 
-    public function renderHTMLMessage() : ?string
+    public function renderHtmlMessage() : ?string
     {
-        return parent::renderHTMLMessage();
+        return parent::renderHtmlMessage();
     }
 
     public function renderData() : string

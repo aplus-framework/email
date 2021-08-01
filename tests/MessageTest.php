@@ -210,14 +210,14 @@ final class MessageTest extends TestCase
         );
     }
 
-    public function testHTMLMessage() : void
+    public function testHtmlMessage() : void
     {
-        self::assertNull($this->message->getHTMLMessage());
-        $this->message->setHTMLMessage('<b>Hi</b>');
-        self::assertSame('<b>Hi</b>', $this->message->getHTMLMessage());
+        self::assertNull($this->message->getHtmlMessage());
+        $this->message->setHtmlMessage('<b>Hi</b>');
+        self::assertSame('<b>Hi</b>', $this->message->getHtmlMessage());
         self::assertStringContainsString(
             'Content-Type: text/html; charset=utf-8',
-            $this->message->renderHTMLMessage()
+            $this->message->renderHtmlMessage()
         );
     }
 

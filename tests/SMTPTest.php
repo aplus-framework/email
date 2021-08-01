@@ -27,9 +27,9 @@ final class SMTPTest extends TestCase
         ]);
     }
 
-    public function testCRLF() : void
+    public function testCrlf() : void
     {
-        self::assertSame("\r\n", $this->smtp->getCRLF());
+        self::assertSame("\r\n", $this->smtp->getCrlf());
     }
 
     public function testCharset() : void
@@ -43,7 +43,7 @@ final class SMTPTest extends TestCase
             ->addTo((string) \getenv('SMTP_ADDRESS'))
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
-            ->setHTMLMessage('<b>Hello!</b><img src="cid:abc123">')
+            ->setHtmlMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
             ->addAttachment(__FILE__);
     }

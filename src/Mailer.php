@@ -84,7 +84,7 @@ abstract class Mailer
         return $this->config[$key];
     }
 
-    public function getCRLF() : string
+    public function getCrlf() : string
     {
         return (string) $this->getConfig('crlf');
     }
