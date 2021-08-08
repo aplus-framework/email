@@ -11,6 +11,8 @@ namespace Framework\Email;
 
 /**
  * Class Mailer.
+ *
+ * @package email
  */
 abstract class Mailer
 {

@@ -13,6 +13,8 @@ namespace Framework\Email;
  * Class SMTP.
  *
  * @see https://tools.ietf.org/html/rfc2821
+ *
+ * @package email
  */
 class SMTP extends Mailer
 {

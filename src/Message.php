@@ -14,6 +14,8 @@ use LogicException;
 
 /**
  * Class Message.
+ *
+ * @package email
  */
 class Message
 {
