@@ -8,7 +8,7 @@
         "mailer",
         "message"
     ],
-    "homepage": "https://aplus-framework.com/docs/email",
+    "homepage": "https://docs.aplus-framework.com/guides/libraries/email/",
     "license": "MIT",
     "authors": [
         {
@@ -51,6 +51,6 @@
         "issues": "https://gitlab.com/aplus-framework/libraries/email/issues",
         "wiki": "https://gitlab.com/aplus-framework/libraries/email/wikis/home",
         "source": "https://gitlab.com/aplus-framework/libraries/email",
-        "docs": "https://aplus-framework.gitlab.io/libraries/email/docs/"
+        "docs": "https://docs.aplus-framework.com/guides/libraries/email/"
     }
 }
