@@ -1,7 +1,6 @@
 # Aplus Framework Email Library
 
-- [Homepage](https://aplus-framework.com/docs/email)
-- [API Documentation](https://aplus-framework.gitlab.io/libraries/email/docs/)
+- [Documentation](https://docs.aplus-framework.com/guides/libraries/email/)
 
 [![Pipeline](https://gitlab.com/aplus-framework/libraries/email/badges/master/pipeline.svg)](https://gitlab.com/aplus-framework/libraries/email/-/pipelines?scope=branches)
 [![Coverage](https://gitlab.com/aplus-framework/libraries/email/badges/master/coverage.svg?job=test:php)](https://aplus-framework.gitlab.io/libraries/email/coverage/)
