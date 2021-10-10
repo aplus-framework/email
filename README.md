@@ -1,3 +1,5 @@
+<a href="https://gitlab.com/aplus-framework/libraries/email"><img src="https://gitlab.com/aplus-framework/libraries/email/-/raw/master/guide/image.png" alt="Aplus Framework Email Library" align="right" width="100"></a>
+
 # Aplus Framework Email Library
 
 - [User Guide](https://docs.aplus-framework.com/guides/libraries/email/index.html)
