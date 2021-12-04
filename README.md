@@ -2,6 +2,7 @@
 
 # Aplus Framework Email Library
 
+- [Homepage](https://aplus-framework.com/packages/email)
 - [User Guide](https://docs.aplus-framework.com/guides/libraries/email/index.html)
 - [API Documentation](https://docs.aplus-framework.com/packages/email.html)
 
