@@ -8,7 +8,7 @@
         "mailer",
         "message"
     ],
-    "homepage": "https://docs.aplus-framework.com/guides/libraries/email/",
+    "homepage": "https://aplus-framework.com/packages/email",
     "license": "MIT",
     "authors": [
         {
@@ -49,13 +49,13 @@
     "support": {
         "email": "support@aplus-framework.com",
         "issues": "https://gitlab.com/aplus-framework/libraries/email/issues",
-        "wiki": "https://gitlab.com/aplus-framework/libraries/email/wikis/home",
+        "forum": "https://aplus-framework.com/forum",
         "source": "https://gitlab.com/aplus-framework/libraries/email",
         "docs": "https://docs.aplus-framework.com/guides/libraries/email/"
     },
     "funding": [
         {
-            "type": "other",
+            "type": "Aplus Sponsor",
             "url": "https://aplus-framework.com/sponsor"
         }
     ]
