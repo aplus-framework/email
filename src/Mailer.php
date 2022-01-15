@@ -9,6 +9,8 @@
  */
 namespace Framework\Email;
 
+use Framework\Email\Debug\EmailCollector;
+
 /**
  * Class Mailer.
  *
@@ -24,6 +26,7 @@ abstract class Mailer
      * @var array<int,array>
      */
     protected array $logs = [];
+    protected EmailCollector $debugCollector;
 
     /**
      * Mailer constructor.
@@ -135,4 +138,10 @@ abstract class Mailer
     }
 
     abstract public function send(Message $message) : bool;
+
+    public function setDebugCollector(EmailCollector $collector) : static
+    {
+        $this->debugCollector = $collector;
+        return $this;
+    }
 }

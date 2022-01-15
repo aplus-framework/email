@@ -116,6 +116,19 @@ class SMTP extends Mailer
         if ($this->getConfig('keep_alive') !== true) {
             $this->disconnect();
         }
+        if (isset($this->debugCollector)) {
+            $this->debugCollector->addData([
+                'code' => $code,
+                'from' => $from,
+                'length' => \strlen((string) $message),
+                'recipients' => $message->getRecipients(),
+                'headers' => $message->getHeaders(),
+                'plain' => $message->getPlainMessage(),
+                'html' => $message->getHtmlMessage(),
+                'attachments' => $message->getAttachments(),
+                'inlineAttachments' => $message->getInlineAttachments(),
+            ]);
+        }
         return $code === 250;
     }
 
