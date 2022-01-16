@@ -44,11 +44,11 @@ class EmailCollector extends Collector
         </table>
         <?php if (isset($data['html'])): ?>
             <h3>HTML Message</h3>
-            <pre><?= \htmlentities($data['html']) ?></pre>
+            <pre><code class="language-html"><?= \htmlentities($data['html']) ?></code></pre>
         <?php endif ?>
         <?php if (isset($data['plain'])): ?>
             <h3>Plain Message</h3>
-            <pre><?= \htmlentities($data['plain']) ?></pre>
+            <pre><code class="language-none"><?= \htmlentities($data['plain']) ?></code></pre>
         <?php endif ?>
         <?php if ($data['attachments']): ?>
             <h3>Attachments</h3>
