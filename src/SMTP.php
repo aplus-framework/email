@@ -100,6 +100,30 @@ class SMTP extends Mailer
      */
     public function send(Message $message) : bool
     {
+        if (isset($this->debugCollector)) {
+            $start = \microtime(true);
+            $code = $this->sendMessage($message);
+            $end = \microtime(true);
+            $this->debugCollector->addData([
+                'start' => $start,
+                'end' => $end,
+                'code' => $code ?: 0,
+                'from' => $message->getFromAddress() ?? $this->getConfig('username'),
+                'length' => \strlen((string) $message),
+                'recipients' => $message->getRecipients(),
+                'headers' => $message->getHeaders(),
+                'plain' => $message->getPlainMessage(),
+                'html' => $message->getHtmlMessage(),
+                'attachments' => $message->getAttachments(),
+                'inlineAttachments' => $message->getInlineAttachments(),
+            ]);
+            return $code === 250;
+        }
+        return $this->sendMessage($message) === 250;
+    }
+
+    protected function sendMessage(Message $message) : int | false
+    {
         if ( ! $this->connect()) {
             return false;
         }
@@ -116,20 +140,7 @@ class SMTP extends Mailer
         if ($this->getConfig('keep_alive') !== true) {
             $this->disconnect();
         }
-        if (isset($this->debugCollector)) {
-            $this->debugCollector->addData([
-                'code' => $code,
-                'from' => $from,
-                'length' => \strlen((string) $message),
-                'recipients' => $message->getRecipients(),
-                'headers' => $message->getHeaders(),
-                'plain' => $message->getPlainMessage(),
-                'html' => $message->getHtmlMessage(),
-                'attachments' => $message->getAttachments(),
-                'inlineAttachments' => $message->getInlineAttachments(),
-            ]);
-        }
-        return $code === 250;
+        return $code;
     }
 
     /**
