@@ -52,6 +52,7 @@ final class EmailCollectorTest extends TestCase
             ->setPlainMessage('Hello!')
             ->addAttachment(__FILE__);
         $mailer = $this->makeMailer();
+        \sleep(5);
         $mailer->send($message);
         $contents = $this->collector->getContents();
         self::assertStringContainsString(
@@ -84,6 +85,7 @@ final class EmailCollectorTest extends TestCase
         );
         $message->setHtmlMessage('<b>Hello!</b><img src="cid:foo">')
             ->setInlineAttachment(__DIR__ . '/../logo-circle.png', 'foo');
+        \sleep(5);
         $mailer->send($message);
         $contents = $this->collector->getContents();
         self::assertStringContainsString(
@@ -118,6 +120,7 @@ final class EmailCollectorTest extends TestCase
         $message->addTo((string) \getenv('SMTP_ADDRESS'))
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setPlainMessage('Foo');
+        \sleep(5);
         $this->makeMailer()->send($message);
         self::assertSame(
             [

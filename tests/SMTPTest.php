@@ -50,11 +50,13 @@ final class SMTPTest extends TestCase
 
     public function testSend() : void
     {
+        \sleep(5);
         self::assertTrue($this->smtp->send($this->getMessage()));
     }
 
     public function testLogs() : void
     {
+        \sleep(5);
         $this->smtp->send($this->getMessage());
         self::assertSame([
             'command' => '',
