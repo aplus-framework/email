@@ -50,6 +50,11 @@ jobs:
           vendor/bin/phpstan analyse -vvv
 
       - name: PHPUnit
+        env:
+          SMTP_ADDRESS: ${{ secrets.SMTP_ADDRESS }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
         run: vendor/bin/phpunit --verbose
 
       - name: Upload coverage results to Coveralls
