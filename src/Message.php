@@ -107,7 +107,7 @@ class Message
      *
      * @var int An integer from 1 to 5
      */
-    protected int $priority = 3;
+    protected int $xPriority;
     /**
      * An associative array of Standard Headers.
      *
@@ -277,7 +277,7 @@ class Message
     protected function renderHtmlMessage() : ?string
     {
         $message = $this->getHtmlMessage();
-        return $message ? $this->renderMessage($message) : null;
+        return $message !== null ? $this->renderMessage($message) : null;
     }
 
     protected function renderMessage(
@@ -538,16 +538,16 @@ class Message
      *
      * @return static
      */
-    public function setPriority(int $priority) : static
+    public function setXPriority(int $priority) : static
     {
-        $this->priority = $priority;
+        $this->xPriority = $priority;
         $this->setHeader('X-Priority', (string) $priority);
         return $this;
     }
 
-    public function getPriority() : int
+    public function getXPriority() : ?int
     {
-        return $this->priority;
+        return $this->xPriority ?? null;
     }
 
     protected static function getHeaderName(string $header) : string
