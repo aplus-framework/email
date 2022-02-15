@@ -40,20 +40,20 @@ final class MessageTest extends TestCase
 
     public function testHeaders() : void
     {
-        self::assertSame(['MIME-Version' => '1.0'], $this->message->getHeaders());
+        self::assertSame(['mime-version' => '1.0'], $this->message->getHeaders());
         self::assertSame('1.0', $this->message->getHeader('MIME-Version'));
-        $this->message->setHeader('to', 'foo@bar');
+        $this->message->setHeader('To', 'foo@bar');
         self::assertSame(
-            ['MIME-Version' => '1.0', 'To' => 'foo@bar'],
+            ['mime-version' => '1.0', 'to' => 'foo@bar'],
             $this->message->getHeaders()
         );
-        $this->message->setHeader('mime-version', '2.0');
+        $this->message->setHeader('MIME-Version', '2.0');
         self::assertSame(
-            ['MIME-Version' => '2.0', 'To' => 'foo@bar'],
+            ['mime-version' => '2.0', 'to' => 'foo@bar'],
             $this->message->getHeaders()
         );
         self::assertSame(
-            "MIME-Version: 2.0\r\nTo: foo@bar\r\n",
+            "MIME-Version: 2.0\r\nTo: foo@bar",
             $this->message->renderHeaders()
         );
     }
@@ -67,12 +67,12 @@ final class MessageTest extends TestCase
         self::assertSame(\date('r'), $this->message->getHeader('Date'));
     }
 
-    public function testPriority() : void
+    public function testXPriority() : void
     {
-        self::assertSame(3, $this->message->getPriority());
+        self::assertNull($this->message->getXPriority());
         self::assertNull($this->message->getHeader('X-Priority'));
-        $this->message->setPriority(4);
-        self::assertSame(4, $this->message->getPriority());
+        $this->message->setXPriority(4);
+        self::assertSame(4, $this->message->getXPriority());
         self::assertSame('4', $this->message->getHeader('X-Priority'));
     }
 
@@ -243,8 +243,9 @@ final class MessageTest extends TestCase
     {
         $this->message->setFrom('foo@bar');
         $boundary = $this->message->getBoundary();
-        return "From: foo@bar\r\n"
-            . "To: \r\n"
+        return "MIME-Version: 1.0\r\n"
+            . "From: foo@bar\r\n"
+            . 'Date: ' . \date('r') . "\r\n"
             . "Content-Type: multipart/mixed; boundary=\"mixed-{$boundary}\"\r\n"
             . "\r\n"
             . "--mixed-{$boundary}\r\n"
