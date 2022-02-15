@@ -7,16 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Email;
+namespace Framework\Email\Mailers;
+
+use Framework\Email\Mailer;
+use Framework\Email\Message;
 
 /**
- * Class SMTP.
+ * Class SMTPMailer.
  *
  * @see https://tools.ietf.org/html/rfc2821
  *
  * @package email
  */
-class SMTP extends Mailer
+class SMTPMailer extends Mailer
 {
     /**
      * @var false|resource $socket

@@ -7,19 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\Email;
+namespace Tests\Email\Mailers;
 
+use Framework\Email\Mailers\SMTPMailer;
 use Framework\Email\Message;
-use Framework\Email\SMTP;
 use PHPUnit\Framework\TestCase;
 
-final class SMTPTest extends TestCase
+final class SMTPMailerTest extends TestCase
 {
-    protected SMTP $smtp;
+    protected SMTPMailer $smtp;
 
     public function setup() : void
     {
-        $this->smtp = new SMTP([
+        $this->smtp = new SMTPMailer([
             'server' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
@@ -43,7 +43,7 @@ final class SMTPTest extends TestCase
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setHtmlMessage('<b>Hello!</b><img src="cid:abc123">')
-            ->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
+            ->setInlineAttachment(__DIR__ . '/../logo-circle.png', 'abc123')
             ->addAttachment(__FILE__);
     }
 

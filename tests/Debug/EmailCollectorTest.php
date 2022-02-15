@@ -11,8 +11,8 @@ namespace Tests\Email\Debug;
 
 use Framework\Email\Debug\EmailCollector;
 use Framework\Email\Mailer;
+use Framework\Email\Mailers\SMTPMailer;
 use Framework\Email\Message;
-use Framework\Email\SMTP;
 use PHPUnit\Framework\TestCase;
 
 final class EmailCollectorTest extends TestCase
@@ -26,7 +26,7 @@ final class EmailCollectorTest extends TestCase
 
     protected function makeMailer() : Mailer
     {
-        $mailer = new SMTP([
+        $mailer = new SMTPMailer([
             'server' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
