@@ -127,11 +127,6 @@ class Message
         'x-priority' => 'X-Priority',
     ];
 
-    public function __construct()
-    {
-        $this->setBoundary();
-    }
-
     public function __toString() : string
     {
         return $this->renderData();
@@ -148,13 +143,17 @@ class Message
         return $this;
     }
 
-    protected function setBoundary() : void
+    public function setBoundary(string $boundary = null) : static
     {
-        $this->boundary = \bin2hex(\random_bytes(16));
+        $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
+        return $this;
     }
 
-    protected function getBoundary() : string
+    public function getBoundary() : string
     {
+        if ( ! isset($this->boundary)) {
+            $this->setBoundary();
+        }
         return $this->boundary;
     }
 
