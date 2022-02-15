@@ -20,7 +20,7 @@ final class SMTPMailerTest extends TestCase
     public function setup() : void
     {
         $this->smtp = new SMTPMailer([
-            'server' => \getenv('SMTP_HOST'),
+            'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
         ]);

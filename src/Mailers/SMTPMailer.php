@@ -38,7 +38,7 @@ class SMTPMailer extends Mailer
         }
         $this->disconnect();
         $this->socket = \fsockopen(
-            $this->getConfig('server'),
+            $this->getConfig('host'),
             (int) $this->getConfig('port'),
             $errorCode,
             $errorMessage,

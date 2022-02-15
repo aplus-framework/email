@@ -27,7 +27,7 @@ final class EmailCollectorTest extends TestCase
     protected function makeMailer() : Mailer
     {
         $mailer = new SMTPMailer([
-            'server' => \getenv('SMTP_HOST'),
+            'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
         ]);

@@ -33,14 +33,14 @@ abstract class Mailer
      *
      * @param array<string,mixed>|string $username
      * @param string|null $password
-     * @param string $server
+     * @param string $host
      * @param int $port
      * @param string|null $hostname
      */
     public function __construct(
         array | string $username,
         string $password = null,
-        string $server = 'localhost',
+        string $host = 'localhost',
         int $port = 587,
         string $hostname = null
     ) {
@@ -49,7 +49,7 @@ abstract class Mailer
             : $this->makeConfig([
                 'username' => $username,
                 'password' => $password,
-                'server' => $server,
+                'host' => $host,
                 'port' => $port,
                 'hostname' => $hostname ?? \gethostname(),
             ]);
@@ -65,7 +65,7 @@ abstract class Mailer
     protected function makeConfig(array $config) : array
     {
         return \array_replace_recursive([
-            'server' => 'localhost',
+            'host' => 'localhost',
             'port' => 587,
             'tls' => true,
             'username' => null,
