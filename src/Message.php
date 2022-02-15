@@ -35,7 +35,7 @@ class Message
      * @var array<string,string>
      */
     protected array $headers = [
-        'MIME-Version' => '1.0',
+        'mime-version' => '1.0',
     ];
     /**
      * A list of attachments with Content-Disposition equals `attachment`.
@@ -96,12 +96,6 @@ class Message
      * optional name in the index 1
      */
     protected array $from = [];
-    /**
-     * The message Subject.
-     *
-     * @var string|null
-     */
-    protected ?string $subject = null;
     /**
      * The message Date.
      *
@@ -166,19 +160,19 @@ class Message
 
     /**
      * @param string $name
-     * @param string|null $value
+     * @param string $value
      *
      * @return static
      */
-    public function setHeader(string $name, ?string $value) : static
+    public function setHeader(string $name, string $value) : static
     {
-        $this->headers[static::getHeaderName($name)] = $value;
+        $this->headers[\strtolower($name)] = $value;
         return $this;
     }
 
     public function getHeader(string $name) : ?string
     {
-        return $this->headers[static::getHeaderName($name)] ?? null;
+        return $this->headers[\strtolower($name)] ?? null;
     }
 
     /**
@@ -189,16 +183,21 @@ class Message
         return $this->headers;
     }
 
+    /**
+     * @return array<int,string>
+     */
+    public function getHeaderLines() : array
+    {
+        $lines = [];
+        foreach ($this->getHeaders() as $name => $value) {
+            $lines[] = static::getHeaderName($name) . ': ' . $value;
+        }
+        return $lines;
+    }
+
     protected function renderHeaders() : string
     {
-        $result = '';
-        foreach ($this->getHeaders() as $name => $value) {
-            if ($value !== null) {
-                $name .= ': ' . $value;
-            }
-            $result .= $name . $this->mailer->getCrlf();
-        }
-        return $result;
+        return \implode($this->mailer->getCrlf(), $this->getHeaderLines());
     }
 
     protected function encodeHeader(string $name, string $value = null) : string
@@ -214,34 +213,11 @@ class Message
         if ( ! $this->getHeader('Date')) {
             $this->setHeader('Date', \date('r'));
         }
-        if ( ! $this->getHeader('Subject') && $this->getSubject() !== null) {
-            $this->setHeader('Subject', $this->getSubject());
-        }
-        if ( ! $this->getHeader('From')) {
-            $this->setHeader(
-                'From',
-                static::formatAddress($this->getFromAddress(), $this->getFromName())
-            );
-        }
-        if ( ! $this->getHeader('To')) {
-            $this->setHeader('To', static::formatAddressList($this->getTo()));
-        }
-        if ( ! $this->getHeader('Cc') && $this->getCc()) {
-            $this->setHeader('Cc', static::formatAddressList($this->getCc()));
-        }
-        if ( ! $this->getHeader('Bcc') && $this->getBcc()) {
-            $this->setHeader('Bcc', static::formatAddressList($this->getBcc()));
-        }
-        if ( ! $this->getHeader('Reply-To') && $this->getReplyTo()) {
-            $this->setHeader('Reply-To', static::formatAddressList($this->getReplyTo()));
-        }
-        if ( ! $this->getHeader('Content-Type')) {
-            $multipart = $this->getInlineAttachments() ? 'related' : 'mixed';
-            $this->setHeader(
-                'Content-Type',
-                'multipart/' . $multipart . '; boundary="mixed-' . $this->getBoundary() . '"'
-            );
-        }
+        $multipart = $this->getInlineAttachments() ? 'related' : 'mixed';
+        $this->setHeader(
+            'Content-Type',
+            'multipart/' . $multipart . '; boundary="mixed-' . $this->getBoundary() . '"'
+        );
     }
 
     protected function renderData() : string
@@ -403,13 +379,13 @@ class Message
      */
     public function setSubject(string $subject) : static
     {
-        $this->subject = $subject;
+        $this->setHeader('Subject', $subject);
         return $this;
     }
 
     public function getSubject() : ?string
     {
-        return $this->subject;
+        return $this->getHeader('Subject');
     }
 
     /**
@@ -421,6 +397,7 @@ class Message
     public function addTo(string $address, string $name = null) : static
     {
         $this->to[$address] = $name;
+        $this->setHeader('To', static::formatAddressList($this->to));
         return $this;
     }
 
@@ -443,6 +420,7 @@ class Message
     public function addCc(string $address, string $name = null) : static
     {
         $this->cc[$address] = $name;
+        $this->setHeader('Cc', static::formatAddressList($this->cc));
         return $this;
     }
 
@@ -474,6 +452,7 @@ class Message
     public function addBcc(string $address, string $name = null) : static
     {
         $this->bcc[$address] = $name;
+        $this->setHeader('Bcc', static::formatAddressList($this->bcc));
         return $this;
     }
 
@@ -494,6 +473,7 @@ class Message
     public function addReplyTo(string $address, string $name = null) : static
     {
         $this->replyTo[$address] = $name;
+        $this->setHeader('Reply-To', static::formatAddressList($this->replyTo));
         return $this;
     }
 
@@ -514,6 +494,7 @@ class Message
     public function setFrom(string $address, string $name = null) : static
     {
         $this->from = [$address, $name];
+        $this->setHeader('From', static::formatAddress($address, $name));
         return $this;
     }
 
@@ -542,14 +523,14 @@ class Message
      */
     public function setDate(DateTime $datetime = null) : static
     {
-        $this->date = $datetime ? $datetime->format('r') : \date('r');
-        $this->setHeader('Date', $this->date);
+        $date = $datetime ? $datetime->format('r') : \date('r');
+        $this->setHeader('Date', $date);
         return $this;
     }
 
     public function getDate() : ?string
     {
-        return $this->date;
+        return $this->getHeader('Date');
     }
 
     /**
