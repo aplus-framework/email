@@ -105,9 +105,9 @@ class Message
     /**
      * The message X-Priority.
      *
-     * @var int An integer from 1 to 5
+     * @var XPriority
      */
-    protected int $xPriority;
+    protected XPriority $xPriority;
 
     public function __toString() : string
     {
@@ -519,18 +519,18 @@ class Message
     }
 
     /**
-     * @param int $priority from 1 to 5
+     * @param XPriority $priority
      *
      * @return static
      */
-    public function setXPriority(int $priority) : static
+    public function setXPriority(XPriority $priority) : static
     {
         $this->xPriority = $priority;
-        $this->setHeader(Header::X_PRIORITY, (string) $priority);
+        $this->setHeader(Header::X_PRIORITY, (string) $priority->value);
         return $this;
     }
 
-    public function getXPriority() : ?int
+    public function getXPriority() : ?XPriority
     {
         return $this->xPriority ?? null;
     }

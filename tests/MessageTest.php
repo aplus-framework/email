@@ -10,6 +10,7 @@
 namespace Tests\Email;
 
 use Framework\Email\SMTP;
+use Framework\Email\XPriority;
 use PHPUnit\Framework\TestCase;
 
 final class MessageTest extends TestCase
@@ -71,8 +72,12 @@ final class MessageTest extends TestCase
     {
         self::assertNull($this->message->getXPriority());
         self::assertNull($this->message->getHeader('X-Priority'));
-        $this->message->setXPriority(4);
-        self::assertSame(4, $this->message->getXPriority());
+        $this->message->setXPriority(XPriority::LOW);
+        self::assertSame(XPriority::LOW, $this->message->getXPriority());
+        self::assertSame(
+            (string) XPriority::LOW->value,
+            $this->message->getHeader('X-Priority')
+        );
         self::assertSame('4', $this->message->getHeader('X-Priority'));
     }
 
