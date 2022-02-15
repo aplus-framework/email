@@ -52,15 +52,15 @@ class Message
     /**
      * The plain text message.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $plainMessage = null;
+    protected string $plainMessage;
     /**
      * The HTML message.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $htmlMessage = null;
+    protected string $htmlMessage;
     /**
      * An associative array used in the `To` header.
      *
@@ -249,13 +249,13 @@ class Message
 
     public function getPlainMessage() : ?string
     {
-        return $this->plainMessage;
+        return $this->plainMessage ?? null;
     }
 
     protected function renderPlainMessage() : ?string
     {
         $message = $this->getPlainMessage();
-        return $message ? $this->renderMessage($message, 'text/plain') : null;
+        return $message !== null ? $this->renderMessage($message, 'text/plain') : null;
     }
 
     /**
@@ -271,7 +271,7 @@ class Message
 
     public function getHtmlMessage() : ?string
     {
-        return $this->htmlMessage;
+        return $this->htmlMessage ?? null;
     }
 
     protected function renderHtmlMessage() : ?string
