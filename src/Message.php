@@ -181,14 +181,6 @@ class Message
         return \implode($this->mailer->getCrlf(), $this->getHeaderLines());
     }
 
-    protected function encodeHeader(string $name, string $value = null) : string
-    {
-        if ($value !== null) {
-            $name .= ': ' . $value;
-        }
-        return \mb_encode_mimeheader($name, 'UTF-8', 'B', $this->mailer->getCrlf());
-    }
-
     protected function prepareHeaders() : void
     {
         if ( ! $this->getDate()) {
