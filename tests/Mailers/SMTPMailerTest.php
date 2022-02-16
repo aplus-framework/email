@@ -53,6 +53,42 @@ final class SMTPMailerTest extends TestCase
         self::assertTrue($this->smtp->send($this->getMessage()));
     }
 
+    public function testKeepAlive() : void
+    {
+        \sleep(5);
+        $smtp = new SMTPMailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => \getenv('SMTP_USERNAME'),
+            'password' => \getenv('SMTP_PASSWORD'),
+            'keep_alive' => true,
+        ]);
+        self::assertTrue($smtp->send($this->getMessage()));
+        \sleep(5);
+        self::assertTrue($smtp->send($this->getMessage()));
+    }
+
+    public function testFailToAuthenticate() : void
+    {
+        \sleep(5);
+        $smtp = new SMTPMailer([
+            'host' => \getenv('SMTP_HOST'),
+        ]);
+        self::assertFalse($smtp->send($this->getMessage()));
+    }
+
+    public function testFailToConnect() : void
+    {
+        \sleep(5);
+        $smtp = new SMTPMailer('foo');
+        self::assertFalse($smtp->send($this->getMessage()));
+        $log = $smtp->getLogs()[0];
+        self::assertSame('', $log['command']);
+        self::assertSame(
+            'Socket connection error 99: Cannot assign requested address',
+            $log['responses'][0]
+        );
+    }
+
     public function testLogs() : void
     {
         \sleep(5);
