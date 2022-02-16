@@ -41,9 +41,9 @@ jobs:
         run:
           vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
 
-      - name: PHPMD
-        run:
-          vendor/bin/phpmd src xml phpmd.xml
+      # - name: PHPMD
+      #   run:
+      #     vendor/bin/phpmd src xml phpmd.xml
 
       - name: PHPStan
         run:
