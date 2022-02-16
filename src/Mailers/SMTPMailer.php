@@ -37,7 +37,7 @@ class SMTPMailer extends Mailer
             return $this->sendCommand('EHLO ' . $this->getConfig('hostname')) === 250;
         }
         $this->disconnect();
-        $this->socket = \fsockopen(
+        $this->socket = @\fsockopen(
             $this->getConfig('host'),
             (int) $this->getConfig('port'),
             $errorCode,
@@ -45,7 +45,7 @@ class SMTPMailer extends Mailer
             (float) $this->getConfig('connection_timeout')
         );
         if ($this->socket === false) {
-            $this->addLog('', $errorCode . ': ' . $errorMessage);
+            $this->addLog('', 'Socket connection error ' . $errorCode . ': ' . $errorMessage);
             return false;
         }
         $this->addLog('', $this->getResponse());
