@@ -83,10 +83,7 @@ final class SMTPMailerTest extends TestCase
         self::assertFalse($smtp->send($this->getMessage()));
         $log = $smtp->getLogs()[0];
         self::assertSame('', $log['command']);
-        self::assertSame(
-            'Socket connection error 99: Cannot assign requested address',
-            $log['responses'][0]
-        );
+        self::assertStringStartsWith('Socket connection error ', $log['responses'][0]);
     }
 
     public function testLogs() : void
