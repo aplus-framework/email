@@ -50,6 +50,9 @@ class Header
     public const SUBJECT = 'Subject';
     public const TO = 'To';
     public const X_PRIORITY = 'X-Priority';
+    /**
+     * @var array<string,string>
+     */
     protected static array $headers = [
         'auto-submitted' => 'Auto-Submitted',
         'bcc' => 'Bcc',

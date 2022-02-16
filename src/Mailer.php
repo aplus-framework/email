@@ -23,7 +23,7 @@ abstract class Mailer
      */
     protected array $config = [];
     /**
-     * @var array<int,array>
+     * @var array<int,array<string,mixed>>
      */
     protected array $logs = [];
     protected EmailCollector $debugCollector;
@@ -104,7 +104,7 @@ abstract class Mailer
      *
      * Contains commands and responses from the Mailer server.
      *
-     * @return array<int,array>
+     * @return array<int,array<string,mixed>>
      */
     public function getLogs() : array
     {

@@ -97,7 +97,7 @@ class SMTPMailer extends Mailer
     /**
      * Send an Email Message.
      *
-     * @var Message $message
+     * @param Message $message
      *
      * @return bool
      */
