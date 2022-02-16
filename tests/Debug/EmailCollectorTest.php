@@ -111,6 +111,18 @@ final class EmailCollectorTest extends TestCase
             'Inline Attachments',
             $contents
         );
+        self::assertStringContainsString(
+            'From',
+            $contents
+        );
+        self::assertStringContainsString(
+            'To',
+            $contents
+        );
+        self::assertStringContainsString(
+            'MIME-Version',
+            $contents
+        );
     }
 
     public function testActivities() : void

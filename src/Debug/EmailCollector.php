@@ -11,6 +11,7 @@ namespace Framework\Email\Debug;
 
 use Framework\Debug\Collector;
 use Framework\Debug\Debugger;
+use Framework\Email\Header;
 
 /**
  * Class EmailCollector.
@@ -67,7 +68,7 @@ class EmailCollector extends Collector
                 <tbody>
                 <?php foreach ($data['headers'] as $name => $value): ?>
                     <tr>
-                        <td><?= \htmlentities($name) ?></td>
+                        <td><?= \htmlentities(Header::getName($name)) ?></td>
                         <td><?= \htmlentities($value) ?></td>
                     </tr>
                 <?php endforeach ?>
