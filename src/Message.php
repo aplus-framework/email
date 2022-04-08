@@ -133,6 +133,14 @@ class Message
         return "\r\n";
     }
 
+    protected function getCharset() : string
+    {
+        if (isset($this->mailer)) {
+            return $this->mailer->getCharset();
+        }
+        return 'utf-8';
+    }
+
     public function setBoundary(string $boundary = null) : static
     {
         $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
@@ -271,7 +279,7 @@ class Message
         $crlf = $this->getCrlf();
         $part = '--alt-' . $this->getBoundary() . $crlf;
         $part .= 'Content-Type: ' . $contentType . '; charset='
-            . $this->mailer->getCharset() . $crlf;
+            . $this->getCharset() . $crlf;
         $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
         $part .= \chunk_split($message) . $crlf;
         return $part;

@@ -279,5 +279,8 @@ final class MessageTest extends TestCase
         $message = (string) new Message();
         self::assertStringContainsString('MIME-Version', $message);
         self::assertStringContainsString('Date', $message);
+        $message = new Message();
+        $message->setPlainMessage('Hello!');
+        self::assertStringContainsString('charset=utf-8', (string) $message);
     }
 }
