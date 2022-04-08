@@ -125,6 +125,14 @@ class Message
         return $this;
     }
 
+    protected function getCrlf() : string
+    {
+        if (isset($this->mailer)) {
+            return $this->mailer->getCrlf();
+        }
+        return "\r\n";
+    }
+
     public function setBoundary(string $boundary = null) : static
     {
         $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
@@ -178,7 +186,7 @@ class Message
 
     protected function renderHeaders() : string
     {
-        return \implode($this->mailer->getCrlf(), $this->getHeaderLines());
+        return \implode($this->getCrlf(), $this->getHeaderLines());
     }
 
     protected function prepareHeaders() : void
@@ -196,7 +204,7 @@ class Message
     protected function renderData() : string
     {
         $boundary = $this->getBoundary();
-        $crlf = $this->mailer->getCrlf();
+        $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf . $crlf;
         $data .= '--mixed-' . $boundary . $crlf;
@@ -260,7 +268,7 @@ class Message
         string $contentType = 'text/html'
     ) : string {
         $message = \base64_encode($message);
-        $crlf = $this->mailer->getCrlf();
+        $crlf = $this->getCrlf();
         $part = '--alt-' . $this->getBoundary() . $crlf;
         $part .= 'Content-Type: ' . $contentType . '; charset='
             . $this->mailer->getCharset() . $crlf;
@@ -311,7 +319,7 @@ class Message
     protected function renderAttachments() : string
     {
         $part = '';
-        $crlf = $this->mailer->getCrlf();
+        $crlf = $this->getCrlf();
         foreach ($this->getAttachments() as $attachment) {
             if ( ! \is_file($attachment)) {
                 throw new LogicException('Attachment file not found: ' . $attachment);
@@ -332,7 +340,7 @@ class Message
     protected function renderInlineAttachments() : string
     {
         $part = '';
-        $crlf = $this->mailer->getCrlf();
+        $crlf = $this->getCrlf();
         foreach ($this->getInlineAttachments() as $cid => $filename) {
             if ( ! \is_file($filename)) {
                 throw new LogicException('Inline attachment file not found: ' . $filename);

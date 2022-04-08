@@ -10,6 +10,7 @@
 namespace Tests\Email;
 
 use Framework\Email\Mailers\SMTPMailer;
+use Framework\Email\Message;
 use Framework\Email\XPriority;
 use PHPUnit\Framework\TestCase;
 
@@ -275,5 +276,8 @@ final class MessageTest extends TestCase
             $this->getRenderedResult(),
             (string) $this->message
         );
+        $message = (string) new Message();
+        self::assertStringContainsString('MIME-Version', $message);
+        self::assertStringContainsString('Date', $message);
     }
 }
