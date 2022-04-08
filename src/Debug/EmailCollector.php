@@ -27,7 +27,7 @@ class EmailCollector extends Collector
             $activities[] = [
                 'collector' => $this->getName(),
                 'class' => static::class,
-                'description' => 'Send message ' . $index + 1,
+                'description' => 'Send message ' . ($index + 1),
                 'start' => $data['start'],
                 'end' => $data['end'],
             ];
