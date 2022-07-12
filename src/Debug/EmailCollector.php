@@ -80,12 +80,12 @@ class EmailCollector extends Collector
                 <pre><code class="language-html"><?= \htmlentities($data['html']) ?></code></pre>
             <?php
             endif;
-        if (isset($data['plain'])): ?>
+            if (isset($data['plain'])): ?>
                 <h3>Plain Message</h3>
                 <pre><code class="language-none"><?= \htmlentities($data['plain']) ?></code></pre>
             <?php
             endif;
-        if ($data['attachments']): ?>
+            if ($data['attachments']): ?>
                 <h3>Attachments</h3>
                 <table>
                     <thead>
@@ -103,7 +103,7 @@ class EmailCollector extends Collector
                 </table>
             <?php
             endif;
-        if ($data['inlineAttachments']): ?>
+            if ($data['inlineAttachments']): ?>
                 <h3>Inline Attachments</h3>
                 <table>
                     <thead>
