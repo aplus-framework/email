@@ -39,7 +39,7 @@
         "ext-xdebug": "*",
         "aplus/coding-standard": "^1.13",
         "ergebnis/composer-normalize": "^2.23",
-        "phpmd/phpmd": "^2.11",
+        "phpmd/phpmd": "^2.13",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5"
     },
