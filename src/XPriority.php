@@ -14,7 +14,7 @@ namespace Framework\Email;
  *
  * @package email
  */
-enum XPriority: int
+enum XPriority : int
 {
     case HIGHEST = 1;
     case HIGH = 2;
