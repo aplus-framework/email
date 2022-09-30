@@ -10,6 +10,20 @@
 namespace PHPSTORM_META;
 
 registerArgumentsSet(
+    'config_keys',
+    'charset',
+    'connection_timeout',
+    'crlf',
+    'host',
+    'hostname',
+    'keep_alive',
+    'password',
+    'port',
+    'response_timeout',
+    'tls',
+    'username',
+);
+registerArgumentsSet(
     'headers',
     \Framework\Email\Header::AUTO_SUBMITTED,
     \Framework\Email\Header::BCC,
@@ -45,6 +59,11 @@ registerArgumentsSet(
     \Framework\Email\Header::SUBJECT,
     \Framework\Email\Header::TO,
     \Framework\Email\Header::X_PRIORITY,
+);
+expectedArguments(
+    \Framework\Email\Mailer::getConfig(),
+    0,
+    argumentsSet('config_keys')
 );
 expectedArguments(
     \Framework\Email\Message::getHeader(),
