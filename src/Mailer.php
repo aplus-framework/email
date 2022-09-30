@@ -10,6 +10,7 @@
 namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Mailer.
@@ -62,6 +63,19 @@ abstract class Mailer
      *
      * @return array<string,mixed>
      */
+    #[ArrayShape([
+        'host' => 'string',
+        'port' => 'int',
+        'tls' => 'bool',
+        'username' => 'string|null',
+        'password' => 'string|null',
+        'charset' => 'string',
+        'crlf' => 'string',
+        'connection_timeout' => 'int',
+        'response_timeout' => 'int',
+        'hostname' => 'string',
+        'keep_alive' => 'bool',
+    ])]
     protected function makeConfig(array $config) : array
     {
         return \array_replace_recursive([
