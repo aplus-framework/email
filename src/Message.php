@@ -17,7 +17,7 @@ use LogicException;
  *
  * @package email
  */
-class Message
+class Message implements \Stringable
 {
     /**
      * The Mailer instance.
