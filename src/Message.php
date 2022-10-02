@@ -346,6 +346,11 @@ class Message implements \Stringable
         return $part;
     }
 
+    protected function getContentType(string $filename) : string
+    {
+        return \mime_content_type($filename) ?: 'application/octet-stream';
+    }
+
     protected function renderInlineAttachments() : string
     {
         $part = '';
@@ -358,7 +363,7 @@ class Message implements \Stringable
             $contents = \base64_encode($contents);
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
             $part .= 'Content-ID: ' . $cid . $crlf;
-            $part .= 'Content-Type: ' . \mime_content_type($filename) . $crlf;
+            $part .= 'Content-Type: ' . $this->getContentType($filename) . $crlf;
             $part .= 'Content-Disposition: inline' . $crlf;
             $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
             $part .= \chunk_split($contents) . $crlf;
