@@ -338,7 +338,8 @@ class Message implements \Stringable
             $contents = (string) \file_get_contents($attachment);
             $contents = \base64_encode($contents);
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
-            $part .= 'Content-Type: application/octet-stream; name="' . $filename . '"' . $crlf;
+            $part .= 'Content-Type: ' . $this->getContentType($attachment)
+                . '; name="' . $filename . '"' . $crlf;
             $part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $crlf;
             $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
             $part .= \chunk_split($contents) . $crlf;

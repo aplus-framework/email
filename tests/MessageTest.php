@@ -150,9 +150,19 @@ final class MessageTest extends TestCase
         self::assertEmpty($this->message->getAttachments());
         $this->message->addAttachment(__FILE__);
         self::assertSame([__FILE__], $this->message->getAttachments());
+        $this->message->addAttachment(__DIR__ . '/logo-circle.png');
+        self::assertSame([
+            __FILE__,
+            __DIR__ . '/logo-circle.png',
+        ], $this->message->getAttachments());
+        $contents = $this->message->renderAttachments();
         self::assertStringContainsString(
-            'application/octet-stream; name="MessageTest.php"',
-            $this->message->renderAttachments()
+            'text/x-php; name="MessageTest.php"',
+            $contents
+        );
+        self::assertStringContainsString(
+            'image/png; name="logo-circle.png"',
+            $contents
         );
     }
 
