@@ -178,6 +178,7 @@ abstract class Mailer
 
     public function setDebugCollector(EmailCollector $collector) : static
     {
+        $collector->setMailer($this);
         $this->debugCollector = $collector;
         return $this;
     }

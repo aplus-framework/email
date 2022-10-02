@@ -35,8 +35,17 @@ final class EmailCollectorTest extends TestCase
         return $mailer;
     }
 
+    public function testNoMailer() : void
+    {
+        self::assertStringContainsString(
+            'This collector has not been added to a Mailer instance',
+            $this->collector->getContents()
+        );
+    }
+
     public function testNoData() : void
     {
+        $this->makeMailer();
         self::assertStringContainsString(
             'No messages have been sent',
             $this->collector->getContents()

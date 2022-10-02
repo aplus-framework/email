@@ -12,6 +12,7 @@ namespace Framework\Email\Debug;
 use Framework\Debug\Collector;
 use Framework\Debug\Debugger;
 use Framework\Email\Header;
+use Framework\Email\Mailer;
 
 /**
  * Class EmailCollector.
@@ -20,6 +21,14 @@ use Framework\Email\Header;
  */
 class EmailCollector extends Collector
 {
+    protected Mailer $mailer;
+
+    public function setMailer(Mailer $mailer) : static
+    {
+        $this->mailer = $mailer;
+        return $this;
+    }
+
     public function getActivities() : array
     {
         $activities = [];
@@ -38,6 +47,10 @@ class EmailCollector extends Collector
     public function getContents() : string
     {
         \ob_start();
+        if ( ! isset($this->mailer)) {
+            echo '<p>This collector has not been added to a Mailer instance.</p>';
+            return \ob_get_clean(); // @phpstan-ignore-line
+        }
         if ( ! $this->hasData()) {
             echo '<p>No messages have been sent.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
