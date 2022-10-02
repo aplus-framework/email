@@ -10,6 +10,7 @@
 namespace Framework\Email;
 
 use DateTime;
+use JetBrains\PhpStorm\Language;
 use LogicException;
 
 /**
@@ -254,7 +255,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function setHtmlMessage(string $message) : static
+    public function setHtmlMessage(#[Language('HTML')] string $message) : static
     {
         $this->htmlMessage = $message;
         return $this;
