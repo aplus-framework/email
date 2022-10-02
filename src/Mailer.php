@@ -94,6 +94,8 @@ abstract class Mailer
     }
 
     /**
+     * @todo Make public in version 4.0.0
+     *
      * @param string $key
      *
      * @return mixed
@@ -101,6 +103,27 @@ abstract class Mailer
     protected function getConfig(string $key) : mixed
     {
         return $this->config[$key];
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    #[ArrayShape([
+        'host' => 'string',
+        'port' => 'int',
+        'tls' => 'bool',
+        'username' => 'string|null',
+        'password' => 'string|null',
+        'charset' => 'string',
+        'crlf' => 'string',
+        'connection_timeout' => 'int',
+        'response_timeout' => 'int',
+        'hostname' => 'string',
+        'keep_alive' => 'bool',
+    ])]
+    public function getConfigs() : array
+    {
+        return $this->config;
     }
 
     public function getCrlf() : string

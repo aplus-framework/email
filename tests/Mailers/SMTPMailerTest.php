@@ -127,4 +127,11 @@ final class SMTPMailerTest extends TestCase
         $this->smtp->resetLogs();
         self::assertEmpty($this->smtp->getLogs());
     }
+
+    public function testConfigs() : void
+    {
+        foreach ($this->smtp->getConfigs() as $key => $value) {
+            self::assertIsString($key);
+        }
+    }
 }
