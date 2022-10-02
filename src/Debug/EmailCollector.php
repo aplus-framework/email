@@ -51,6 +51,7 @@ class EmailCollector extends Collector
             echo '<p>This collector has not been added to a Mailer instance.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
         }
+        echo $this->showHeader();
         if ( ! $this->hasData()) {
             echo '<p>No messages have been sent.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
@@ -137,6 +138,17 @@ class EmailCollector extends Collector
             <?php
             endif;
         endforeach;
+        return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function showHeader() : string
+    {
+        \ob_start();
+        $configs = $this->mailer->getConfigs();
+        ?>
+        <p><strong>Host:</strong> <?= \htmlentities($configs['host']) ?></p>
+        <p><strong>Port:</strong> <?= \htmlentities((string) $configs['port']) ?></p>
+        <?php
         return \ob_get_clean(); // @phpstan-ignore-line
     }
 }

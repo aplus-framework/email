@@ -52,6 +52,14 @@ final class EmailCollectorTest extends TestCase
         );
     }
 
+    public function testHeader() : void
+    {
+        $this->makeMailer();
+        $contents = $this->collector->getContents();
+        self::assertStringContainsString('Host:', $contents);
+        self::assertStringContainsString('Port:', $contents);
+    }
+
     public function testMessagesSent() : void
     {
         $message = new Message();
