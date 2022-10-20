@@ -162,6 +162,7 @@ The default configs for connecting to the mail server are as follows:
         'response_timeout' => 5,
         'hostname' => gethostname(),
         'keep_alive' => false,
+        'add_logs' => true,
     ];
 
     $mailer = new SMTPMailer($config);
@@ -176,6 +177,13 @@ Keep Alive
 If you are going to send more than one message on the same connection, set
 **keep_alive** to ``true``. 
 This will use the same connection for all submissions.
+
+Add Logs
+########
+
+It is possible to clear the logs after each submission using the ``resetLogs`` method.
+
+Also, you can disable log saving, to save memory, by setting **add_logs** to ``false``.
 
 Conclusion
 ----------

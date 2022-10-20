@@ -75,6 +75,7 @@ abstract class Mailer
         'response_timeout' => 'int',
         'hostname' => 'string',
         'keep_alive' => 'bool',
+        'add_logs' => 'bool',
     ])]
     protected function makeConfig(array $config) : array
     {
@@ -90,6 +91,7 @@ abstract class Mailer
             'response_timeout' => 5,
             'hostname' => \gethostname(),
             'keep_alive' => false,
+            'add_logs' => true,
         ], $config);
     }
 
@@ -120,6 +122,7 @@ abstract class Mailer
         'response_timeout' => 'int',
         'hostname' => 'string',
         'keep_alive' => 'bool',
+        'add_logs' => 'bool',
     ])]
     public function getConfigs() : array
     {
@@ -167,6 +170,9 @@ abstract class Mailer
      */
     protected function addLog(string $command, string $response) : static
     {
+        if ( ! $this->getConfig('add_logs')) {
+            return $this;
+        }
         $this->logs[] = [
             'command' => $command,
             'responses' => \explode(\PHP_EOL, $response),

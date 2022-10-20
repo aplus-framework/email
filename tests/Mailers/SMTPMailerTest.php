@@ -90,6 +90,7 @@ final class SMTPMailerTest extends TestCase
     {
         \sleep(5);
         $this->smtp->send($this->getMessage());
+        self::assertNotEmpty($this->smtp->getLogs());
         $log = $this->smtp->getLogs()[0];
         self::assertSame('', $log['command']);
         self::assertStringStartsWith('220 ', $log['responses'][0]);
@@ -126,6 +127,19 @@ final class SMTPMailerTest extends TestCase
         self::assertStringStartsWith('354', $log['responses'][0]);
         $this->smtp->resetLogs();
         self::assertEmpty($this->smtp->getLogs());
+    }
+
+    public function testLogsDisabled() : void
+    {
+        \sleep(5);
+        $smtp = new SMTPMailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => \getenv('SMTP_USERNAME'),
+            'password' => \getenv('SMTP_PASSWORD'),
+            'add_logs' => false,
+        ]);
+        $smtp->send($this->getMessage());
+        self::assertEmpty($smtp->getLogs());
     }
 
     public function testConfigs() : void

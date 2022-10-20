@@ -11,6 +11,7 @@ namespace PHPSTORM_META;
 
 registerArgumentsSet(
     'config_keys',
+    'add_logs',
     'charset',
     'connection_timeout',
     'crlf',
