@@ -335,8 +335,8 @@ class Message implements \Stringable
             }
             $filename = \pathinfo($attachment, \PATHINFO_BASENAME);
             $filename = \htmlspecialchars($filename, \ENT_QUOTES | \ENT_HTML5);
-            $contents = (string) \file_get_contents($attachment);
-            $contents = \base64_encode($contents);
+            $contents = \file_get_contents($attachment);
+            $contents = \base64_encode($contents); // @phpstan-ignore-line
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
             $part .= 'Content-Type: ' . $this->getContentType($attachment)
                 . '; name="' . $filename . '"' . $crlf;
@@ -360,8 +360,8 @@ class Message implements \Stringable
             if ( ! \is_file($filename)) {
                 throw new LogicException('Inline attachment file not found: ' . $filename);
             }
-            $contents = (string) \file_get_contents($filename);
-            $contents = \base64_encode($contents);
+            $contents = \file_get_contents($filename);
+            $contents = \base64_encode($contents); // @phpstan-ignore-line
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
             $part .= 'Content-ID: ' . $cid . $crlf;
             $part .= 'Content-Type: ' . $this->getContentType($filename) . $crlf;
