@@ -9,3 +9,12 @@ services:
     tty: true
     env_file:
       - .env
+  package-last:
+    image: registry.gitlab.com/aplus-framework/images/package:3
+    container_name: package-email-last
+    working_dir: /package
+    volumes:
+      - .:/package
+    tty: true
+    env_file:
+      - .env
