@@ -11,6 +11,7 @@ namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
 use JetBrains\PhpStorm\ArrayShape;
+use SensitiveParameter;
 
 /**
  * Class Mailer.
@@ -39,8 +40,8 @@ abstract class Mailer
      * @param string|null $hostname
      */
     public function __construct(
-        array | string $username,
-        string $password = null,
+        #[SensitiveParameter] array | string $username,
+        #[SensitiveParameter] string $password = null,
         string $host = 'localhost',
         int $port = 587,
         string $hostname = null
@@ -77,7 +78,7 @@ abstract class Mailer
         'keep_alive' => 'bool',
         'add_logs' => 'bool',
     ])]
-    protected function makeConfig(array $config) : array
+    protected function makeConfig(#[SensitiveParameter] array $config) : array
     {
         return \array_replace_recursive([
             'host' => 'localhost',
