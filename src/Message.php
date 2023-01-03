@@ -9,6 +9,7 @@
  */
 namespace Framework\Email;
 
+use BadMethodCallException;
 use DateTime;
 use JetBrains\PhpStorm\Language;
 use LogicException;
@@ -116,11 +117,33 @@ class Message implements \Stringable
     }
 
     /**
+     * @param string $method
+     * @param array<int,mixed> $arguments
+     *
+     * @throws BadMethodCallException for method not allowed or method not found
+     *
+     * @return Message
+     */
+    public function __call(string $method, array $arguments)
+    {
+        if ($method === 'setMailer') {
+            return $this->setMailer(...$arguments);
+        }
+        $class = static::class;
+        if (\method_exists($this, $method)) {
+            throw new BadMethodCallException(
+                "Method not allowed: {$class}::{$method}"
+            );
+        }
+        throw new BadMethodCallException("Method not found: {$class}::{$method}");
+    }
+
+    /**
      * @param Mailer $mailer The Mailer instance
      *
      * @return static
      */
-    public function setMailer(Mailer $mailer) : static
+    protected function setMailer(Mailer $mailer) : static
     {
         $this->mailer = $mailer;
         return $this;

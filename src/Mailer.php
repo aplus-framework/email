@@ -292,7 +292,7 @@ class Mailer
         if ( ! $this->connect()) {
             return false;
         }
-        $message->setMailer($this);
+        $message->setMailer($this); // @phpstan-ignore-line
         $from = $message->getFromAddress() ?? $this->getConfig('username');
         $this->sendCommand('MAIL FROM: <' . $from . '>');
         foreach ($message->getRecipients() as $address) {

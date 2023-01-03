@@ -21,7 +21,27 @@ final class MessageTest extends TestCase
     public function setup() : void
     {
         $this->message = new MessageMock();
-        $this->message->setMailer(new Mailer('localhost'));
+        $this->message->setMailer(new Mailer('localhost')); // @phpstan-ignore-line
+    }
+
+    public function testMethodNotAllowed() : void
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $class = $this->message::class;
+        $this->expectExceptionMessage(
+            "Method not allowed: {$class}::getCrlf"
+        );
+        $this->message->getCrlf(); // @phpstan-ignore-line
+    }
+
+    public function testMethodNotFound() : void
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $class = $this->message::class;
+        $this->expectExceptionMessage(
+            "Method not found: {$class}::foobar"
+        );
+        $this->message->foobar(); // @phpstan-ignore-line
     }
 
     public function testBoundary() : void
