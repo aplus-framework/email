@@ -7,19 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\Email\Mailers;
+namespace Tests\Email;
 
-use Framework\Email\Mailers\SMTPMailer;
+use Framework\Email\Mailer;
 use Framework\Email\Message;
 use PHPUnit\Framework\TestCase;
 
-final class SMTPMailerTest extends TestCase
+final class MailerTest extends TestCase
 {
-    protected SMTPMailer $smtp;
+    protected Mailer $smtp;
 
     public function setup() : void
     {
-        $this->smtp = new SMTPMailer([
+        $this->smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
@@ -43,7 +43,7 @@ final class SMTPMailerTest extends TestCase
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setHtmlMessage('<b>Hello!</b><img src="cid:abc123">')
-            ->setInlineAttachment(__DIR__ . '/../logo-circle.png', 'abc123')
+            ->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
             ->addAttachment(__FILE__);
     }
 
@@ -56,7 +56,7 @@ final class SMTPMailerTest extends TestCase
     public function testKeepAlive() : void
     {
         \sleep(5);
-        $smtp = new SMTPMailer([
+        $smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
@@ -70,7 +70,7 @@ final class SMTPMailerTest extends TestCase
     public function testFailToAuthenticate() : void
     {
         \sleep(5);
-        $smtp = new SMTPMailer([
+        $smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
         ]);
         self::assertFalse($smtp->send($this->getMessage()));
@@ -79,7 +79,7 @@ final class SMTPMailerTest extends TestCase
     public function testFailToConnect() : void
     {
         \sleep(5);
-        $smtp = new SMTPMailer('foo');
+        $smtp = new Mailer('foo');
         self::assertFalse($smtp->send($this->getMessage()));
         $log = $smtp->getLogs()[0];
         self::assertSame('', $log['command']);
@@ -132,7 +132,7 @@ final class SMTPMailerTest extends TestCase
     public function testLogsDisabled() : void
     {
         \sleep(5);
-        $smtp = new SMTPMailer([
+        $smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),

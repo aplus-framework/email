@@ -9,7 +9,7 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Mailers\SMTPMailer;
+use Framework\Email\Mailer;
 use Framework\Email\Message;
 use Framework\Email\XPriority;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ final class MessageTest extends TestCase
     public function setup() : void
     {
         $this->message = new MessageMock();
-        $this->message->setMailer(new SMTPMailer('localhost'));
+        $this->message->setMailer(new Mailer('localhost'));
     }
 
     public function testBoundary() : void
