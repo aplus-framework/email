@@ -15,11 +15,11 @@ use PHPUnit\Framework\TestCase;
 
 final class MailerTest extends TestCase
 {
-    protected Mailer $smtp;
+    protected Mailer $mailer;
 
     public function setup() : void
     {
-        $this->smtp = new Mailer([
+        $this->mailer = new Mailer([
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
@@ -28,12 +28,12 @@ final class MailerTest extends TestCase
 
     public function testCrlf() : void
     {
-        self::assertSame("\r\n", $this->smtp->getCrlf());
+        self::assertSame("\r\n", $this->mailer->getCrlf());
     }
 
     public function testCharset() : void
     {
-        self::assertSame('utf-8', $this->smtp->getCharset());
+        self::assertSame('utf-8', $this->mailer->getCharset());
     }
 
     protected function getMessage() : Message
@@ -50,7 +50,7 @@ final class MailerTest extends TestCase
     public function testSend() : void
     {
         \sleep(5);
-        self::assertTrue($this->smtp->send($this->getMessage()));
+        self::assertTrue($this->mailer->send($this->getMessage()));
     }
 
     public function testKeepAlive() : void
@@ -89,44 +89,44 @@ final class MailerTest extends TestCase
     public function testLogs() : void
     {
         \sleep(5);
-        $this->smtp->send($this->getMessage());
-        self::assertNotEmpty($this->smtp->getLogs());
-        $log = $this->smtp->getLogs()[0];
+        $this->mailer->send($this->getMessage());
+        self::assertNotEmpty($this->mailer->getLogs());
+        $log = $this->mailer->getLogs()[0];
         self::assertSame('', $log['command']);
         self::assertStringStartsWith('220 ', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[1];
+        $log = $this->mailer->getLogs()[1];
         self::assertSame('EHLO ' . \gethostname(), $log['command']);
         foreach ($log['responses'] as $response) {
             self::assertStringStartsWith('250', $response);
         }
-        $log = $this->smtp->getLogs()[2];
+        $log = $this->mailer->getLogs()[2];
         self::assertSame('STARTTLS', $log['command']);
         self::assertStringStartsWith('220', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[3];
+        $log = $this->mailer->getLogs()[3];
         self::assertSame('EHLO ' . \gethostname(), $log['command']);
         foreach ($log['responses'] as $response) {
             self::assertStringStartsWith('250', $response);
         }
-        $log = $this->smtp->getLogs()[4];
+        $log = $this->mailer->getLogs()[4];
         self::assertSame('AUTH LOGIN', $log['command']);
         self::assertStringStartsWith('334', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[5];
+        $log = $this->mailer->getLogs()[5];
         self::assertNotEmpty($log['command']);
         self::assertStringStartsWith('334', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[6];
+        $log = $this->mailer->getLogs()[6];
         self::assertNotEmpty($log['command']);
         self::assertStringStartsWith('235 ', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[7];
+        $log = $this->mailer->getLogs()[7];
         self::assertStringStartsWith('MAIL FROM:', $log['command']);
         self::assertStringStartsWith('250 ', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[8];
+        $log = $this->mailer->getLogs()[8];
         self::assertStringStartsWith('RCPT TO:', $log['command']);
         self::assertStringStartsWith('250', $log['responses'][0]);
-        $log = $this->smtp->getLogs()[9];
+        $log = $this->mailer->getLogs()[9];
         self::assertSame('DATA', $log['command']);
         self::assertStringStartsWith('354', $log['responses'][0]);
-        $this->smtp->resetLogs();
-        self::assertEmpty($this->smtp->getLogs());
+        $this->mailer->resetLogs();
+        self::assertEmpty($this->mailer->getLogs());
     }
 
     public function testLogsDisabled() : void
@@ -144,7 +144,7 @@ final class MailerTest extends TestCase
 
     public function testConfigs() : void
     {
-        foreach ($this->smtp->getConfigs() as $key => $value) {
+        foreach ($this->mailer->getConfigs() as $key => $value) {
             self::assertIsString($key);
         }
     }
