@@ -9,6 +9,7 @@
  */
 namespace Tests\Email;
 
+use Framework\Email\EmailException;
 use Framework\Email\Mailer;
 use Framework\Email\Message;
 use PHPUnit\Framework\TestCase;
@@ -67,28 +68,43 @@ final class MailerTest extends TestCase
         self::assertTrue($smtp->send($this->getMessage()));
     }
 
-    public function testFailToAuthenticate() : void
+    public function testFailToAuthenticateNoUsernameOrPassword() : void
     {
         \sleep(5);
         $smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
         ]);
-        self::assertFalse($smtp->send($this->getMessage()));
+        $this->expectException(EmailException::class);
+        $this->expectExceptionMessage('Username or password was not set');
+        $smtp->send($this->getMessage());
+    }
+
+    public function testFailToAuthenticateWithUsernameAndPassword() : void
+    {
+        \sleep(5);
+        $smtp = new Mailer([
+            'username' => 'foo',
+            'password' => 'bar',
+            'host' => \getenv('SMTP_HOST'),
+        ]);
+        $this->expectException(EmailException::class);
+        $this->expectExceptionMessage('535 5.7.0 Invalid login or password');
+        $smtp->send($this->getMessage());
     }
 
     public function testFailToConnect() : void
     {
         \sleep(5);
         $smtp = new Mailer('foo');
-        self::assertFalse($smtp->send($this->getMessage()));
-        $log = $smtp->getLogs()[0];
-        self::assertSame('', $log['command']);
-        self::assertStringStartsWith('Socket connection error ', $log['responses'][0]);
+        $this->expectException(EmailException::class);
+        $this->expectExceptionMessageMatches('#Socket connection error+#');
+        $smtp->send($this->getMessage());
     }
 
     public function testLogs() : void
     {
         \sleep(5);
+        $this->mailer->setConfig('add_logs', true);
         $this->mailer->send($this->getMessage());
         self::assertNotEmpty($this->mailer->getLogs());
         $log = $this->mailer->getLogs()[0];
