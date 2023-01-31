@@ -247,26 +247,32 @@ class Mailer
      * @see https://datatracker.ietf.org/doc/html/rfc2821#section-4.2.3
      * @see https://datatracker.ietf.org/doc/html/rfc4954#section-4.1
      *
-     * @return bool
+     * @return void
      */
-    protected function authenticate() : bool
+    protected function authenticate() : void
     {
         if (($this->getConfig('username') === null) && ($this->getConfig('password') === null)) {
-            return false;
+            throw new EmailException('Username or password was not set');
         }
         $code = $this->sendCommand('AUTH LOGIN');
-        if ($code === 503) { // Already authenticated
-            return true;
+        // 503 - Bad sequence of commands - Already authenticated
+        if ($code === 503) {
+            return;
         }
+        // 334 - The text part contains the Base64-encoded challenge
         if ($code !== 334) {
-            return false;
+            throw new EmailException($this->getLastResponse());
         }
         $code = $this->sendCommand(\base64_encode($this->getConfig('username')));
+        // 334 - The text part contains the Base64-encoded challenge
         if ($code !== 334) {
             throw new EmailException($this->getLastResponse());
         }
         $code = $this->sendCommand(\base64_encode($this->getConfig('password')));
-        return $code === 235;
+        // 235 - Authentication succeeded
+        if ($code !== 235) {
+            throw new EmailException($this->getLastResponse());
+        }
     }
 
     /**
