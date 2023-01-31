@@ -312,11 +312,9 @@ class Mailer
         return $this->sendMessage($message) === 250;
     }
 
-    protected function sendMessage(Message $message) : int | false
+    protected function sendMessage(Message $message) : int // todo: make void?
     {
-        if ( ! $this->connect()) {
-            return false;
-        }
+        $this->connect();
         $message->setMailer($this); // @phpstan-ignore-line
         $from = $message->getFromAddress() ?? $this->getConfig('username');
         $this->sendCommand('MAIL FROM: <' . $from . '>');
@@ -327,10 +325,13 @@ class Mailer
         $code = $this->sendCommand(
             $message . $this->getCrlf() . '.'
         );
+        if ($code !== 250) {
+            throw new EmailException($this->getLastResponse());
+        }
         if ($this->getConfig('keep_alive') !== true) {
             $this->disconnect();
         }
-        return $code;
+        return 250;
     }
 
     /**
