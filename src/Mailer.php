@@ -207,10 +207,14 @@ class Mailer
         return $this;
     }
 
-    protected function connect() : bool
+    protected function connect() : void
     {
         if ($this->socket && ($this->getConfig('keep_alive') === true)) {
-            return $this->sendCommand('EHLO ' . $this->getConfig('hostname')) === 250;
+            $code = $this->sendCommand('EHLO ' . $this->getConfig('hostname'));
+            if ($code === 250) {
+                return;
+            }
+            throw new EmailException($this->getLastResponse());
         }
         $this->disconnect();
         $this->socket = @\fsockopen(
@@ -222,7 +226,9 @@ class Mailer
         );
         if ($this->socket === false) {
             $this->addLog('', 'Socket connection error ' . $errorCode . ': ' . $errorMessage);
-            return false;
+            throw new EmailException(
+                'Socket connection error ' . $errorCode . ': ' . $errorMessage
+            );
         }
         $this->addLog('', $this->getResponse());
         $this->sendCommand('EHLO ' . $this->getConfig('hostname'));
@@ -231,14 +237,14 @@ class Mailer
             \stream_socket_enable_crypto($this->socket, true, \STREAM_CRYPTO_METHOD_TLS_CLIENT);
             $this->sendCommand('EHLO ' . $this->getConfig('hostname'));
         }
-        return $this->authenticate();
+        $this->authenticate();
     }
 
-    protected function disconnect() : bool
+    protected function disconnect() : void
     {
         if (\is_resource($this->socket)) {
             $this->sendCommand('QUIT');
-            $closed = \fclose($this->socket);
+            \fclose($this->socket);
         }
         $this->socket = false;
     }
