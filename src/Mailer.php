@@ -115,9 +115,23 @@ class Mailer
      *
      * @return mixed
      */
-    protected function getConfig(string $key) : mixed
+    public function getConfig(string $key) : mixed
     {
-        return $this->config[$key];
+        return $this->config[$key]; // TODO: throw Exception
+    }
+
+    public function setConfig(string $key, mixed $value) : static
+    {
+        $this->config[$key] = $value;
+        return $this;
+    }
+
+    public function setConfigs(array $configs) : static
+    {
+        foreach ($configs as $key => $value) {
+            $this->setConfig($key, $value);
+        }
+        return $this;
     }
 
     /**
@@ -227,7 +241,6 @@ class Mailer
             $closed = \fclose($this->socket);
         }
         $this->socket = false;
-        return $closed ?? true;
     }
 
     /**
