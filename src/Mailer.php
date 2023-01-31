@@ -31,11 +31,11 @@ class Mailer
      */
     protected array $logs = [];
     protected EmailCollector $debugCollector;
-
     /**
      * @var false|resource $socket
      */
     protected $socket = false;
+    protected string $lastResponse;
 
     /**
      * Mailer constructor.
@@ -263,7 +263,7 @@ class Mailer
         }
         $code = $this->sendCommand(\base64_encode($this->getConfig('username')));
         if ($code !== 334) {
-            return false;
+            throw new EmailException($this->getLastResponse());
         }
         $code = $this->sendCommand(\base64_encode($this->getConfig('password')));
         return $code === 235;
@@ -353,8 +353,14 @@ class Mailer
         // @phpstan-ignore-next-line
         \fwrite($this->socket, $command . $this->getCrlf());
         $response = $this->getResponse();
+        $this->lastResponse = $response;
         $this->addLog($command, $response);
         return $this->makeResponseCode($response);
+    }
+
+    public function getLastResponse() : string
+    {
+        return $this->lastResponse;
     }
 
     /**
