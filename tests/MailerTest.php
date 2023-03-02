@@ -29,7 +29,7 @@ final class MailerTest extends TestCase
 
     public function testCrlf() : void
     {
-        self::assertSame("\r\n", $this->mailer->getCrlf());
+        self::assertSame("\r\n", $this->mailer->getConfig('crlf'));
     }
 
     public function testCharset() : void

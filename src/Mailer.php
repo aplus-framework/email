@@ -156,11 +156,6 @@ class Mailer
         return $this->config;
     }
 
-    public function getCrlf() : string
-    {
-        return (string) $this->getConfig('crlf');
-    }
-
     public function getCharset() : string
     {
         return (string) $this->getConfig('charset');
@@ -323,7 +318,7 @@ class Mailer
         }
         $this->sendCommand('DATA');
         $code = $this->sendCommand(
-            $message . $this->getCrlf() . '.'
+            $message . $this->getConfig('crlf') . '.'
         );
         if ($code !== 250) {
             throw new EmailException($this->getLastResponse());
@@ -364,7 +359,7 @@ class Mailer
     protected function sendCommand(string $command) : int
     {
         // @phpstan-ignore-next-line
-        \fwrite($this->socket, $command . $this->getCrlf());
+        \fwrite($this->socket, $command . $this->getConfig('crlf'));
         $response = $this->getResponse();
         $this->lastResponse = $response;
         $this->addLog($command, $response);

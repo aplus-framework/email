@@ -152,7 +152,7 @@ class Message implements \Stringable
     protected function getCrlf() : string
     {
         if (isset($this->mailer)) {
-            return $this->mailer->getCrlf();
+            return $this->mailer->getConfig('crlf');
         }
         return "\r\n";
     }
