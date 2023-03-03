@@ -167,6 +167,9 @@ final class MailerTest extends TestCase
 
     public function testConfigs() : void
     {
+        self::assertSame('utf-8', $this->mailer->getConfig('charset'));
+        $this->mailer->setConfigs(['charset' => 'foo']);
+        self::assertSame('foo', $this->mailer->getConfig('charset'));
         foreach ($this->mailer->getConfigs() as $key => $value) {
             self::assertIsString($key);
         }

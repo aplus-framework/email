@@ -110,7 +110,7 @@ class Mailer
     }
 
     /**
-     * @todo Make public in version 4.0.0
+     * Get config item by key.
      *
      * @param string $key
      *
@@ -122,12 +122,27 @@ class Mailer
             throw new InvalidArgumentException('Invalid config key: ' . $key);
     }
 
+    /**
+     * Set config item.
+     *
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return static
+     */
     public function setConfig(string $key, mixed $value) : static
     {
         $this->config[$key] = $value;
         return $this;
     }
 
+    /**
+     * Set many config items.
+     *
+     * @param array<string,mixed> $configs
+     *
+     * @return static
+     */
     public function setConfigs(array $configs) : static
     {
         foreach ($configs as $key => $value) {
@@ -137,6 +152,8 @@ class Mailer
     }
 
     /**
+     * Get all config items.
+     *
      * @return array<string,mixed>
      */
     #[ArrayShape([
