@@ -118,8 +118,9 @@ class Mailer
      */
     public function getConfig(string $key) : mixed
     {
-        return $this->config[$key] ??
-            throw new InvalidArgumentException('Invalid config key: ' . $key);
+        return $this->config[$key] ?? throw new InvalidArgumentException(
+            'Mailer config key is not set: ' . $key
+        );
     }
 
     /**

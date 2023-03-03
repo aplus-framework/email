@@ -37,10 +37,10 @@ final class MailerTest extends TestCase
         self::assertSame('utf-8', $this->mailer->getConfig('charset'));
     }
 
-    public function testInvalidConfigKey() : void
+    public function testConfigKeyIsNotSet() : void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid config key: foo');
+        $this->expectExceptionMessage('Mailer config key is not set: foo');
         $this->mailer->getConfig('foo');
     }
 
