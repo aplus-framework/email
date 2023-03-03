@@ -156,11 +156,6 @@ class Mailer
         return $this->config;
     }
 
-    public function getCharset() : string
-    {
-        return (string) $this->getConfig('charset');
-    }
-
     /**
      * Get an array of logs.
      *

@@ -34,7 +34,7 @@ final class MailerTest extends TestCase
 
     public function testCharset() : void
     {
-        self::assertSame('utf-8', $this->mailer->getCharset());
+        self::assertSame('utf-8', $this->mailer->getConfig('charset'));
     }
 
     protected function getMessage() : Message

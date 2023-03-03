@@ -160,7 +160,7 @@ class Message implements \Stringable
     protected function getCharset() : string
     {
         if (isset($this->mailer)) {
-            return $this->mailer->getCharset();
+            return $this->mailer->getConfig('charset');
         }
         return 'utf-8';
     }
