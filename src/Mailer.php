@@ -10,6 +10,7 @@
 namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use SensitiveParameter;
 
@@ -117,7 +118,8 @@ class Mailer
      */
     public function getConfig(string $key) : mixed
     {
-        return $this->config[$key]; // TODO: throw Exception
+        return $this->config[$key] ??
+            throw new InvalidArgumentException('Invalid config key: ' . $key);
     }
 
     public function setConfig(string $key, mixed $value) : static
