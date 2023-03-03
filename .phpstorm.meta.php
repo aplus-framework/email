@@ -101,6 +101,11 @@ expectedArguments(
     argumentsSet('config_keys')
 );
 expectedArguments(
+    \Framework\Email\Mailer::setConfig(),
+    0,
+    argumentsSet('config_keys')
+);
+expectedArguments(
     \Framework\Email\Message::getHeader(),
     0,
     argumentsSet('headers')
