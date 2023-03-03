@@ -266,8 +266,15 @@ class Mailer
      */
     protected function authenticate() : void
     {
-        if (($this->getConfig('username') === null) && ($this->getConfig('password') === null)) {
-            throw new EmailException('Username or password was not set');
+        try {
+            $username = $this->getConfig('username');
+        } catch (InvalidArgumentException) {
+            throw new EmailException('Username was not set');
+        }
+        try {
+            $password = $this->getConfig('password');
+        } catch (InvalidArgumentException) {
+            throw new EmailException('Password was not set');
         }
         $code = $this->sendCommand('AUTH LOGIN');
         // 503 - Bad sequence of commands - Already authenticated
@@ -278,12 +285,12 @@ class Mailer
         if ($code !== 334) {
             throw new EmailException($this->getLastResponse());
         }
-        $code = $this->sendCommand(\base64_encode($this->getConfig('username')));
+        $code = $this->sendCommand(\base64_encode($username));
         // 334 - The text part contains the Base64-encoded challenge
         if ($code !== 334) {
             throw new EmailException($this->getLastResponse());
         }
-        $code = $this->sendCommand(\base64_encode($this->getConfig('password')));
+        $code = $this->sendCommand(\base64_encode($password));
         // 235 - Authentication succeeded
         if ($code !== 235) {
             throw new EmailException($this->getLastResponse());

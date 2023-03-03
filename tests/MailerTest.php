@@ -75,14 +75,27 @@ final class MailerTest extends TestCase
         self::assertTrue($smtp->send($this->getMessage()));
     }
 
-    public function testFailToAuthenticateNoUsernameOrPassword() : void
+    public function testFailToAuthenticateNoUsername() : void
     {
         \sleep(5);
         $smtp = new Mailer([
             'host' => \getenv('SMTP_HOST'),
+            'password' => \getenv('SMTP_PASSWORD'),
         ]);
         $this->expectException(EmailException::class);
-        $this->expectExceptionMessage('Username or password was not set');
+        $this->expectExceptionMessage('Username was not set');
+        $smtp->send($this->getMessage());
+    }
+
+    public function testFailToAuthenticateNoPassword() : void
+    {
+        \sleep(5);
+        $smtp = new Mailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => \getenv('SMTP_USERNAME'),
+        ]);
+        $this->expectException(EmailException::class);
+        $this->expectExceptionMessage('Password was not set');
         $smtp->send($this->getMessage());
     }
 
