@@ -81,6 +81,7 @@ class Mailer
         'host' => 'string',
         'port' => 'int',
         'tls' => 'bool',
+        'options' => 'array',
         'username' => 'string|null',
         'password' => 'string|null',
         'charset' => 'string',
@@ -97,6 +98,13 @@ class Mailer
             'host' => 'localhost',
             'port' => 587,
             'tls' => true,
+            'options' => [
+                'ssl' => [
+                    'allow_self_signed' => false,
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
+                ],
+            ],
             'username' => null,
             'password' => null,
             'charset' => 'utf-8',
@@ -161,6 +169,7 @@ class Mailer
         'host' => 'string',
         'port' => 'int',
         'tls' => 'bool',
+        'options' => 'array',
         'username' => 'string|null',
         'password' => 'string|null',
         'charset' => 'string',
@@ -227,12 +236,13 @@ class Mailer
             throw new EmailException($this->getLastResponse());
         }
         $this->disconnect();
-        $this->socket = @\fsockopen(
-            $this->getConfig('host'),
-            (int) $this->getConfig('port'),
+        $this->socket = @\stream_socket_client(
+            $this->getConfig('host') . ':' . $this->getConfig('port'),
             $errorCode,
             $errorMessage,
-            (float) $this->getConfig('connection_timeout')
+            (float) $this->getConfig('connection_timeout'),
+            \STREAM_CLIENT_CONNECT,
+            \stream_context_create($this->getConfig('options'))
         );
         if ($this->socket === false) {
             $this->addLog('', 'Socket connection error ' . $errorCode . ': ' . $errorMessage);
