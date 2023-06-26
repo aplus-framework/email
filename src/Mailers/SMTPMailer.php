@@ -37,12 +37,13 @@ class SMTPMailer extends Mailer
             return $this->sendCommand('EHLO ' . $this->getConfig('hostname')) === 250;
         }
         $this->disconnect();
-        $this->socket = @\fsockopen(
-            $this->getConfig('host'),
-            (int) $this->getConfig('port'),
+        $this->socket = @\stream_socket_client(
+            $this->getConfig('host') . ':' . $this->getConfig('port'),
             $errorCode,
             $errorMessage,
-            (float) $this->getConfig('connection_timeout')
+            (float) $this->getConfig('connection_timeout'),
+            \STREAM_CLIENT_CONNECT,
+            \stream_context_create($this->getConfig('options'))
         );
         if ($this->socket === false) {
             $this->addLog('', 'Socket connection error ' . $errorCode . ': ' . $errorMessage);
