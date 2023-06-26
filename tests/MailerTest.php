@@ -108,7 +108,7 @@ final class MailerTest extends TestCase
             'host' => \getenv('SMTP_HOST'),
         ]);
         $this->expectException(EmailException::class);
-        $this->expectExceptionMessage('535 5.7.0 Invalid login or password');
+        $this->expectExceptionMessage('535 5.7.0 Invalid credentials');
         $smtp->send($this->getMessage());
     }
 
