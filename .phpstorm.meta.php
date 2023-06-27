@@ -18,6 +18,7 @@ registerArgumentsSet(
     'host',
     'hostname',
     'keep_alive',
+    'options',
     'password',
     'port',
     'response_timeout',
