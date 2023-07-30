@@ -19,9 +19,9 @@
     "homepage": "https://aplus-framework.com/packages/email",
     "support": {
         "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/email/issues",
+        "issues": "https://github.com/aplus-framework/email/issues",
         "forum": "https://aplus-framework.com/forum",
-        "source": "https://gitlab.com/aplus-framework/libraries/email",
+        "source": "https://github.com/aplus-framework/email",
         "docs": "https://docs.aplus-framework.com/guides/libraries/email/"
     },
     "funding": [
