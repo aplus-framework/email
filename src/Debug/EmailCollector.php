@@ -47,12 +47,12 @@ class EmailCollector extends Collector
     public function getContents() : string
     {
         \ob_start();
-        if ( ! isset($this->mailer)) {
+        if (!isset($this->mailer)) {
             echo '<p>This collector has not been added to a Mailer instance.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
         }
         echo $this->showHeader();
-        if ( ! $this->hasData()) {
+        if (!$this->hasData()) {
             echo '<p>No messages have been sent.</p>';
             return \ob_get_clean(); // @phpstan-ignore-line
         }

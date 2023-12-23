@@ -40,8 +40,10 @@ abstract class Mailer
      * @param string|null $hostname
      */
     public function __construct(
-        #[SensitiveParameter] array | string $username,
-        #[SensitiveParameter] string $password = null,
+        #[SensitiveParameter]
+        array | string $username,
+        #[SensitiveParameter]
+        string $password = null,
         string $host = 'localhost',
         int $port = 587,
         string $hostname = null
@@ -180,7 +182,7 @@ abstract class Mailer
      */
     protected function addLog(string $command, string $response) : static
     {
-        if ( ! $this->getConfig('add_logs')) {
+        if (!$this->getConfig('add_logs')) {
             return $this;
         }
         $this->logs[] = [

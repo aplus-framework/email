@@ -128,7 +128,7 @@ class SMTPMailer extends Mailer
 
     protected function sendMessage(Message $message) : int | false
     {
-        if ( ! $this->connect()) {
+        if (!$this->connect()) {
             return false;
         }
         $message->setMailer($this);

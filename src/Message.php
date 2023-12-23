@@ -150,7 +150,7 @@ class Message implements \Stringable
 
     public function getBoundary() : string
     {
-        if ( ! isset($this->boundary)) {
+        if (!isset($this->boundary)) {
             $this->setBoundary();
         }
         return $this->boundary;
@@ -200,7 +200,7 @@ class Message implements \Stringable
 
     protected function prepareHeaders() : void
     {
-        if ( ! $this->getDate()) {
+        if (!$this->getDate()) {
             $this->setDate();
         }
         $multipart = $this->getInlineAttachments() ? 'related' : 'mixed';
@@ -330,7 +330,7 @@ class Message implements \Stringable
         $part = '';
         $crlf = $this->getCrlf();
         foreach ($this->getAttachments() as $attachment) {
-            if ( ! \is_file($attachment)) {
+            if (!\is_file($attachment)) {
                 throw new LogicException('Attachment file not found: ' . $attachment);
             }
             $filename = \pathinfo($attachment, \PATHINFO_BASENAME);
@@ -357,7 +357,7 @@ class Message implements \Stringable
         $part = '';
         $crlf = $this->getCrlf();
         foreach ($this->getInlineAttachments() as $cid => $filename) {
-            if ( ! \is_file($filename)) {
+            if (!\is_file($filename)) {
                 throw new LogicException('Inline attachment file not found: ' . $filename);
             }
             $contents = \file_get_contents($filename);
