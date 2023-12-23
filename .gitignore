@@ -5,6 +5,7 @@ raw-tests/
 vendor/
 .env
 .php-cs-fixer.cache
+.phpunit.cache
 .phpunit.result.cache
 composer.lock
 composer.phar
