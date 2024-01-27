@@ -116,13 +116,11 @@ class Mailer
     }
 
     /**
-     * @todo Make public in version 4.0.0
-     *
      * @param string $key
      *
      * @return mixed
      */
-    protected function getConfig(string $key) : mixed
+    public function getConfig(string $key) : mixed
     {
         return $this->config[$key];
     }
