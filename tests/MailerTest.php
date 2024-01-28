@@ -28,12 +28,12 @@ final class MailerTest extends TestCase
 
     public function testCrlf() : void
     {
-        self::assertSame("\r\n", $this->mailer->getCrlf());
+        self::assertSame("\r\n", $this->mailer->getConfig('crlf'));
     }
 
     public function testCharset() : void
     {
-        self::assertSame('utf-8', $this->mailer->getCharset());
+        self::assertSame('utf-8', $this->mailer->getConfig('charset'));
     }
 
     protected function getMessage() : Message

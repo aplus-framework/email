@@ -256,7 +256,7 @@ class Mailer
         }
         $this->sendCommand('DATA');
         $code = $this->sendCommand(
-            $message . $this->getCrlf() . '.'
+            $message . $this->getConfig('crlf') . '.'
         );
         if ($this->getConfig('keep_alive') !== true) {
             $this->disconnect();
@@ -294,7 +294,7 @@ class Mailer
     protected function sendCommand(string $command) : int
     {
         // @phpstan-ignore-next-line
-        \fwrite($this->socket, $command . $this->getCrlf());
+        \fwrite($this->socket, $command . $this->getConfig('crlf'));
         $response = $this->getResponse();
         $this->addLog($command, $response);
         return $this->makeResponseCode($response);
@@ -311,16 +311,6 @@ class Mailer
     private function makeResponseCode(string $response) : int
     {
         return (int) \substr($response, 0, 3);
-    }
-
-    public function getCrlf() : string
-    {
-        return (string) $this->getConfig('crlf');
-    }
-
-    public function getCharset() : string
-    {
-        return (string) $this->getConfig('charset');
     }
 
     /**
