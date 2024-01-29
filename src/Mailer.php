@@ -111,7 +111,7 @@ class Mailer
             'response_timeout' => 5,
             'hostname' => \gethostname(),
             'keep_alive' => false,
-            'add_logs' => true,
+            'add_logs' => false,
         ], $config);
     }
 

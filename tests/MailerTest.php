@@ -79,7 +79,10 @@ final class MailerTest extends TestCase
     public function testFailToConnect() : void
     {
         \sleep(5);
-        $smtp = new Mailer('foo');
+        $smtp = new Mailer([
+            'host' => 'foo',
+            'add_logs' => true,
+        ]);
         self::assertFalse($smtp->send($this->getMessage()));
         $log = $smtp->getLogs()[0];
         self::assertSame('', $log['command']);
@@ -89,57 +92,57 @@ final class MailerTest extends TestCase
     public function testLogs() : void
     {
         \sleep(5);
-        $this->mailer->send($this->getMessage());
-        self::assertNotEmpty($this->mailer->getLogs());
-        $log = $this->mailer->getLogs()[0];
+        $mailer = new Mailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => \getenv('SMTP_USERNAME'),
+            'password' => \getenv('SMTP_PASSWORD'),
+            'add_logs' => true,
+        ]);
+        $mailer->send($this->getMessage());
+        self::assertNotEmpty($mailer->getLogs());
+        $log = $mailer->getLogs()[0];
         self::assertSame('', $log['command']);
         self::assertStringStartsWith('220 ', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[1];
+        $log = $mailer->getLogs()[1];
         self::assertSame('EHLO ' . \gethostname(), $log['command']);
         foreach ($log['responses'] as $response) {
             self::assertStringStartsWith('250', $response);
         }
-        $log = $this->mailer->getLogs()[2];
+        $log = $mailer->getLogs()[2];
         self::assertSame('STARTTLS', $log['command']);
         self::assertStringStartsWith('220', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[3];
+        $log = $mailer->getLogs()[3];
         self::assertSame('EHLO ' . \gethostname(), $log['command']);
         foreach ($log['responses'] as $response) {
             self::assertStringStartsWith('250', $response);
         }
-        $log = $this->mailer->getLogs()[4];
+        $log = $mailer->getLogs()[4];
         self::assertSame('AUTH LOGIN', $log['command']);
         self::assertStringStartsWith('334', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[5];
+        $log = $mailer->getLogs()[5];
         self::assertNotEmpty($log['command']);
         self::assertStringStartsWith('334', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[6];
+        $log = $mailer->getLogs()[6];
         self::assertNotEmpty($log['command']);
         self::assertStringStartsWith('235 ', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[7];
+        $log = $mailer->getLogs()[7];
         self::assertStringStartsWith('MAIL FROM:', $log['command']);
         self::assertStringStartsWith('250 ', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[8];
+        $log = $mailer->getLogs()[8];
         self::assertStringStartsWith('RCPT TO:', $log['command']);
         self::assertStringStartsWith('250', $log['responses'][0]);
-        $log = $this->mailer->getLogs()[9];
+        $log = $mailer->getLogs()[9];
         self::assertSame('DATA', $log['command']);
         self::assertStringStartsWith('354', $log['responses'][0]);
-        $this->mailer->resetLogs();
-        self::assertEmpty($this->mailer->getLogs());
+        $mailer->resetLogs();
+        self::assertEmpty($mailer->getLogs());
     }
 
     public function testLogsDisabled() : void
     {
         \sleep(5);
-        $smtp = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
-            'username' => \getenv('SMTP_USERNAME'),
-            'password' => \getenv('SMTP_PASSWORD'),
-            'add_logs' => false,
-        ]);
-        $smtp->send($this->getMessage());
-        self::assertEmpty($smtp->getLogs());
+        $this->mailer->send($this->getMessage());
+        self::assertEmpty($this->mailer->getLogs());
     }
 
     public function testConfigs() : void
