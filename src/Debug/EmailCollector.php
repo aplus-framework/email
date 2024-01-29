@@ -57,7 +57,9 @@ class EmailCollector extends Collector
             return \ob_get_clean(); // @phpstan-ignore-line
         }
         $count = \count($this->getData()); ?>
-        <p>Sent <?= $count ?> message<?= $count === 1 ? '' : 's' ?>:</p>
+        <p>Sent <?= $this->getTotalMessagesSent() ?> of <?=
+            $count ?> message<?= $count === 1 ? '' : 's' ?>:
+        </p>
         <?php
         foreach ($this->getData() as $index => $data) : ?>
             <h2>Message <?= $index + 1 ?></h2>
@@ -151,5 +153,16 @@ class EmailCollector extends Collector
         <p><strong>Port:</strong> <?= \htmlentities((string) $configs['port']) ?></p>
         <?php
         return \ob_get_clean(); // @phpstan-ignore-line
+    }
+
+    protected function getTotalMessagesSent() : int
+    {
+        $result = 0;
+        foreach ($this->getData() as $data) {
+            if ($data['code'] === 250) {
+                $result++;
+            }
+        }
+        return $result;
     }
 }
