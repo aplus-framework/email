@@ -317,7 +317,12 @@ class Mailer
         \fwrite($this->socket, $command . $this->getConfig('crlf'));
         $response = $this->getResponse();
         $this->addLog($command, $response);
-        $this->setLastResponse($response);
+        // The last command could be: "EHLO $host".
+        // And the last response is an empty string.
+        // So, we ignore empty responses...
+        if ($response !== '') {
+            $this->setLastResponse($response);
+        }
         return $this->makeResponseCode($response);
     }
 
