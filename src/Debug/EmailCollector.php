@@ -61,8 +61,9 @@ class EmailCollector extends Collector
         <?php
         foreach ($this->getData() as $index => $data) : ?>
             <h2>Message <?= $index + 1 ?></h2>
-            <p><strong>Status:</strong> <?= $data['code'] ?> <?=
-                $data['code'] === 250 ? 'OK' : ' Error' ?></p>
+            <p><strong>Status:</strong>
+                <?= $data['code'] === 250 ? 'OK' : 'Error' ?></p>
+            <p><strong>Last Response:</strong> <?= $data['last_response'] ?></p>
             <p><strong>From:</strong> <?= \htmlentities($data['from']) ?></p>
             <p>
                 <strong>Recipients:</strong> <?= \htmlentities(\implode(', ', $data['recipients'])) ?>

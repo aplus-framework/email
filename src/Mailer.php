@@ -33,6 +33,7 @@ class Mailer
      */
     protected array $logs = [];
     protected EmailCollector $debugCollector;
+    protected ?string $lastResponse = null;
 
     /**
      * Mailer constructor.
@@ -148,6 +149,17 @@ class Mailer
         return $this->config;
     }
 
+    protected function setLastResponse(?string $lastResponse) : static
+    {
+        $this->lastResponse = $lastResponse;
+        return $this;
+    }
+
+    public function getLastResponse() : ?string
+    {
+        return $this->lastResponse;
+    }
+
     protected function connect() : bool
     {
         if ($this->socket && ($this->getConfig('keep_alive') === true)) {
@@ -163,7 +175,9 @@ class Mailer
             \stream_context_create($this->getConfig('options'))
         );
         if ($this->socket === false) {
-            $this->addLog('', 'Socket connection error ' . $errorCode . ': ' . $errorMessage);
+            $error = 'Socket connection error ' . $errorCode . ': ' . $errorMessage;
+            $this->addLog('', $error);
+            $this->setLastResponse($error);
             return false;
         }
         $this->addLog('', $this->getResponse());
@@ -194,7 +208,12 @@ class Mailer
      */
     protected function authenticate() : bool
     {
-        if (($this->getConfig('username') === null) && ($this->getConfig('password') === null)) {
+        if ($this->getConfig('username') === null) {
+            $this->setLastResponse('Username is not set');
+            return false;
+        }
+        if ($this->getConfig('password') === null) {
+            $this->setLastResponse('Password is not set');
             return false;
         }
         $code = $this->sendCommand('AUTH LOGIN');
@@ -228,7 +247,8 @@ class Mailer
             $this->debugCollector->addData([
                 'start' => $start,
                 'end' => $end,
-                'code' => $code ?: 0,
+                'code' => $code,
+                'last_response' => $this->getLastResponse(),
                 'from' => $message->getFromAddress() ?? $this->getConfig('username'),
                 'length' => \strlen((string) $message),
                 'recipients' => $message->getRecipients(),
@@ -297,6 +317,7 @@ class Mailer
         \fwrite($this->socket, $command . $this->getConfig('crlf'));
         $response = $this->getResponse();
         $this->addLog($command, $response);
+        $this->setLastResponse($response);
         return $this->makeResponseCode($response);
     }
 

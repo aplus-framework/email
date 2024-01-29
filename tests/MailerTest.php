@@ -67,13 +67,66 @@ final class MailerTest extends TestCase
         self::assertTrue($smtp->send($this->getMessage()));
     }
 
-    public function testFailToAuthenticate() : void
+    public function testFailToAuthenticateUsernameNotSet() : void
     {
         \sleep(5);
-        $smtp = new Mailer([
+        $mailer = new Mailer([
             'host' => \getenv('SMTP_HOST'),
+            'username' => null,
+            'password' => 'foo',
         ]);
-        self::assertFalse($smtp->send($this->getMessage()));
+        self::assertFalse($mailer->send($this->getMessage()));
+        self::assertSame(
+            'Username is not set',
+            $mailer->getLastResponse()
+        );
+    }
+
+    public function testFailToAuthenticateUsernameIsWrong() : void
+    {
+        \sleep(5);
+        $mailer = new Mailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => 'foo',
+            'password' => \getenv('SMTP_PASSWORD'),
+            'add_logs' => true,
+        ]);
+        self::assertFalse($mailer->send($this->getMessage()));
+        self::assertSame(
+            '535 5.7.0 Invalid credentials',
+            $mailer->getLastResponse()
+        );
+    }
+
+    public function testFailToAuthenticatePasswordNotSet() : void
+    {
+        \sleep(5);
+        $mailer = new Mailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => 'foo',
+            'password' => null,
+        ]);
+        self::assertFalse($mailer->send($this->getMessage()));
+        self::assertSame(
+            'Password is not set',
+            $mailer->getLastResponse()
+        );
+    }
+
+    public function testFailToAuthenticatePasswordIsWrong() : void
+    {
+        \sleep(5);
+        $mailer = new Mailer([
+            'host' => \getenv('SMTP_HOST'),
+            'username' => \getenv('SMTP_USERNAME'),
+            'password' => 'foo',
+            'add_logs' => true,
+        ]);
+        self::assertFalse($mailer->send($this->getMessage()));
+        self::assertSame(
+            '535 5.7.0 Invalid credentials',
+            $mailer->getLastResponse()
+        );
     }
 
     public function testFailToConnect() : void
@@ -86,7 +139,14 @@ final class MailerTest extends TestCase
         self::assertFalse($smtp->send($this->getMessage()));
         $log = $smtp->getLogs()[0];
         self::assertSame('', $log['command']);
-        self::assertStringStartsWith('Socket connection error ', $log['responses'][0]);
+        self::assertStringStartsWith(
+            'Socket connection error ',
+            $log['responses'][0]
+        );
+        self::assertStringStartsWith(
+            'Socket connection error ',
+            $smtp->getLastResponse()
+        );
     }
 
     public function testLogs() : void
