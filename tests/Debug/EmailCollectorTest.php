@@ -75,7 +75,7 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         self::assertStringContainsString(
-            'Sent 1 message',
+            'Sent 1 of 1 message:',
             $contents
         );
         self::assertStringContainsString(
@@ -112,11 +112,11 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         self::assertStringNotContainsString(
-            'Sent 1 message',
+            'Sent 1 message:',
             $contents
         );
         self::assertStringContainsString(
-            'Sent 2 messages',
+            'Sent 2 of 2 messages:',
             $contents
         );
         self::assertStringContainsString(
