@@ -391,4 +391,14 @@ class Mailer
         $this->debugCollector = $collector;
         return $this;
     }
+
+    /**
+     * Create a new Message instance.
+     *
+     * @return Message
+     */
+    public function createMessage() : Message
+    {
+        return (new Message())->setMailer($this);
+    }
 }

@@ -228,4 +228,14 @@ final class MailerTest extends TestCase
             self::assertIsString($key);
         }
     }
+
+    public function testCreateMessage() : void
+    {
+        $mailer = new Mailer([]);
+        $m1 = $mailer->createMessage();
+        $m2 = $mailer->createMessage();
+        self::assertInstanceOf(Message::class, $m1);
+        self::assertInstanceOf(Message::class, $m2);
+        self::assertNotSame($m1, $m2);
+    }
 }
