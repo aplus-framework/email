@@ -67,6 +67,23 @@ final class MailerTest extends TestCase
         self::assertTrue($smtp->send($this->getMessage()));
     }
 
+    public function testLastResponse() : void
+    {
+        $mailer = new class([]) extends Mailer {
+            public function setLastResponse(?string $lastResponse) : static
+            {
+                return parent::setLastResponse($lastResponse);
+            }
+        };
+        self::assertNull($mailer->getLastResponse());
+        $mailer->setLastResponse('250 foo');
+        self::assertSame('250 foo', $mailer->getLastResponse());
+        $mailer->setLastResponse('250 foo' . \PHP_EOL . '250 bar');
+        self::assertSame('250 bar', $mailer->getLastResponse());
+        $mailer->setLastResponse(null);
+        self::assertNull($mailer->getLastResponse());
+    }
+
     public function testFailToAuthenticateUsernameNotSet() : void
     {
         \sleep(5);

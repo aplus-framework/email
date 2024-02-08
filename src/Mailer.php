@@ -151,7 +151,12 @@ class Mailer
 
     protected function setLastResponse(?string $lastResponse) : static
     {
-        $this->lastResponse = $lastResponse;
+        if ($lastResponse === null) {
+            $this->lastResponse = null;
+            return $this;
+        }
+        $parts = \explode(\PHP_EOL, $lastResponse);
+        $this->lastResponse = $parts[\array_key_last($parts)];
         return $this;
     }
 
