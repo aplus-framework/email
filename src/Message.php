@@ -103,12 +103,6 @@ class Message implements \Stringable
      * @var string|null
      */
     protected ?string $date = null;
-    /**
-     * The message X-Priority.
-     *
-     * @var XPriority
-     */
-    protected XPriority $xPriority;
 
     public function __toString() : string
     {
@@ -534,20 +528,30 @@ class Message implements \Stringable
     }
 
     /**
-     * @param XPriority $priority
+     * Set the X-Priority header.
+     *
+     * @param XPriority $priority The {@see XPriority} case
      *
      * @return static
      */
     public function setXPriority(XPriority $priority) : static
     {
-        $this->xPriority = $priority;
         $this->setHeader(Header::X_PRIORITY, (string) $priority->value);
         return $this;
     }
 
+    /**
+     * Get the X-Priority header.
+     *
+     * @return XPriority|null The {@see XPriority} case or null
+     */
     public function getXPriority() : ?XPriority
     {
-        return $this->xPriority ?? null;
+        $header = $this->getHeader(Header::X_PRIORITY);
+        if ($header === null) {
+            return null;
+        }
+        return XPriority::from((int) $header);
     }
 
     /**
