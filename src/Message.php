@@ -550,6 +550,30 @@ class Message implements \Stringable
         return $this->xPriority ?? null;
     }
 
+    /**
+     * Set the X-Mailer header.
+     *
+     * @param string|null $mailer The X-Mailer header or null to set the default
+     *
+     * @return static
+     */
+    public function setXMailer(string $mailer = null) : static
+    {
+        $mailer ??= 'Aplus Mailer';
+        $this->setHeader(Header::X_MAILER, $mailer);
+        return $this;
+    }
+
+    /**
+     * Get the X-Mailer header.
+     *
+     * @return string|null The X-Mailer header or null
+     */
+    public function getXMailer() : ?string
+    {
+        return $this->getHeader(Header::X_MAILER);
+    }
+
     protected static function formatAddress(string $address, string $name = null) : string
     {
         return $name !== null ? '"' . $name . '" <' . $address . '>' : $address;

@@ -69,6 +69,18 @@ final class MessageTest extends TestCase
         self::assertSame(\date('r'), $this->message->getHeader('Date'));
     }
 
+    public function testXMailer() : void
+    {
+        self::assertNull($this->message->getXMailer());
+        self::assertNull($this->message->getHeader('X-Mailer'));
+        $this->message->setXMailer();
+        self::assertSame('Aplus Mailer', $this->message->getXMailer());
+        self::assertSame('Aplus Mailer', $this->message->getHeader('X-Mailer'));
+        $this->message->setXMailer('Foo Bar');
+        self::assertSame('Foo Bar', $this->message->getXMailer());
+        self::assertSame('Foo Bar', $this->message->getHeader('X-Mailer'));
+    }
+
     public function testXPriority() : void
     {
         self::assertNull($this->message->getXPriority());

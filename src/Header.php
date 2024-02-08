@@ -49,6 +49,7 @@ class Header
     public const string SENDER = 'Sender';
     public const string SUBJECT = 'Subject';
     public const string TO = 'To';
+    public const string X_MAILER = 'X-Mailer';
     public const string X_PRIORITY = 'X-Priority';
     /**
      * @var array<string,string>
@@ -87,6 +88,7 @@ class Header
         'sender' => 'Sender',
         'subject' => 'Subject',
         'to' => 'To',
+        'x-mailer' => 'X-Mailer',
         'x-priority' => 'X-Priority',
     ];
 

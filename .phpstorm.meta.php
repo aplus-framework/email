@@ -60,6 +60,7 @@ registerArgumentsSet(
     \Framework\Email\Header::SENDER,
     \Framework\Email\Header::SUBJECT,
     \Framework\Email\Header::TO,
+    \Framework\Email\Header::X_MAILER,
     \Framework\Email\Header::X_PRIORITY,
     'Auto-Submitted',
     'Bcc',
@@ -94,6 +95,7 @@ registerArgumentsSet(
     'Sender',
     'Subject',
     'To',
+    'X-Mailer',
     'X-Priority',
 );
 expectedArguments(
