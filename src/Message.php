@@ -152,6 +152,17 @@ class Message implements \Stringable
 
     /**
      * @param string $name
+     *
+     * @return static
+     */
+    public function removeHeader(string $name) : static
+    {
+        unset($this->headers[\strtolower($name)]);
+        return $this;
+    }
+
+    /**
+     * @param string $name
      * @param string $value
      *
      * @return static

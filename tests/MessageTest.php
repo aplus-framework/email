@@ -60,6 +60,13 @@ final class MessageTest extends TestCase
         );
     }
 
+    public function testRemoveHeader() : void
+    {
+        self::assertSame('1.0', $this->message->getHeader('MIME-Version'));
+        $this->message->removeHeader('MIME-Version');
+        self::assertNull($this->message->getHeader('MIME-Version'));
+    }
+
     public function testDate() : void
     {
         self::assertNull($this->message->getDate());

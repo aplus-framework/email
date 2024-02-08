@@ -113,3 +113,8 @@ expectedArguments(
     0,
     argumentsSet('headers')
 );
+expectedArguments(
+    \Framework\Email\Message::removeHeader(),
+    0,
+    argumentsSet('headers')
+);
