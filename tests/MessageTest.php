@@ -113,6 +113,8 @@ final class MessageTest extends TestCase
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getReplyTo());
+        $this->message->removeReplyTo();
+        self::assertSame([], $this->message->getReplyTo());
     }
 
     public function testBcc() : void
@@ -127,6 +129,8 @@ final class MessageTest extends TestCase
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getBcc());
+        $this->message->removeBcc();
+        self::assertSame([], $this->message->getBcc());
     }
 
     public function testCc() : void
@@ -141,6 +145,8 @@ final class MessageTest extends TestCase
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getCc());
+        $this->message->removeCc();
+        self::assertSame([], $this->message->getCc());
     }
 
     public function testTo() : void
@@ -155,6 +161,8 @@ final class MessageTest extends TestCase
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getTo());
+        $this->message->removeTo();
+        self::assertSame([], $this->message->getTo());
     }
 
     public function testSubject() : void

@@ -415,6 +415,15 @@ class Message implements \Stringable
     }
 
     /**
+     * @return static
+     */
+    public function removeTo() : static
+    {
+        $this->to = [];
+        return $this;
+    }
+
+    /**
      * Add Carbon Copy email address.
      *
      * @param string $address
@@ -435,6 +444,15 @@ class Message implements \Stringable
     public function getCc() : array
     {
         return $this->cc;
+    }
+
+    /**
+     * @return static
+     */
+    public function removeCc() : static
+    {
+        $this->cc = [];
+        return $this;
     }
 
     /**
@@ -470,6 +488,15 @@ class Message implements \Stringable
     }
 
     /**
+     * @return static
+     */
+    public function removeBcc() : static
+    {
+        $this->bcc = [];
+        return $this;
+    }
+
+    /**
      * @param string $address
      * @param string|null $name
      *
@@ -488,6 +515,15 @@ class Message implements \Stringable
     public function getReplyTo() : array
     {
         return $this->replyTo;
+    }
+
+    /**
+     * @return static
+     */
+    public function removeReplyTo() : static
+    {
+        $this->replyTo = [];
+        return $this;
     }
 
     /**
