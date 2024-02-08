@@ -106,7 +106,7 @@ final class MailerTest extends TestCase
             'host' => \getenv('SMTP_HOST'),
             'username' => 'foo',
             'password' => \getenv('SMTP_PASSWORD'),
-            'add_logs' => true,
+            'save_logs' => true,
         ]);
         self::assertFalse($mailer->send($this->getMessage()));
         self::assertSame(
@@ -137,7 +137,7 @@ final class MailerTest extends TestCase
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => 'foo',
-            'add_logs' => true,
+            'save_logs' => true,
         ]);
         self::assertFalse($mailer->send($this->getMessage()));
         self::assertSame(
@@ -151,7 +151,7 @@ final class MailerTest extends TestCase
         \sleep(5);
         $smtp = new Mailer([
             'host' => 'foo',
-            'add_logs' => true,
+            'save_logs' => true,
         ]);
         self::assertFalse($smtp->send($this->getMessage()));
         $log = $smtp->getLogs()[0];
@@ -173,7 +173,7 @@ final class MailerTest extends TestCase
             'host' => \getenv('SMTP_HOST'),
             'username' => \getenv('SMTP_USERNAME'),
             'password' => \getenv('SMTP_PASSWORD'),
-            'add_logs' => true,
+            'save_logs' => true,
         ]);
         $mailer->send($this->getMessage());
         self::assertNotEmpty($mailer->getLogs());

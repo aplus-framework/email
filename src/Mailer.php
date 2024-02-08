@@ -89,7 +89,7 @@ class Mailer
         'response_timeout' => 'int',
         'hostname' => 'string',
         'keep_alive' => 'bool',
-        'add_logs' => 'bool',
+        'save_logs' => 'bool',
     ])]
     protected function makeConfig(#[SensitiveParameter] array $config) : array
     {
@@ -112,7 +112,7 @@ class Mailer
             'response_timeout' => 5,
             'hostname' => \gethostname(),
             'keep_alive' => false,
-            'add_logs' => false,
+            'save_logs' => false,
         ], $config);
     }
 
@@ -142,7 +142,7 @@ class Mailer
         'response_timeout' => 'int',
         'hostname' => 'string',
         'keep_alive' => 'bool',
-        'add_logs' => 'bool',
+        'save_logs' => 'bool',
     ])]
     public function getConfigs() : array
     {
@@ -375,7 +375,7 @@ class Mailer
      */
     protected function addLog(string $command, string $response) : static
     {
-        if (!$this->getConfig('add_logs')) {
+        if (!$this->getConfig('save_logs')) {
             return $this;
         }
         $this->logs[] = [
