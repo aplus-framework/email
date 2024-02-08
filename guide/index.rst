@@ -31,14 +31,13 @@ The process of sending messages by email follows the example code below.
 
 .. code-block:: php
 
-    use Framework\Email\Mailers\SMTPMailer;
-    use Framework\Email\Message;
+    use Framework\Email\Mailer;
 
     // Set the mailer that will send the messages
-    $mailer = new SMTPMailer('johndoe', 'p$$word');
+    $mailer = new Mailer('johndoe', 'p$$word');
 
     // The message is created
-    $message = new Message();
+    $message = $mailer->createMessage();
     $message->setFrom('johndoe@domain.tld')
             ->addTo('mary@domain.tld')
             ->setPlainMessage('Hello, Mary! How are you?');
@@ -49,8 +48,8 @@ The process of sending messages by email follows the example code below.
     if ($sent) {
         echo 'Message sent.';
     } else {
-        echo 'The message was not sent.';
-        print_r($mailer->getLogs()); // Show logs for debugging
+        echo 'The message was not sent: ';
+        echo $mailer->getLastResponse();
     }
 
 Plain Message
@@ -148,12 +147,19 @@ The default configs for connecting to the mail server are as follows:
 
 .. code-block:: php
 
-    use Framework\Email\Mailer\SMTPMailer;
+    use Framework\Email\Mailer;
 
     $config = [
         'host' => 'localhost',
         'port' => 587,
         'tls' => true,
+        'options' => [
+            'ssl' => [
+                'allow_self_signed' => false,
+                'verify_peer' => true,
+                'verify_peer_name' => true,
+            ],
+        ],
         'username' => null,
         'password' => null,
         'charset' => 'utf-8',
@@ -162,10 +168,10 @@ The default configs for connecting to the mail server are as follows:
         'response_timeout' => 5,
         'hostname' => gethostname(),
         'keep_alive' => false,
-        'add_logs' => true,
+        'save_logs' => false,
     ];
 
-    $mailer = new SMTPMailer($config);
+    $mailer = new Mailer($config);
 
 The **username** and **password** must be set.
 
@@ -178,12 +184,14 @@ If you are going to send more than one message on the same connection, set
 **keep_alive** to ``true``. 
 This will use the same connection for all submissions.
 
-Add Logs
-########
+Logs
+####
 
-It is possible to clear the logs after each submission using the ``resetLogs`` method.
+If you need to debug communication with the SMTP server, enable the option to
+save logs in the configuration by setting ``save_logs`` to ``true``.
 
-Also, you can disable log saving, to save memory, by setting **add_logs** to ``false``.
+It is possible to clear the logs after each submission using the
+``Mailer::resetLogs`` method.
 
 Conclusion
 ----------
