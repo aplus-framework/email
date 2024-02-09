@@ -661,6 +661,17 @@ class Message implements \Stringable
     }
 
     /**
+     * Remove all items of the From header.
+     *
+     * @return static
+     */
+    public function removeFrom() : static
+    {
+        $this->from = [];
+        return $this;
+    }
+
+    /**
      * Set the Date header.
      *
      * @param DateTime|null $datetime A custom DateTime or null to set the

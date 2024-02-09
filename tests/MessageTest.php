@@ -38,6 +38,10 @@ final class MessageTest extends TestCase
         self::assertSame(['foo@bar.com', 'Foo'], $this->message->getFrom());
         self::assertSame('foo@bar.com', $this->message->getFromAddress());
         self::assertSame('Foo', $this->message->getFromName());
+        $this->message->removeFrom();
+        self::assertSame([], $this->message->getFrom());
+        self::assertNull($this->message->getFromAddress());
+        self::assertNull($this->message->getFromName());
     }
 
     public function testHeaders() : void
