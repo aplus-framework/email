@@ -715,14 +715,14 @@ class Message implements \Stringable
     /**
      * Set the X-Mailer header.
      *
-     * @param string|null $xmailer The X-Mailer header or null to set the default
+     * @param string|null $xMailer The X-Mailer header or null to set the default
      *
      * @return static
      */
-    public function setXMailer(string $xmailer = null) : static
+    public function setXMailer(string $xMailer = null) : static
     {
-        $xmailer ??= 'Aplus Mailer';
-        $this->setHeader(Header::X_MAILER, $xmailer);
+        $xMailer ??= 'Aplus Mailer';
+        $this->setHeader(Header::X_MAILER, $xMailer);
         return $this;
     }
 
