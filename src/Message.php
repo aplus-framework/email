@@ -12,6 +12,7 @@ namespace Framework\Email;
 use DateTime;
 use JetBrains\PhpStorm\Language;
 use LogicException;
+use Random\RandomException;
 
 /**
  * Class Message.
@@ -104,12 +105,19 @@ class Message implements \Stringable
      */
     protected ?string $date = null;
 
+    /**
+     * Render the Message as string.
+     *
+     * @return string
+     */
     public function __toString() : string
     {
         return $this->renderData();
     }
 
     /**
+     * Set the Mailer instance.
+     *
      * @param Mailer $mailer The Mailer instance
      *
      * @return static
@@ -136,12 +144,28 @@ class Message implements \Stringable
         return 'utf-8';
     }
 
+    /**
+     * Set the boundary.
+     *
+     * @param string|null $boundary
+     *
+     * @throws RandomException
+     *
+     * @return static
+     */
     public function setBoundary(string $boundary = null) : static
     {
         $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
         return $this;
     }
 
+    /**
+     * Get the boundary.
+     *
+     * @throws RandomException
+     *
+     * @return string
+     */
     public function getBoundary() : string
     {
         if (!isset($this->boundary)) {
@@ -151,7 +175,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $name
+     * Remove a header.
+     *
+     * @param string $name The header name
      *
      * @return static
      */
@@ -162,8 +188,10 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $name
-     * @param string $value
+     * Set a header.
+     *
+     * @param string $name The header name
+     * @param string $value The header value
      *
      * @return static
      */
@@ -173,13 +201,23 @@ class Message implements \Stringable
         return $this;
     }
 
+    /**
+     * Get a header.
+     *
+     * @param string $name The header name
+     *
+     * @return string|null The header value or null if not set
+     */
     public function getHeader(string $name) : ?string
     {
         return $this->headers[\strtolower($name)] ?? null;
     }
 
     /**
-     * @return array<string,string>
+     * Get all headers set.
+     *
+     * @return array<string,string> The header names, in lowercase, as keys and
+     * the values as values
      */
     public function getHeaders() : array
     {
@@ -187,7 +225,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<int,string>
+     * Get header lines.
+     *
+     * @return array<int,string> The header lines
      */
     public function getHeaderLines() : array
     {
@@ -234,7 +274,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $message
+     * Set the text/plain message.
+     *
+     * @param string $message The text/plain message
      *
      * @return static
      */
@@ -244,6 +286,11 @@ class Message implements \Stringable
         return $this;
     }
 
+    /**
+     * Get the text/plain message.
+     *
+     * @return string|null The message or null if not set
+     */
     public function getPlainMessage() : ?string
     {
         return $this->plainMessage ?? null;
@@ -256,7 +303,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $message
+     * Set the text/html message.
+     *
+     * @param string $message The text/html message
      *
      * @return static
      */
@@ -266,6 +315,11 @@ class Message implements \Stringable
         return $this;
     }
 
+    /**
+     * Get the text/html message.
+     *
+     * @return string|null The text/html message or null if not set
+     */
     public function getHtmlMessage() : ?string
     {
         return $this->htmlMessage ?? null;
@@ -292,7 +346,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<int,string>
+     * Get a lis of attachments.
+     *
+     * @return array<int,string> Array of filenames
      */
     public function getAttachments() : array
     {
@@ -300,6 +356,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Add a filename to be attached.
+     *
      * @param string $filename The filename
      *
      * @return static
@@ -311,6 +369,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Set a filename to be attached inline (image).
+     *
      * @param string $filename The filename
      * @param string $cid The Content-ID
      *
@@ -323,7 +383,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<string,string>
+     * Get a lis of inline attachments.
+     *
+     * @return array<string,string> Content-IDs as keys and filenames as values
      */
     public function getInlineAttachments() : array
     {
@@ -378,7 +440,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $subject
+     * Set the Subject header.
+     *
+     * @param string $subject The header value
      *
      * @return static
      */
@@ -388,14 +452,21 @@ class Message implements \Stringable
         return $this;
     }
 
+    /**
+     * Get the Subject header.
+     *
+     * @return string|null The header value or null if not set
+     */
     public function getSubject() : ?string
     {
         return $this->getHeader(Header::SUBJECT);
     }
 
     /**
-     * @param string $address
-     * @param string|null $name
+     * Add address and name in the To header.
+     *
+     * @param string $address The email address
+     * @param string|null $name The name or null to don't set
      *
      * @return static
      */
@@ -407,7 +478,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<string,string|null>
+     * Get items of the To header.
+     *
+     * @return array<string,string|null> Emails as keys and names as values
      */
     public function getTo() : array
     {
@@ -415,6 +488,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Remove all items of the To header.
+     *
      * @return static
      */
     public function removeTo() : static
@@ -424,10 +499,10 @@ class Message implements \Stringable
     }
 
     /**
-     * Add Carbon Copy email address.
+     * Add address and name in the Cc header.
      *
-     * @param string $address
-     * @param string|null $name
+     * @param string $address The email address
+     * @param string|null $name The name or null to don't set
      *
      * @return static
      */
@@ -439,7 +514,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<string,string|null>
+     * Get items of the Cc header.
+     *
+     * @return array<string,string|null> Emails as keys and names as values
      */
     public function getCc() : array
     {
@@ -447,6 +524,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Remove all items of the Cc header.
+     *
      * @return static
      */
     public function removeCc() : static
@@ -465,10 +544,10 @@ class Message implements \Stringable
     }
 
     /**
-     * Add Blind Carbon Copy email address.
+     * Add address and name in the Bcc header.
      *
-     * @param string $address
-     * @param string|null $name
+     * @param string $address The email address
+     * @param string|null $name The name or null to don't set
      *
      * @return static
      */
@@ -480,7 +559,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<string,string|null>
+     * Get items of the Bcc header.
+     *
+     * @return array<string,string|null> Emails as keys and names as values
      */
     public function getBcc() : array
     {
@@ -488,6 +569,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Remove all items of the Bcc header.
+     *
      * @return static
      */
     public function removeBcc() : static
@@ -497,8 +580,10 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $address
-     * @param string|null $name
+     * Add address and name in the Reply-To header.
+     *
+     * @param string $address The email address
+     * @param string|null $name The name or null to don't set
      *
      * @return static
      */
@@ -510,7 +595,9 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<string,string|null>
+     * Get items of the Reply-To header.
+     *
+     * @return array<string,string|null> Emails as keys and names as values
      */
     public function getReplyTo() : array
     {
@@ -518,6 +605,8 @@ class Message implements \Stringable
     }
 
     /**
+     * Remove all items of the Reply-To header.
+     *
      * @return static
      */
     public function removeReplyTo() : static
@@ -527,8 +616,10 @@ class Message implements \Stringable
     }
 
     /**
-     * @param string $address
-     * @param string|null $name
+     * Set the From header.
+     *
+     * @param string $address The email address
+     * @param string|null $name The name or null to don't set
      *
      * @return static
      */
@@ -540,25 +631,40 @@ class Message implements \Stringable
     }
 
     /**
-     * @return array<int,string|null>
+     * Get the From header items.
+     *
+     * @return array<int,string|null> email address in key 0 and name in key 1
      */
     public function getFrom() : array
     {
         return $this->from;
     }
 
+    /**
+     * Get the email address of the From header.
+     *
+     * @return string|null The email or null if not set
+     */
     public function getFromAddress() : ?string
     {
         return $this->from[0] ?? null;
     }
 
+    /**
+     * Get the name of the From header.
+     *
+     * @return string|null The name or null if not set
+     */
     public function getFromName() : ?string
     {
         return $this->from[1] ?? null;
     }
 
     /**
-     * @param DateTime|null $datetime
+     * Set the Date header.
+     *
+     * @param DateTime|null $datetime A custom DateTime or null to set the
+     * current datetime
      *
      * @return static
      */
@@ -569,6 +675,11 @@ class Message implements \Stringable
         return $this;
     }
 
+    /**
+     * Get the Date header.
+     *
+     * @return string|null The header value or null if not set
+     */
     public function getDate() : ?string
     {
         return $this->getHeader(Header::DATE);

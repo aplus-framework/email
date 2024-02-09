@@ -64,6 +64,9 @@ class Mailer
             ]);
     }
 
+    /**
+     * Disconnect from SMTP server.
+     */
     public function __destruct()
     {
         $this->disconnect();
@@ -117,9 +120,11 @@ class Mailer
     }
 
     /**
-     * @param string $key
+     * Get a config value.
      *
-     * @return mixed
+     * @param string $key The config key
+     *
+     * @return mixed The config value
      */
     public function getConfig(string $key) : mixed
     {
@@ -127,6 +132,8 @@ class Mailer
     }
 
     /**
+     * Get all configs.
+     *
      * @return array<string,mixed>
      */
     #[ArrayShape([
@@ -160,6 +167,11 @@ class Mailer
         return $this;
     }
 
+    /**
+     * Get the last response.
+     *
+     * @return string|null The last response or null if there is none
+     */
     public function getLastResponse() : ?string
     {
         return $this->lastResponse;
@@ -239,9 +251,9 @@ class Mailer
     /**
      * Send an Email Message.
      *
-     * @param Message $message
+     * @param Message $message The Message instance
      *
-     * @return bool
+     * @return bool True if successful, otherwise false
      */
     public function send(Message $message) : bool
     {
@@ -385,6 +397,13 @@ class Mailer
         return $this;
     }
 
+    /**
+     * Set the debug collector.
+     *
+     * @param EmailCollector $collector The debug collector
+     *
+     * @return static
+     */
     public function setDebugCollector(EmailCollector $collector) : static
     {
         $collector->setMailer($this);

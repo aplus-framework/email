@@ -92,11 +92,25 @@ class Header
         'x-priority' => 'X-Priority',
     ];
 
+    /**
+     * Get a correct header name.
+     *
+     * @param string $name The header name in any case
+     *
+     * @return string The correct name or the same if it is unknown
+     */
     public static function getName(string $name) : string
     {
         return static::$headers[\strtolower($name)] ?? $name;
     }
 
+    /**
+     * Set a correct header name.
+     *
+     * @param string $name The header name in the correct case
+     *
+     * @return void
+     */
     public static function setName(string $name) : void
     {
         static::$headers[\strtolower($name)] = $name;
