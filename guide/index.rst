@@ -188,7 +188,8 @@ Logs
 ####
 
 If you need to debug communication with the SMTP server, enable the option to
-save logs in the configuration by setting ``save_logs`` to ``true``.
+save logs in the configuration by setting ``save_logs`` to ``true``. Then it
+will be possible to obtain the logs with the ``Mailer::getLogs`` method.
 
 It is possible to clear the logs after each submission using the
 ``Mailer::resetLogs`` method.
