@@ -48,10 +48,10 @@ class Mailer
         #[SensitiveParameter]
         array | string $username,
         #[SensitiveParameter]
-        string $password = null,
+        ?string $password = null,
         string $host = 'localhost',
         int $port = 587,
-        string $hostname = null
+        ?string $hostname = null
     ) {
         $this->config = \is_array($username)
             ? $this->makeConfig($username)
@@ -280,7 +280,7 @@ class Mailer
         return $this->sendMessage($message) === 250;
     }
 
-    protected function sendMessage(Message $message) : int | false
+    protected function sendMessage(Message $message) : false | int
     {
         if (!$this->connect()) {
             return false;

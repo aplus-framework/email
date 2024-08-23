@@ -153,7 +153,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function setBoundary(string $boundary = null) : static
+    public function setBoundary(?string $boundary = null) : static
     {
         $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
         return $this;
@@ -470,7 +470,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function addTo(string $address, string $name = null) : static
+    public function addTo(string $address, ?string $name = null) : static
     {
         $this->to[$address] = $name;
         $this->setHeader(Header::TO, static::formatAddressList($this->to));
@@ -506,7 +506,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function addCc(string $address, string $name = null) : static
+    public function addCc(string $address, ?string $name = null) : static
     {
         $this->cc[$address] = $name;
         $this->setHeader(Header::CC, static::formatAddressList($this->cc));
@@ -551,7 +551,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function addBcc(string $address, string $name = null) : static
+    public function addBcc(string $address, ?string $name = null) : static
     {
         $this->bcc[$address] = $name;
         $this->setHeader(Header::BCC, static::formatAddressList($this->bcc));
@@ -587,7 +587,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function addReplyTo(string $address, string $name = null) : static
+    public function addReplyTo(string $address, ?string $name = null) : static
     {
         $this->replyTo[$address] = $name;
         $this->setHeader(Header::REPLY_TO, static::formatAddressList($this->replyTo));
@@ -623,7 +623,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function setFrom(string $address, string $name = null) : static
+    public function setFrom(string $address, ?string $name = null) : static
     {
         $this->from = [$address, $name];
         $this->setHeader(Header::FROM, static::formatAddress($address, $name));
@@ -679,7 +679,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function setDate(DateTime $datetime = null) : static
+    public function setDate(?DateTime $datetime = null) : static
     {
         $date = $datetime ? $datetime->format('r') : \date('r');
         $this->setHeader(Header::DATE, $date);
@@ -730,7 +730,7 @@ class Message implements \Stringable
      *
      * @return static
      */
-    public function setXMailer(string $xMailer = null) : static
+    public function setXMailer(?string $xMailer = null) : static
     {
         $xMailer ??= 'Aplus Mailer';
         $this->setHeader(Header::X_MAILER, $xMailer);
@@ -747,7 +747,7 @@ class Message implements \Stringable
         return $this->getHeader(Header::X_MAILER);
     }
 
-    protected static function formatAddress(string $address, string $name = null) : string
+    protected static function formatAddress(string $address, ?string $name = null) : string
     {
         return $name !== null ? '"' . $name . '" <' . $address . '>' : $address;
     }

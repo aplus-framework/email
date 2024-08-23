@@ -48,7 +48,7 @@ class MessageMock extends Message
         return parent::renderData();
     }
 
-    public static function formatAddress(string $address, string $name = null) : string
+    public static function formatAddress(string $address, ?string $name = null) : string
     {
         return parent::formatAddress($address, $name);
     }
