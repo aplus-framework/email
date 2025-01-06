@@ -72,7 +72,7 @@ class EmailCollector extends Collector
             </p>
             <p><strong>Size:</strong> <?= Debugger::convertSize($data['length']) ?></p>
             <p>
-                <strong>Time Sending:</strong> <?= \round($data['end'] - $data['start'], 6) ?> seconds
+                <strong>Time Sending:</strong> <?= Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']) ?> ms
             </p>
             <h3>Headers</h3>
             <table>
