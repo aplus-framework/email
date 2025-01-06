@@ -33,7 +33,7 @@
     "require": {
         "php": ">=8.3",
         "ext-fileinfo": "*",
-        "aplus/debug": "^4.0"
+        "aplus/debug": "^4.3"
     },
     "require-dev": {
         "ext-xdebug": "*",
