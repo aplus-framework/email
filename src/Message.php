@@ -13,13 +13,14 @@ use DateTime;
 use JetBrains\PhpStorm\Language;
 use LogicException;
 use Random\RandomException;
+use Stringable;
 
 /**
  * Class Message.
  *
  * @package email
  */
-class Message implements \Stringable
+class Message implements Stringable
 {
     /**
      * The Mailer instance.
