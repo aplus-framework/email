@@ -57,6 +57,7 @@ class EmailCollector extends Collector
             return \ob_get_clean(); // @phpstan-ignore-line
         }
         $count = \count($this->getData()); ?>
+        <h1>Messages</h1>
         <p>Sent <?= $this->getTotalMessagesSent() ?> of <?=
             $count ?> message<?= $count === 1 ? '' : 's' ?>:
         </p>
