@@ -261,10 +261,12 @@ class Mailer
             $start = \microtime(true);
             $code = $this->sendMessage($message);
             $end = \microtime(true);
+            $success = $this->isSuccessCode($code);
             $this->debugCollector->addData([
                 'start' => $start,
                 'end' => $end,
                 'code' => $code,
+                'success' => $success,
                 'last_response' => $this->getLastResponse(),
                 'from' => $message->getFromAddress() ?? $this->getConfig('username'),
                 'length' => \strlen((string) $message),
@@ -275,7 +277,7 @@ class Mailer
                 'attachments' => $message->getAttachments(),
                 'inlineAttachments' => $message->getInlineAttachments(),
             ]);
-            return $code === 250;
+            return $success;
         }
         return $this->isSuccessCode($this->sendMessage($message));
     }

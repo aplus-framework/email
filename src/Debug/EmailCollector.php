@@ -65,7 +65,7 @@ class EmailCollector extends Collector
         foreach ($this->getData() as $index => $data) : ?>
             <h2>Message <?= $index + 1 ?></h2>
             <p><strong>Status:</strong>
-                <?= $data['code'] === 250 ? 'OK' : 'Error' ?></p>
+                <?= $data['success'] ? 'OK' : 'Error' ?></p>
             <p><strong>Last Response:</strong> <?= $data['last_response'] ?></p>
             <p><strong>From:</strong> <?= \htmlentities($data['from']) ?></p>
             <p>
@@ -170,7 +170,7 @@ class EmailCollector extends Collector
     {
         $result = 0;
         foreach ($this->getData() as $data) {
-            if ($data['code'] === 250) {
+            if ($data['success']) {
                 $result++;
             }
         }
