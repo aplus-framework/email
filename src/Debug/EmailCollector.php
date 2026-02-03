@@ -130,16 +130,16 @@ class EmailCollector extends Collector
                 <table>
                     <thead>
                     <tr>
-                        <th>Content-ID</th>
                         <th>File</th>
+                        <th>Content-ID</th>
                         <th>MIME-Type</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($data['inlineAttachments'] as $cid => $attachment): ?>
                         <tr>
-                            <td><?= \htmlentities($cid) ?></td>
                             <td><?= \htmlentities($attachment->getFilename()); ?></td>
+                            <td><?= \htmlentities($cid) ?></td>
                             <td><?= \htmlentities($attachment->getMimeType()); ?></td>
                         </tr>
                     <?php endforeach ?>

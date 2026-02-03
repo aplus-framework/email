@@ -376,15 +376,15 @@ class Message implements Stringable
     /**
      * Set a filename to be attached inline (image).
      *
-     * @param string $cid The Content-ID
      * @param string $filename The filename
+     * @param string $cid The Content-ID
      * @param string|null $mimeType The MIME type
      *
      * @return static
      */
     public function setInlineAttachment(
-        string $cid,
         string $filename,
+        string $cid,
         ?string $mimeType = null
     ) : static {
         $this->inlineAttachments[$cid] = new Attachment($filename, mimeType: $mimeType);
