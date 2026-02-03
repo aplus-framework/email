@@ -11,7 +11,6 @@ namespace Framework\Email;
 
 use DateTime;
 use JetBrains\PhpStorm\Language;
-use LogicException;
 use Random\RandomException;
 use Stringable;
 
@@ -43,13 +42,13 @@ class Message implements Stringable
     /**
      * A list of attachments with Content-Disposition equals `attachment`.
      *
-     * @var array<int,string> The filenames
+     * @var array<int,Attachment> The attachments
      */
     protected array $attachments = [];
     /**
      * An associative array of attachments with Content-Disposition equals `inline`.
      *
-     * @var array<string,string> The Content-ID's as keys and the filenames as values
+     * @var array<string,Attachment> The Content-ID's as keys and the Attachments as values
      */
     protected array $inlineAttachments = [];
     /**
@@ -349,7 +348,7 @@ class Message implements Stringable
     /**
      * Get a lis of attachments.
      *
-     * @return array<int,string> Array of filenames
+     * @return array<int,Attachment> Array of Attachments
      */
     public function getAttachments() : array
     {
@@ -357,36 +356,45 @@ class Message implements Stringable
     }
 
     /**
-     * Add a filename to be attached.
+     * Add an attachment.
      *
      * @param string $filename The filename
+     * @param string|null $name The name
+     * @param string|null $mimeType The MIME type
      *
      * @return static
      */
-    public function addAttachment(string $filename) : static
-    {
-        $this->attachments[] = $filename;
+    public function addAttachment(
+        string $filename,
+        ?string $name = null,
+        ?string $mimeType = null
+    ) : static {
+        $this->attachments[] = new Attachment($filename, $name, $mimeType);
         return $this;
     }
 
     /**
      * Set a filename to be attached inline (image).
      *
-     * @param string $filename The filename
      * @param string $cid The Content-ID
+     * @param string $filename The filename
+     * @param string|null $mimeType The MIME type
      *
      * @return static
      */
-    public function setInlineAttachment(string $filename, string $cid) : static
-    {
-        $this->inlineAttachments[$cid] = $filename;
+    public function setInlineAttachment(
+        string $cid,
+        string $filename,
+        ?string $mimeType = null
+    ) : static {
+        $this->inlineAttachments[$cid] = new Attachment($filename, mimeType: $mimeType);
         return $this;
     }
 
     /**
      * Get a lis of inline attachments.
      *
-     * @return array<string,string> Content-IDs as keys and filenames as values
+     * @return array<string,Attachment> Content-IDs as keys and Attachments as values
      */
     public function getInlineAttachments() : array
     {
@@ -398,19 +406,12 @@ class Message implements Stringable
         $part = '';
         $crlf = $this->getCrlf();
         foreach ($this->getAttachments() as $attachment) {
-            if (!\is_file($attachment)) {
-                throw new LogicException('Attachment file not found: ' . $attachment);
-            }
-            $filename = \pathinfo($attachment, \PATHINFO_BASENAME);
-            $filename = \htmlspecialchars($filename, \ENT_QUOTES | \ENT_HTML5);
-            $contents = \file_get_contents($attachment);
-            $contents = \base64_encode($contents); // @phpstan-ignore-line
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
-            $part .= 'Content-Type: ' . $this->getContentType($attachment)
-                . '; name="' . $filename . '"' . $crlf;
-            $part .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType()
+                . '; name="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
             $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
-            $part .= \chunk_split($contents) . $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
         }
         return $part;
     }
@@ -424,18 +425,13 @@ class Message implements Stringable
     {
         $part = '';
         $crlf = $this->getCrlf();
-        foreach ($this->getInlineAttachments() as $cid => $filename) {
-            if (!\is_file($filename)) {
-                throw new LogicException('Inline attachment file not found: ' . $filename);
-            }
-            $contents = \file_get_contents($filename);
-            $contents = \base64_encode($contents); // @phpstan-ignore-line
+        foreach ($this->getInlineAttachments() as $cid => $attachment) {
             $part .= '--mixed-' . $this->getBoundary() . $crlf;
             $part .= 'Content-ID: ' . $cid . $crlf;
-            $part .= 'Content-Type: ' . $this->getContentType($filename) . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
             $part .= 'Content-Disposition: inline' . $crlf;
             $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
-            $part .= \chunk_split($contents) . $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
         }
         return $part;
     }
