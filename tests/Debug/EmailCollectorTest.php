@@ -99,7 +99,7 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         $message->setHtmlMessage('<b>Hello!</b><img src="cid:foo">')
-            ->setInlineAttachment(__DIR__ . '/../logo-circle.png', 'foo');
+            ->setInlineAttachment('foo', __DIR__ . '/../logo-circle.png');
         \sleep(5);
         $mailer->send($message);
         $contents = $this->collector->getContents();

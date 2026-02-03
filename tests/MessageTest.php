@@ -9,6 +9,7 @@
  */
 namespace Tests\Email;
 
+use Framework\Email\Attachment;
 use Framework\Email\Mailer;
 use Framework\Email\Message;
 use Framework\Email\XPriority;
@@ -180,12 +181,12 @@ final class MessageTest extends TestCase
     {
         self::assertEmpty($this->message->getAttachments());
         $this->message->addAttachment(__FILE__);
-        self::assertSame([__FILE__], $this->message->getAttachments());
+        $attachments = [];
+        $attachments[] = new Attachment(__FILE__);
+        self::assertEquals($attachments, $this->message->getAttachments());
+        $attachments[] = new Attachment(__DIR__ . '/logo-circle.png');
         $this->message->addAttachment(__DIR__ . '/logo-circle.png');
-        self::assertSame([
-            __FILE__,
-            __DIR__ . '/logo-circle.png',
-        ], $this->message->getAttachments());
+        self::assertEquals($attachments, $this->message->getAttachments());
         $contents = $this->message->renderAttachments();
         self::assertStringContainsString(
             'text/x-php; name="MessageTest.php"',
@@ -199,34 +200,32 @@ final class MessageTest extends TestCase
 
     public function testInvalidAttachmentPath() : void
     {
-        $this->message->addAttachment(__DIR__);
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Attachment file not found: ' . __DIR__);
-        $this->message->renderAttachments();
+        $this->message->addAttachment(__DIR__);
     }
 
     public function testInlineAttachments() : void
     {
         self::assertEmpty($this->message->getInlineAttachments());
-        $this->message->setInlineAttachment(__FILE__, 'abc123');
-        self::assertSame([
-            'abc123' => __FILE__,
-        ], $this->message->getInlineAttachments());
+        $this->message->setInlineAttachment('abc123', __FILE__);
+        $attachments['abc123'] = new Attachment(__FILE__);
+        self::assertEquals($attachments, $this->message->getInlineAttachments());
     }
 
     public function testInvalidInlineAttachmentPath() : void
     {
-        $this->message->setInlineAttachment(__DIR__, 'foobar');
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Inline attachment file not found: ' . __DIR__);
-        $this->message->renderInlineAttachments();
+        $this->expectExceptionMessage('Attachment file not found: ' . __DIR__);
+        $this->message->setInlineAttachment('foobar', __DIR__);
     }
 
     public function testInlineAttachmentsContents() : void
     {
         self::assertEmpty($this->message->getInlineAttachments());
-        $this->message->setInlineAttachment(__FILE__, 'foobar');
-        self::assertSame(['foobar' => __FILE__], $this->message->getInlineAttachments());
+        $this->message->setInlineAttachment('foobar', __FILE__);
+        $attachments['foobar'] = new Attachment(__FILE__);
+        self::assertEquals($attachments, $this->message->getInlineAttachments());
         self::assertStringContainsString(
             'Content-ID: foobar',
             $this->message->renderInlineAttachments()

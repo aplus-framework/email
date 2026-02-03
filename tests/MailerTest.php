@@ -43,7 +43,7 @@ final class MailerTest extends TestCase
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setHtmlMessage('<b>Hello!</b><img src="cid:abc123">')
-            ->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
+            ->setInlineAttachment('abc123', __DIR__ . '/logo-circle.png')
             ->addAttachment(__FILE__);
     }
 
