@@ -22,7 +22,7 @@ class Attachment
         ?string $name = null,
         ?string $mimeType = null
     ) {
-        $this->setfilename($filename);
+        $this->setFilename($filename);
         $this->setName($name);
         $this->setMimeType($mimeType);
     }
