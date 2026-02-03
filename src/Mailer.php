@@ -277,7 +277,7 @@ class Mailer
             ]);
             return $code === 250;
         }
-        return $this->sendMessage($message) === 250;
+        return $this->isSuccessCode($this->sendMessage($message));
     }
 
     protected function sendMessage(Message $message) : false | int
@@ -419,5 +419,16 @@ class Mailer
     public function createMessage() : Message
     {
         return (new Message())->setMailer($this);
+    }
+
+    protected function isSuccessCode(false | int $code) : bool
+    {
+        if ($code === false) {
+            return false;
+        }
+        if ($code === 354 && $this->getConfig('keep_alive')) {
+            return true;
+        }
+        return $code === 250 || $code === 0;
     }
 }

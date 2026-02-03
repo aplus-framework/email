@@ -238,4 +238,19 @@ final class MailerTest extends TestCase
         self::assertInstanceOf(Message::class, $m2);
         self::assertNotSame($m1, $m2);
     }
+
+    public function testIsSuccessCode() : void
+    {
+        $mailer = new MailerMock([]);
+        self::assertTrue($mailer->isSuccessCode(250));
+        self::assertTrue($mailer->isSuccessCode(0));
+        self::assertFalse($mailer->isSuccessCode(354));
+        self::assertFalse($mailer->isSuccessCode(false));
+    }
+
+    public function testIsSuccessCodeWithKeepAlive() : void
+    {
+        $mailer = new MailerMock(['keep_alive' => true]);
+        self::assertTrue($mailer->isSuccessCode(354));
+    }
 }
