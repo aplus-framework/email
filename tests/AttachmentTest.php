@@ -12,7 +12,7 @@ namespace Tests\Email;
 use Framework\Email\Attachment;
 use PHPUnit\Framework\TestCase;
 
-class AttachmentTest extends TestCase
+final class AttachmentTest extends TestCase
 {
     public function testFilename() : void
     {
