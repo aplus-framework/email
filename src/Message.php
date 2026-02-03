@@ -416,11 +416,6 @@ class Message implements Stringable
         return $part;
     }
 
-    protected function getContentType(string $filename) : string
-    {
-        return \mime_content_type($filename) ?: 'application/octet-stream';
-    }
-
     protected function renderInlineAttachments() : string
     {
         $part = '';
