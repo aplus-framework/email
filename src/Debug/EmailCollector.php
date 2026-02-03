@@ -151,6 +151,10 @@ class EmailCollector extends Collector
         ?>
         <p><strong>Host:</strong> <?= \htmlentities($configs['host']) ?></p>
         <p><strong>Port:</strong> <?= \htmlentities((string) $configs['port']) ?></p>
+        <p><strong>TLS:</strong> <?= $configs['tls'] ? 'Yes' : 'No' ?></p>
+        <p><strong>Username:</strong> <?= \htmlentities($configs['username']) ?></p>
+        <p><strong>Keep Alive:</strong> <?= $configs['keep_alive'] ? 'Yes' : 'No' ?></p>
+        <p><strong>Save Logs:</strong> <?= $configs['save_logs'] ? 'Yes' : 'No' ?></p>
         <?php
         return \ob_get_clean(); // @phpstan-ignore-line
     }
