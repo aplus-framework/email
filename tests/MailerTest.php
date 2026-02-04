@@ -53,6 +53,22 @@ final class MailerTest extends TestCase
         self::assertTrue($this->mailer->send($this->getMessage()));
     }
 
+    public function testSendWithWarning() : void
+    {
+        \sleep(5);
+        // https://github.com/sebastianbergmann/phpunit/issues/5062#issuecomment-1416362657
+        \set_error_handler(static function (int $code, string $message) : never {
+            throw new \ErrorException($message, $code);
+        }, \E_USER_WARNING);
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage(
+            'The return value of method Framework\Email\Mailer::send() should '
+            . 'either be used or intentionally ignored by casting it as (void)'
+        );
+        $this->mailer->send($this->getMessage());
+        \restore_error_handler();
+    }
+
     public function testKeepAlive() : void
     {
         \sleep(5);
@@ -175,7 +191,8 @@ final class MailerTest extends TestCase
             'password' => \getenv('SMTP_PASSWORD'),
             'save_logs' => true,
         ]);
-        $mailer->send($this->getMessage());
+        $sent = $mailer->send($this->getMessage());
+        self::assertTrue($sent);
         self::assertNotEmpty($mailer->getLogs());
         $log = $mailer->getLogs()[0];
         self::assertSame('', $log['command']);
@@ -218,7 +235,8 @@ final class MailerTest extends TestCase
     public function testLogsDisabled() : void
     {
         \sleep(5);
-        $this->mailer->send($this->getMessage());
+        $sent = $this->mailer->send($this->getMessage());
+        self::assertTrue($sent);
         self::assertEmpty($this->mailer->getLogs());
     }
 

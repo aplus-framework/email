@@ -11,6 +11,7 @@ namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
 use JetBrains\PhpStorm\ArrayShape;
+use NoDiscard;
 use SensitiveParameter;
 
 /**
@@ -255,6 +256,7 @@ class Mailer
      *
      * @return bool True if successful, otherwise false
      */
+    #[NoDiscard]
     public function send(Message $message) : bool
     {
         if (isset($this->debugCollector)) {
