@@ -12,6 +12,7 @@ namespace Framework\Email;
 use Framework\Email\Debug\EmailCollector;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
+use LogicException;
 use NoDiscard;
 use SensitiveParameter;
 
@@ -322,6 +323,9 @@ class Mailer
         }
         $message->setMailer($this);
         $from = $message->getFromAddress() ?? $this->getConfig('username');
+        if (!\filter_var($from, \FILTER_VALIDATE_EMAIL)) {
+            throw new LogicException("From address '{$from}' is not a valid email");
+        }
         $this->sendCommand('MAIL FROM: <' . $from . '>');
         foreach ($message->getRecipients() as $address) {
             $this->sendCommand('RCPT TO: <' . $address . '>');

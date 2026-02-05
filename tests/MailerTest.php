@@ -69,6 +69,19 @@ final class MailerTest extends TestCase
         \restore_error_handler();
     }
 
+    public function testSendWithInvalidFromAddress() : void
+    {
+        \sleep(5);
+        $message = $this->getMessage();
+        $message->setFrom('foo');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "From address 'foo' is not a valid email"
+        );
+        $sent = $this->mailer->send($message);
+        self::assertFalse($sent);
+    }
+
     public function testKeepAlive() : void
     {
         \sleep(5);
