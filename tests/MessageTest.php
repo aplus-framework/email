@@ -35,12 +35,29 @@ final class MessageTest extends TestCase
         self::assertSame([], $this->message->getFrom());
         self::assertNull($this->message->getFromAddress());
         self::assertNull($this->message->getFromName());
+        $this->message->setFrom('foo@bar.com');
+        self::assertSame([
+            'address' => 'foo@bar.com',
+            'name' => null,
+        ], $this->message->getFrom());
+        self::assertSame(
+            'foo@bar.com',
+            $this->message->getHeader(Header::FROM)
+        );
         $this->message->setFrom('foo@bar.com', 'Foo');
-        self::assertSame(['foo@bar.com', 'Foo'], $this->message->getFrom());
+        self::assertSame([
+            'address' => 'foo@bar.com',
+            'name' => 'Foo',
+        ], $this->message->getFrom());
+        self::assertSame(
+            '"Foo" <foo@bar.com>',
+            $this->message->getHeader(Header::FROM)
+        );
         self::assertSame('foo@bar.com', $this->message->getFromAddress());
         self::assertSame('Foo', $this->message->getFromName());
         $this->message->removeFrom();
         self::assertSame([], $this->message->getFrom());
+        self::assertNull($this->message->getHeader(Header::FROM));
         self::assertNull($this->message->getFromAddress());
         self::assertNull($this->message->getFromName());
     }

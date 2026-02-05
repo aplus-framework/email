@@ -94,8 +94,7 @@ class Message implements Stringable
     /**
      * The values used in the `From` header.
      *
-     * @var array<int,string|null> The email address as in the index 0 and the
-     * optional name in the index 1
+     * @var array<string,string|null> Two keys: address and name
      */
     protected array $from = [];
     /**
@@ -617,7 +616,10 @@ class Message implements Stringable
      */
     public function setFrom(string $address, ?string $name = null) : static
     {
-        $this->from = [$address, $name];
+        $this->from = [
+            'address' => $address,
+            'name' => $name,
+        ];
         $this->setHeader(Header::FROM, static::formatAddress($address, $name));
         return $this;
     }
@@ -625,7 +627,7 @@ class Message implements Stringable
     /**
      * Get the From header items.
      *
-     * @return array<int,string|null> email address in key 0 and name in key 1
+     * @return array<string,string|null> Two keys: address and name
      */
     public function getFrom() : array
     {
@@ -639,7 +641,7 @@ class Message implements Stringable
      */
     public function getFromAddress() : ?string
     {
-        return $this->from[0] ?? null;
+        return $this->from['address'] ?? null;
     }
 
     /**
@@ -649,7 +651,7 @@ class Message implements Stringable
      */
     public function getFromName() : ?string
     {
-        return $this->from[1] ?? null;
+        return $this->from['name'] ?? null;
     }
 
     /**
@@ -660,6 +662,7 @@ class Message implements Stringable
     public function removeFrom() : static
     {
         $this->from = [];
+        $this->removeHeader(Header::FROM);
         return $this;
     }
 
