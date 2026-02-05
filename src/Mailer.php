@@ -10,6 +10,7 @@
 namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use NoDiscard;
 use SensitiveParameter;
@@ -97,7 +98,7 @@ class Mailer
     ])]
     protected function makeConfig(#[SensitiveParameter] array $config) : array
     {
-        return \array_replace_recursive([
+        $config = \array_replace_recursive([
             'host' => 'localhost',
             'port' => 587,
             'tls' => true,
@@ -118,6 +119,36 @@ class Mailer
             'keep_alive' => false,
             'save_logs' => false,
         ], $config);
+        $this->validateConfigKeys(\array_keys($config));
+        return $config;
+    }
+
+    /**
+     * @param array<int,string> $keys
+     *
+     * @return void
+     */
+    protected function validateConfigKeys(array $keys) : void
+    {
+        foreach ($keys as $key) {
+            if (!\in_array($key, [
+                'host',
+                'port',
+                'tls',
+                'options',
+                'username',
+                'password',
+                'charset',
+                'crlf',
+                'connection_timeout',
+                'response_timeout',
+                'hostname',
+                'keep_alive',
+                'save_logs',
+            ], true)) {
+                throw new InvalidArgumentException('Invalid config key: ' . $key);
+            }
+        }
     }
 
     /**

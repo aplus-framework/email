@@ -247,6 +247,15 @@ final class MailerTest extends TestCase
         }
     }
 
+    public function testValidateConfigKeys() : void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid config key: foo');
+        new Mailer([
+            'foo' => 'bar',
+        ]);
+    }
+
     public function testCreateMessage() : void
     {
         $mailer = new Mailer([]);
