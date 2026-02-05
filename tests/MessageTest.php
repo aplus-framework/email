@@ -242,6 +242,7 @@ final class MessageTest extends TestCase
         self::assertSame([
             'foo@bar',
             'baz@bar',
+            'foo@baz',
         ], $this->message->getRecipients());
     }
 

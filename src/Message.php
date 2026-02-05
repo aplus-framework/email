@@ -531,7 +531,7 @@ class Message implements Stringable
      */
     public function getRecipients() : array
     {
-        $recipients = \array_replace($this->getTo(), $this->getCc());
+        $recipients = \array_replace($this->getTo(), $this->getCc(), $this->getBcc());
         return \array_keys($recipients);
     }
 
