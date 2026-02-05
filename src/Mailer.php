@@ -327,10 +327,10 @@ class Mailer
             throw new LogicException("From address '{$from}' is not a valid email");
         }
         $this->sendCommand('MAIL FROM: <' . $from . '>');
-        $recipients = $message->getRecipients();
-        if (empty($recipients)) {
-            throw new LogicException('No recipient address was added');
+        if (empty($message->getTo())) {
+            throw new LogicException("The 'To' address was not set");
         }
+        $recipients = $message->getRecipients();
         foreach ($recipients as $address) {
             $this->sendCommand('RCPT TO: <' . $address . '>');
         }

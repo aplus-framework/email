@@ -82,14 +82,14 @@ final class MailerTest extends TestCase
         self::assertFalse($sent);
     }
 
-    public function testSendWithNoRecipients() : void
+    public function testSendWithoutToAddress() : void
     {
         \sleep(5);
         $message = $this->getMessage();
-        $message->removeTo()->removeCc()->removeBcc();
+        $message->removeTo();
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(
-            'No recipient address was added'
+            "The 'To' address was not set"
         );
         $sent = $this->mailer->send($message);
         self::assertFalse($sent);
