@@ -98,12 +98,6 @@ class Message implements Stringable
      * @var array<string,string|null> Two keys: address and name
      */
     protected array $from = [];
-    /**
-     * The message Date.
-     *
-     * @var string|null
-     */
-    protected ?string $date = null;
 
     /**
      * Render the Message as string.
