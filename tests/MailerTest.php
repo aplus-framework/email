@@ -41,6 +41,7 @@ final class MailerTest extends TestCase
         return (new Message())
             ->addTo((string) \getenv('SMTP_ADDRESS'))
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
+            ->setSubject('Test  - ' . \date('Y-m-d H:i:s'))
             ->setPlainMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setHtmlMessage('<b>Hello!</b><img src="cid:abc123">')
             ->setInlineAttachment(__DIR__ . '/logo-circle.png', 'abc123')
@@ -67,32 +68,6 @@ final class MailerTest extends TestCase
         );
         $this->mailer->send($this->getMessage());
         \restore_error_handler();
-    }
-
-    public function testSendWithInvalidFromAddress() : void
-    {
-        \sleep(5);
-        $message = $this->getMessage();
-        $message->setFrom('foo');
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage(
-            "From address 'foo' is not a valid email"
-        );
-        $sent = $this->mailer->send($message);
-        self::assertFalse($sent);
-    }
-
-    public function testSendWithoutToAddress() : void
-    {
-        \sleep(5);
-        $message = $this->getMessage();
-        $message->removeTo();
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage(
-            "The 'To' address was not set"
-        );
-        $sent = $this->mailer->send($message);
-        self::assertFalse($sent);
     }
 
     public function testKeepAlive() : void
