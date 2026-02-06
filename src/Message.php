@@ -65,40 +65,6 @@ class Message implements Stringable
      * @var string
      */
     protected string $htmlMessage;
-    /**
-     * An associative array used in the `To` header.
-     *
-     * @var array<string,string|null> The email addresses as keys and the optional
-     * name as values
-     */
-    protected array $to = [];
-    /**
-     * An associative array used in the `Cc` header.
-     *
-     * @var array<string,string|null> The email addresses as keys and the optional
-     * name as values
-     */
-    protected array $cc = [];
-    /**
-     * An associative array used in the `Bcc` header.
-     *
-     * @var array<string,string|null> The email addresses as keys and the optional
-     * name as values
-     */
-    protected array $bcc = [];
-    /**
-     * An associative array used in the `Reply-To` header.
-     *
-     * @var array<string,string|null> The email addresses as keys and the optional
-     * name as values
-     */
-    protected array $replyTo = [];
-    /**
-     * The values used in the `From` header.
-     *
-     * @var array<string,string|null> Two keys: address and name
-     */
-    protected array $from = [];
 
     /**
      * Render the Message as string.
@@ -459,8 +425,9 @@ class Message implements Stringable
      */
     public function addTo(string $address, ?string $name = null) : static
     {
-        $this->to[$address] = $name;
-        $this->setHeader(Header::TO, static::formatAddressList($this->to));
+        $list = $this->getTo();
+        $list[$address] = $name;
+        $this->setHeader(Header::TO, static::formatAddressList($list));
         return $this;
     }
 
@@ -471,7 +438,7 @@ class Message implements Stringable
      */
     public function getTo() : array
     {
-        return $this->to;
+        return $this->extractEmails($this->getHeader(Header::TO));
     }
 
     /**
@@ -481,7 +448,6 @@ class Message implements Stringable
      */
     public function removeTo() : static
     {
-        $this->to = [];
         $this->removeHeader(Header::TO);
         return $this;
     }
@@ -496,8 +462,9 @@ class Message implements Stringable
      */
     public function addCc(string $address, ?string $name = null) : static
     {
-        $this->cc[$address] = $name;
-        $this->setHeader(Header::CC, static::formatAddressList($this->cc));
+        $list = $this->getCc();
+        $list[$address] = $name;
+        $this->setHeader(Header::CC, static::formatAddressList($list));
         return $this;
     }
 
@@ -508,7 +475,7 @@ class Message implements Stringable
      */
     public function getCc() : array
     {
-        return $this->cc;
+        return $this->extractEmails($this->getHeader(Header::CC));
     }
 
     /**
@@ -518,7 +485,6 @@ class Message implements Stringable
      */
     public function removeCc() : static
     {
-        $this->cc = [];
         $this->removeHeader(Header::CC);
         return $this;
     }
@@ -542,8 +508,9 @@ class Message implements Stringable
      */
     public function addBcc(string $address, ?string $name = null) : static
     {
-        $this->bcc[$address] = $name;
-        $this->setHeader(Header::BCC, static::formatAddressList($this->bcc));
+        $list = $this->getBcc();
+        $list[$address] = $name;
+        $this->setHeader(Header::BCC, static::formatAddressList($list));
         return $this;
     }
 
@@ -554,7 +521,7 @@ class Message implements Stringable
      */
     public function getBcc() : array
     {
-        return $this->bcc;
+        return $this->extractEmails($this->getHeader(Header::BCC));
     }
 
     /**
@@ -564,7 +531,6 @@ class Message implements Stringable
      */
     public function removeBcc() : static
     {
-        $this->bcc = [];
         $this->removeHeader(Header::BCC);
         return $this;
     }
@@ -579,8 +545,9 @@ class Message implements Stringable
      */
     public function addReplyTo(string $address, ?string $name = null) : static
     {
-        $this->replyTo[$address] = $name;
-        $this->setHeader(Header::REPLY_TO, static::formatAddressList($this->replyTo));
+        $list = $this->getReplyTo();
+        $list[$address] = $name;
+        $this->setHeader(Header::REPLY_TO, static::formatAddressList($list));
         return $this;
     }
 
@@ -591,7 +558,7 @@ class Message implements Stringable
      */
     public function getReplyTo() : array
     {
-        return $this->replyTo;
+        return $this->extractEmails($this->getHeader(Header::REPLY_TO));
     }
 
     /**
@@ -601,7 +568,6 @@ class Message implements Stringable
      */
     public function removeReplyTo() : static
     {
-        $this->replyTo = [];
         $this->removeHeader(Header::REPLY_TO);
         return $this;
     }
@@ -616,10 +582,6 @@ class Message implements Stringable
      */
     public function setFrom(string $address, ?string $name = null) : static
     {
-        $this->from = [
-            'address' => $address,
-            'name' => $name,
-        ];
         $this->setHeader(Header::FROM, static::formatAddress($address, $name));
         return $this;
     }
@@ -629,9 +591,17 @@ class Message implements Stringable
      *
      * @return array<string,string|null> Two keys: address and name
      */
+    #[ArrayShape(['address' => 'string', 'name' => 'string|null'])]
     public function getFrom() : array
     {
-        return $this->from;
+        $from = $this->extractEmails($this->getHeader(Header::FROM));
+        if (empty($from)) {
+            return [];
+        }
+        return [
+            'address' => \array_key_first($from),
+            'name' => \array_first($from),
+        ];
     }
 
     /**
@@ -641,7 +611,7 @@ class Message implements Stringable
      */
     public function getFromAddress() : ?string
     {
-        return $this->from['address'] ?? null;
+        return $this->getFrom()['address'] ?? null;
     }
 
     /**
@@ -651,7 +621,7 @@ class Message implements Stringable
      */
     public function getFromName() : ?string
     {
-        return $this->from['name'] ?? null;
+        return $this->getFrom()['name'] ?? null;
     }
 
     /**
@@ -661,7 +631,6 @@ class Message implements Stringable
      */
     public function removeFrom() : static
     {
-        $this->from = [];
         $this->removeHeader(Header::FROM);
         return $this;
     }
