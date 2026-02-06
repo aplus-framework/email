@@ -486,6 +486,7 @@ class Message implements Stringable
     public function removeTo() : static
     {
         $this->to = [];
+        $this->removeHeader(Header::TO);
         return $this;
     }
 
@@ -522,6 +523,7 @@ class Message implements Stringable
     public function removeCc() : static
     {
         $this->cc = [];
+        $this->removeHeader(Header::CC);
         return $this;
     }
 
@@ -567,6 +569,7 @@ class Message implements Stringable
     public function removeBcc() : static
     {
         $this->bcc = [];
+        $this->removeHeader(Header::BCC);
         return $this;
     }
 
@@ -603,6 +606,7 @@ class Message implements Stringable
     public function removeReplyTo() : static
     {
         $this->replyTo = [];
+        $this->removeHeader(Header::REPLY_TO);
         return $this;
     }
 

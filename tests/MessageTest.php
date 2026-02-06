@@ -126,65 +126,105 @@ final class MessageTest extends TestCase
     public function testReplyTo() : void
     {
         self::assertSame([], $this->message->getReplyTo());
+        self::assertNull($this->message->getHeader(Header::REPLY_TO));
         $this->message->addReplyTo('foo@bar');
         self::assertSame([
             'foo@bar' => null,
         ], $this->message->getReplyTo());
+        self::assertSame(
+            'foo@bar',
+            $this->message->getHeader(Header::REPLY_TO)
+        );
         $this->message->addReplyTo('foo@baz', 'Baz');
         self::assertSame([
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getReplyTo());
+        self::assertSame(
+            'foo@bar, "Baz" <foo@baz>',
+            $this->message->getHeader(Header::REPLY_TO)
+        );
         $this->message->removeReplyTo();
         self::assertSame([], $this->message->getReplyTo());
+        self::assertNull($this->message->getHeader(Header::REPLY_TO));
     }
 
     public function testBcc() : void
     {
         self::assertSame([], $this->message->getBcc());
+        self::assertNull($this->message->getHeader(Header::BCC));
         $this->message->addBcc('foo@bar');
         self::assertSame([
             'foo@bar' => null,
         ], $this->message->getBcc());
+        self::assertSame(
+            'foo@bar',
+            $this->message->getHeader(Header::BCC)
+        );
         $this->message->addBcc('foo@baz', 'Baz');
         self::assertSame([
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getBcc());
+        self::assertSame(
+            'foo@bar, "Baz" <foo@baz>',
+            $this->message->getHeader(Header::BCC)
+        );
         $this->message->removeBcc();
         self::assertSame([], $this->message->getBcc());
+        self::assertNull($this->message->getHeader(Header::BCC));
     }
 
     public function testCc() : void
     {
         self::assertSame([], $this->message->getCc());
+        self::assertNull($this->message->getHeader(Header::CC));
         $this->message->addCc('foo@bar');
         self::assertSame([
             'foo@bar' => null,
         ], $this->message->getCc());
+        self::assertSame(
+            'foo@bar',
+            $this->message->getHeader(Header::CC)
+        );
         $this->message->addCc('foo@baz', 'Baz');
         self::assertSame([
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getCc());
+        self::assertSame(
+            'foo@bar, "Baz" <foo@baz>',
+            $this->message->getHeader(Header::CC)
+        );
         $this->message->removeCc();
         self::assertSame([], $this->message->getCc());
+        self::assertNull($this->message->getHeader(Header::CC));
     }
 
     public function testTo() : void
     {
         self::assertSame([], $this->message->getTo());
+        self::assertNull($this->message->getHeader(Header::TO));
         $this->message->addTo('foo@bar');
         self::assertSame([
             'foo@bar' => null,
         ], $this->message->getTo());
+        self::assertSame(
+            'foo@bar',
+            $this->message->getHeader(Header::TO)
+        );
         $this->message->addTo('foo@baz', 'Baz');
         self::assertSame([
             'foo@bar' => null,
             'foo@baz' => 'Baz',
         ], $this->message->getTo());
+        self::assertSame(
+            'foo@bar, "Baz" <foo@baz>',
+            $this->message->getHeader(Header::TO)
+        );
         $this->message->removeTo();
         self::assertSame([], $this->message->getTo());
+        self::assertNull($this->message->getHeader(Header::TO));
     }
 
     public function testSubject() : void
