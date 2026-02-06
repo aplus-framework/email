@@ -48,6 +48,11 @@ class MessageMock extends Message
         return parent::renderData();
     }
 
+    public function extractEmails(?string $header) : array
+    {
+        return parent::extractEmails($header);
+    }
+
     public static function formatAddress(string $address, ?string $name = null) : string
     {
         return parent::formatAddress($address, $name);

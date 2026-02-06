@@ -10,6 +10,7 @@
 namespace Framework\Email;
 
 use DateTime;
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Language;
 use LogicException;
 use Random\RandomException;
@@ -757,6 +758,84 @@ class Message implements Stringable
         if ($subject === null | $subject === '') {
             throw new LogicException("The message 'Subject' is empty");
         }
+    }
+
+    /**
+     * Extract emails (addresses and names) from an emails header string.
+     *
+     * @param string|null $header An header like: `foo@bar, "Baz" <foo@baz>`
+     *
+     * @return array<string,string|null> Addresses as keys and names
+     * (string or null) as values
+     */
+    protected function extractEmails(?string $header) : array
+    {
+        if ($header === null) {
+            return [];
+        }
+        $exploded = \explode(',', $header);
+        foreach ($exploded as &$part) {
+            $part = \trim($part);
+        }
+        unset($part);
+        $emails = [];
+        foreach ($exploded as $part) {
+            if (\str_starts_with($part, '"')) {
+                $extracted = $this->extractAddressAndName($part);
+                $emails[$extracted['address']] = $extracted['name'];
+                continue;
+            }
+            $part = $this->sanitizeSpaces($part);
+            $part = $this->removeSpaces($part);
+            $emails[$part] = null;
+        }
+        return $emails;
+    }
+
+    /**
+     * Replace whitespaces with one space.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function sanitizeSpaces(string $string) : string
+    {
+        return \preg_replace('/\s+/', ' ', $string);
+    }
+
+    /**
+     * Remove spaces.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function removeSpaces(string $string) : string
+    {
+        return \strtr($string, [' ' => '']);
+    }
+
+    /**
+     * Extract address and name from a header part.
+     *
+     * @param string $headerPart A header part like: `"Baz" <foo@baz>`
+     *
+     * @return array<string,string>
+     */
+    #[ArrayShape(['address' => 'string', 'name' => 'string'])]
+    protected function extractAddressAndName(string $headerPart) : array
+    {
+        $headerPart = $this->sanitizeSpaces($headerPart);
+        $headerPart = \strtr($headerPart, ['"<' => '" <']);
+        \preg_match_all('#\"(.*?)\" <(.*?)>#', $headerPart, $matches);
+        $name = \trim($matches[1][0]);
+        $address = \trim($matches[2][0]);
+        $address = $this->removeSpaces($address);
+        return [
+            'address' => $address,
+            'name' => $name,
+        ];
     }
 
     protected static function formatAddress(string $address, ?string $name = null) : string

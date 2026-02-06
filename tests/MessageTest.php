@@ -423,4 +423,39 @@ final class MessageTest extends TestCase
         );
         $this->message->validate();
     }
+
+    public function testExtractEmails() : void
+    {
+        $header = null;
+        self::assertSame([], $this->message->extractEmails($header));
+        $header = 'foo@bar';
+        self::assertSame([
+            'foo@bar' => null,
+        ], $this->message->extractEmails($header));
+        $header = 'foo@bar, foo@baz';
+        self::assertSame([
+            'foo@bar' => null,
+            'foo@baz' => null,
+        ], $this->message->extractEmails($header));
+        $header = 'foo@bar, foo@baz, "Foo Foo" <foo@foo.com>"';
+        self::assertSame([
+            'foo@bar' => null,
+            'foo@baz' => null,
+            'foo@foo.com' => 'Foo Foo',
+        ], $this->message->extractEmails($header));
+        $header = '"John   Doe" <john@doe.com>, foo@bar, foo@baz, "Foo Foo" <foo@foo.com>"';
+        self::assertSame([
+            'john@doe.com' => 'John Doe',
+            'foo@bar' => null,
+            'foo@baz' => null,
+            'foo@foo.com' => 'Foo Foo',
+        ], $this->message->extractEmails($header));
+        $header = ' " John    Doe " <  john@doe.com >, foo @  bar, foo @baz ,"Foo   Foo"   <  foo@ foo.com >"';
+        self::assertSame([
+            'john@doe.com' => 'John Doe',
+            'foo@bar' => null,
+            'foo@baz' => null,
+            'foo@foo.com' => 'Foo Foo',
+        ], $this->message->extractEmails($header));
+    }
 }
