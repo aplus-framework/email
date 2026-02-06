@@ -393,7 +393,7 @@ class Message implements Stringable
     }
 
     /**
-     * Set the Subject header.
+     * Set the 'Subject' header.
      *
      * @param string $subject The header value
      *
@@ -406,7 +406,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the Subject header.
+     * Get the 'Subject' header.
      *
      * @return string|null The header value or null if not set
      */
@@ -416,7 +416,7 @@ class Message implements Stringable
     }
 
     /**
-     * Add address and name in the To header.
+     * Add address and name in the 'To' header.
      *
      * @param string $address The email address
      * @param string|null $name The name or null to don't set
@@ -432,7 +432,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get items of the To header.
+     * Get items of the 'To' header.
      *
      * @return array<string,string|null> Emails as keys and names as values
      */
@@ -442,7 +442,7 @@ class Message implements Stringable
     }
 
     /**
-     * Remove all items of the To header.
+     * Remove all items of the 'To' header.
      *
      * @return static
      */
@@ -453,7 +453,7 @@ class Message implements Stringable
     }
 
     /**
-     * Add address and name in the Cc header.
+     * Add address and name in the 'Cc' header.
      *
      * @param string $address The email address
      * @param string|null $name The name or null to don't set
@@ -469,7 +469,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get items of the Cc header.
+     * Get items of the 'Cc' header.
      *
      * @return array<string,string|null> Emails as keys and names as values
      */
@@ -479,7 +479,7 @@ class Message implements Stringable
     }
 
     /**
-     * Remove all items of the Cc header.
+     * Remove all items of the 'Cc' header.
      *
      * @return static
      */
@@ -499,7 +499,7 @@ class Message implements Stringable
     }
 
     /**
-     * Add address and name in the Bcc header.
+     * Add address and name in the 'Bcc' header.
      *
      * @param string $address The email address
      * @param string|null $name The name or null to don't set
@@ -515,7 +515,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get items of the Bcc header.
+     * Get items of the 'Bcc' header.
      *
      * @return array<string,string|null> Emails as keys and names as values
      */
@@ -525,7 +525,7 @@ class Message implements Stringable
     }
 
     /**
-     * Remove all items of the Bcc header.
+     * Remove all items of the 'Bcc' header.
      *
      * @return static
      */
@@ -536,7 +536,7 @@ class Message implements Stringable
     }
 
     /**
-     * Add address and name in the Reply-To header.
+     * Add address and name in the 'Reply-To' header.
      *
      * @param string $address The email address
      * @param string|null $name The name or null to don't set
@@ -552,7 +552,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get items of the Reply-To header.
+     * Get items of the 'Reply-To' header.
      *
      * @return array<string,string|null> Emails as keys and names as values
      */
@@ -562,7 +562,7 @@ class Message implements Stringable
     }
 
     /**
-     * Remove all items of the Reply-To header.
+     * Remove all items of the 'Reply-To' header.
      *
      * @return static
      */
@@ -573,7 +573,7 @@ class Message implements Stringable
     }
 
     /**
-     * Set the From header.
+     * Set the 'From' header.
      *
      * @param string $address The email address
      * @param string|null $name The name or null to don't set
@@ -587,7 +587,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the From header items.
+     * Get the 'From' header items.
      *
      * @return array<string,string|null> Two keys: address and name
      */
@@ -605,7 +605,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the email address of the From header.
+     * Get the email address of the 'From' header.
      *
      * @return string|null The email or null if not set
      */
@@ -615,7 +615,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the name of the From header.
+     * Get the name of the 'From' header.
      *
      * @return string|null The name or null if not set
      */
@@ -625,7 +625,7 @@ class Message implements Stringable
     }
 
     /**
-     * Remove all items of the From header.
+     * Remove all items of the 'From' header.
      *
      * @return static
      */
@@ -636,7 +636,7 @@ class Message implements Stringable
     }
 
     /**
-     * Set the Date header.
+     * Set the 'Date' header.
      *
      * @param DateTime|null $datetime A custom DateTime or null to set the
      * current datetime
@@ -651,7 +651,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the Date header.
+     * Get the 'Date' header.
      *
      * @return string|null The header value or null if not set
      */
@@ -661,7 +661,7 @@ class Message implements Stringable
     }
 
     /**
-     * Set the X-Priority header.
+     * Set the 'X-Priority' header.
      *
      * @param XPriority $priority The {@see XPriority} case
      *
@@ -674,7 +674,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the X-Priority header.
+     * Get the 'X-Priority' header.
      *
      * @return XPriority|null The {@see XPriority} case or null
      */
@@ -688,7 +688,7 @@ class Message implements Stringable
     }
 
     /**
-     * Set the X-Mailer header.
+     * Set the 'X-Mailer' header.
      *
      * @param string|null $xMailer The X-Mailer header or null to set the default
      *
@@ -702,7 +702,7 @@ class Message implements Stringable
     }
 
     /**
-     * Get the X-Mailer header.
+     * Get the 'X-Mailer' header.
      *
      * @return string|null The X-Mailer header or null
      */
