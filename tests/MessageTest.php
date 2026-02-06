@@ -10,6 +10,7 @@
 namespace Tests\Email;
 
 use Framework\Email\Attachment;
+use Framework\Email\Header;
 use Framework\Email\Mailer;
 use Framework\Email\Message;
 use Framework\Email\XPriority;
@@ -380,5 +381,46 @@ final class MessageTest extends TestCase
         $message = new Message();
         $message->setPlainMessage('Hello!');
         self::assertStringContainsString('charset=utf-8', (string) $message);
+    }
+
+    public function testSendWithEmptyFromAddress() : void
+    {
+        $this->message->removeFrom();
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "The message 'From' address is empty"
+        );
+        $this->message->validate();
+    }
+
+    public function testSendWithInvalidFromAddress() : void
+    {
+        $this->message->setFrom('foo');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "The message 'From' address 'foo' is not a valid email"
+        );
+        $this->message->validate();
+    }
+
+    public function testSendWithoutToAddress() : void
+    {
+        $this->message->setFrom('foo@bar.com');
+        $this->message->removeTo();
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "The message 'To' address is empty"
+        );
+        $this->message->validate();
+    }
+
+    public function testSendWithoutSubject() : void
+    {
+        $this->message->setFrom('foo@bar.com')->addTo('foo@baz');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            "The message 'Subject' is empty"
+        );
+        $this->message->validate();
     }
 }

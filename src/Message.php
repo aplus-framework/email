@@ -11,6 +11,7 @@ namespace Framework\Email;
 
 use DateTime;
 use JetBrains\PhpStorm\Language;
+use LogicException;
 use Random\RandomException;
 use Stringable;
 
@@ -744,6 +745,24 @@ class Message implements Stringable
     public function getXMailer() : ?string
     {
         return $this->getHeader(Header::X_MAILER);
+    }
+
+    public function validate() : void
+    {
+        $from = $this->getFromAddress();
+        if (empty($from)) {
+            throw new LogicException("The message 'From' address is empty");
+        }
+        if (!\filter_var($from, \FILTER_VALIDATE_EMAIL)) {
+            throw new LogicException("The message 'From' address '{$from}' is not a valid email");
+        }
+        if (empty($this->getTo())) {
+            throw new LogicException("The message 'To' address is empty");
+        }
+        $subject = $this->getSubject();
+        if ($subject === null | $subject === '') {
+            throw new LogicException("The message 'Subject' is empty");
+        }
     }
 
     protected static function formatAddress(string $address, ?string $name = null) : string
