@@ -326,6 +326,14 @@ final class MessageTest extends TestCase
         );
     }
 
+    public function testBody() : void
+    {
+        self::assertNull($this->message->getBody());
+        $this->message->setBody('<b>Hi</b>');
+        self::assertSame('<b>Hi</b>', $this->message->getBody());
+        self::assertSame('<b>Hi</b>', $this->message->getHtmlMessage());
+    }
+
     public function testFormatAddress() : void
     {
         self::assertSame('foo@bar', MessageMock::formatAddress('foo@bar'));

@@ -264,6 +264,28 @@ class Message implements Stringable
     }
 
     /**
+     * Alias of {@see Framework\Email\Message::setHtmlMessage()}.
+     *
+     * @param string $body The text/html message
+     *
+     * @return static
+     */
+    public function setBody(#[Language('HTML')] string $body) : static
+    {
+        return $this->setHtmlMessage($body);
+    }
+
+    /**
+     * Alias of {@see Framework\Email\Message::getHtmlMessage()}.
+     *
+     * @return string|null The text/html message or null if not set
+     */
+    public function getBody() : ?string
+    {
+        return $this->getHtmlMessage();
+    }
+
+    /**
      * Set the text/html message.
      *
      * @param string $message The text/html message
