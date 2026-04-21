@@ -86,7 +86,8 @@ final class MailerTest extends TestCase
 
     public function testLastResponse() : void
     {
-        $mailer = new class([]) extends Mailer {
+        $mailer = new class([]) extends Mailer
+        {
             public function setLastResponse(?string $lastResponse) : static
             {
                 return parent::setLastResponse($lastResponse);
