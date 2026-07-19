@@ -807,7 +807,8 @@ class Message implements Stringable
      */
     protected function sanitizeSpaces(string $string) : string
     {
-        return \preg_replace('/\s+/', ' ', $string);
+        $string = \preg_replace('/\s+/', ' ', $string);
+        return \trim($string);
     }
 
     /**
