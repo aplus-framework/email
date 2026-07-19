@@ -188,13 +188,15 @@ class Message implements Stringable
     /**
      * Get header lines.
      *
-     * @return array<int,string> The header lines
+     * @return array<string,string> The header names (lowercase) as keys and
+     * lines as values
      */
     public function getHeaderLines() : array
     {
         $lines = [];
         foreach ($this->getHeaders() as $name => $value) {
-            $lines[] = Header::getName($name) . ': ' . $value;
+            $value = $this->sanitizeSpaces($value);
+            $lines[$name] = Header::getName($name) . ': ' . $value;
         }
         return $lines;
     }

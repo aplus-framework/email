@@ -90,6 +90,17 @@ final class MessageTest extends TestCase
         self::assertNull($this->message->getHeader('MIME-Version'));
     }
 
+    public function testSanitizeSpacesInHeaderLines() : void
+    {
+        $value = "  Foo bar\nNew          line\n áéíóú  😄\n";
+        $this->message->setSubject($value);
+        self::assertSame($value, $this->message->getSubject());
+        self::assertSame(
+            'Subject: Foo bar New line áéíóú 😄',
+            $this->message->getHeaderLines()['subject']
+        );
+    }
+
     public function testDate() : void
     {
         self::assertNull($this->message->getDate());
