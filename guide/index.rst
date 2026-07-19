@@ -10,6 +10,7 @@ Aplus Framework Email Library.
 - `Sending Emails`_
 - `Plain Message`_
 - `HTML Message`_
+- `Plain and HTML Messages`_
 - `Attachments`_
 - `Headers`_
 - `Mailer Connection`_
@@ -40,6 +41,7 @@ The process of sending messages by email follows the example code below.
     $message = $mailer->createMessage();
     $message->setFrom('johndoe@domain.tld')
             ->addTo('mary@domain.tld')
+            ->setSubject('Hello!')
             ->setPlainMessage('Hello, Mary! How are you?');
 
     // Try to send the message
@@ -70,7 +72,16 @@ It is also possible to set the message as HTML:
 
     $message->setHtmlMessage('Hello, <b>John Doe</b>!');
 
-Or both versions:
+An alias for ``setHtmlMessage`` is ``setBody``:
+
+.. code-block:: php
+
+    $message->setBody('Hello, <b>John Doe</b>!');
+
+Plain and HTML Messages
+-----------------------
+
+It is also possible to set both versions of the message body:
 
 .. code-block:: php
 
