@@ -831,7 +831,9 @@ class Message implements Stringable
 
     protected static function formatAddress(string $address, ?string $name = null) : string
     {
-        return $name !== null ? '"' . $name . '" <' . $address . '>' : $address;
+        return $name !== null
+            ? '"' . $name . '" <' . $address . '>'
+            : $address;
     }
 
     /**
