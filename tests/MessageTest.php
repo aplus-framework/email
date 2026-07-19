@@ -444,6 +444,19 @@ final class MessageTest extends TestCase
         $this->message->validate();
     }
 
+    public function testSendWithBodyAsEmptyString() : void
+    {
+        $this->message->setFrom('foo@bar.com')
+            ->addTo('foo@baz')
+            ->setSubject('Foo bar')
+            ->setHtmlMessage('');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage(
+            'The message body is empty'
+        );
+        $this->message->validate();
+    }
+
     public function testExtractEmails() : void
     {
         $header = null;

@@ -736,7 +736,7 @@ class Message implements Stringable
     public function validate() : void
     {
         $from = $this->getFromAddress();
-        if (empty($from)) {
+        if ($this->isNullOrEmptyString($from)) {
             throw new LogicException("The message 'From' address is empty");
         }
         if (!\filter_var($from, \FILTER_VALIDATE_EMAIL)) {
@@ -745,13 +745,25 @@ class Message implements Stringable
         if (empty($this->getTo())) {
             throw new LogicException("The message 'To' address is empty");
         }
-        $subject = $this->getSubject();
-        if ($subject === null | $subject === '') {
+        if ($this->isNullOrEmptyString($this->getSubject())) {
             throw new LogicException("The message 'Subject' is empty");
         }
-        if ($this->getPlainMessage() === null && $this->getHtmlMessage() === null) {
+        if ($this->isNullOrEmptyString($this->getPlainMessage())
+            && $this->isNullOrEmptyString($this->getHtmlMessage())
+        ) {
             throw new LogicException('The message body is empty');
         }
+    }
+
+    protected function isNullOrEmptyString(?string $value) : bool
+    {
+        if ($value === null) {
+            return true;
+        }
+        if ($value === '') {
+            return true;
+        }
+        return false;
     }
 
     /**
