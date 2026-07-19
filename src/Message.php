@@ -749,6 +749,9 @@ class Message implements Stringable
         if ($subject === null | $subject === '') {
             throw new LogicException("The message 'Subject' is empty");
         }
+        if ($this->getPlainMessage() === null && $this->getHtmlMessage() === null) {
+            throw new LogicException('The message body is empty');
+        }
     }
 
     /**
