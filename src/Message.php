@@ -196,9 +196,17 @@ class Message implements Stringable
         $lines = [];
         foreach ($this->getHeaders() as $name => $value) {
             $value = $this->sanitizeSpaces($value);
+            if ($name === 'subject') {
+                $value = $this->encodeSubject($value);
+            }
             $lines[$name] = Header::getName($name) . ': ' . $value;
         }
         return $lines;
+    }
+
+    protected function encodeSubject(string $subject) : string
+    {
+        return '=?UTF-8?B?' . \base64_encode($subject) . '?=';
     }
 
     protected function renderHeaders() : string

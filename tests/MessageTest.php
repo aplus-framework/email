@@ -96,7 +96,7 @@ final class MessageTest extends TestCase
         $this->message->setSubject($value);
         self::assertSame($value, $this->message->getSubject());
         self::assertSame(
-            'Subject: Foo bar New line áéíóú 😄',
+            'Subject: =?UTF-8?B?' . \base64_encode('Foo bar New line áéíóú 😄') . '?=',
             $this->message->getHeaderLines()['subject']
         );
     }
