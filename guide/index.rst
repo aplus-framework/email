@@ -101,8 +101,12 @@ attribute of the image:
 
     $message->setHtmlMessage('Hello, <b>John Doe</b>!<br>
     See how beautiful the sky was today:
-    <img src="cid:sky">');
+    <img src="cid:sky" width="200">');
     $message->setInlineAttachment(__DIR__ . '/blue-sky.png', 'sky')
+
+
+Note: Make sure to add the ``width`` attribute, as messages with very large
+content run a high risk of being marked as spam.
 
 Attachments
 -----------
