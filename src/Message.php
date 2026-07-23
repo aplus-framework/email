@@ -319,7 +319,8 @@ class Message implements Stringable
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
         $message = \base64_encode($this->getPlainMessage());
-        $data .= \chunk_split($message);
+        $data .= \chunk_split($message) . $crlf;
+        $data .= '--' . $boundary . '--';
         return $data;
     }
 
