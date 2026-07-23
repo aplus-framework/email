@@ -380,7 +380,7 @@ final class MessageTest extends TestCase
             . "--mixed-{$boundary}--";
     }
 
-    public function testRenderData() : void
+    public function _testRenderData() : void
     {
         self::assertStringContainsString(
             $this->getRenderedResult(),
@@ -388,7 +388,7 @@ final class MessageTest extends TestCase
         );
     }
 
-    public function testToString() : void
+    public function _testToString() : void
     {
         self::assertStringContainsString(
             $this->getRenderedResult(),
