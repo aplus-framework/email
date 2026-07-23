@@ -14,6 +14,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Language;
 use LogicException;
 use Random\RandomException;
+use RuntimeException;
 use Stringable;
 
 /**
@@ -228,19 +229,304 @@ class Message implements Stringable
 
     protected function renderData() : string
     {
+        if ($this->isHtmlOnly()) {
+            return $this->renderHtmlOnly();
+        }
+        if ($this->isPlainOnly()) {
+            return $this->renderPlainOnly();
+        }
+        if ($this->isAlternative()) {
+            return $this->renderAlternative();
+        }
+        if ($this->isMixedAndInline()) {
+            return $this->renderMixedAndInline();
+        }
+        if ($this->isMixed()) {
+            return $this->renderMixed();
+        }
+        if ($this->isInline()) {
+            return $this->renderInline();
+        }
+        throw new RuntimeException('No method found to render data');
+    }
+
+    protected function isHtmlOnly() : bool
+    {
+        return $this->getHtmlMessage() !== null
+            && $this->getPlainMessage() === null
+            && $this->getAttachments() === []
+            && $this->getInlineAttachments() === [];
+    }
+
+    protected function renderHtmlOnly() : string
+    {
+        $crlf = $this->getCrlf();
+        $this->prepareHeaders();
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $message = \base64_encode($this->getHtmlMessage());
+        $data .= \chunk_split($message);
+        return $data;
+    }
+
+    protected function isPlainOnly() : bool
+    {
+        return $this->getHtmlMessage() === null
+            && $this->getPlainMessage() !== null
+            && $this->getAttachments() === []
+            && $this->getInlineAttachments() === [];
+    }
+
+    protected function renderPlainOnly() : string
+    {
+        $crlf = $this->getCrlf();
+        $this->prepareHeaders();
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $message = \base64_encode($this->getPlainMessage());
+        $data .= \chunk_split($message);
+        return $data;
+    }
+
+    protected function isAlternative() : bool
+    {
+        return $this->getHtmlMessage() !== null
+            && $this->getPlainMessage() !== null
+            && $this->getAttachments() === []
+            && $this->getInlineAttachments() === [];
+    }
+
+    protected function renderAlternative() : string
+    {
         $boundary = $this->getBoundary();
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
-        $data = $this->renderHeaders() . $crlf . $crlf;
-        $data .= '--mixed-' . $boundary . $crlf;
-        $data .= 'Content-Type: multipart/alternative; boundary="alt-' . $boundary . '"'
-            . $crlf . $crlf;
-        $data .= $this->renderPlainMessage();
-        $data .= $this->renderHtmlMessage();
-        $data .= '--alt-' . $boundary . '--' . $crlf . $crlf;
-        $data .= $this->renderAttachments();
-        $data .= $this->renderInlineAttachments();
-        $data .= '--mixed-' . $boundary . '--';
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . $crlf;
+        $data .= $crlf;
+        $data .= '--' . $boundary . $crlf;
+        $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $message = \base64_encode($this->getHtmlMessage());
+        $data .= \chunk_split($message) . $crlf;
+        $data .= '--' . $boundary . $crlf;
+        $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $message = \base64_encode($this->getPlainMessage());
+        $data .= \chunk_split($message);
+        return $data;
+    }
+
+    protected function isMixed() : bool
+    {
+        return $this->getAttachments() !== []
+            && $this->getInlineAttachments() === [];
+    }
+
+    protected function renderMixed() : string
+    {
+        $boundary = $this->getBoundary();
+        $crlf = $this->getCrlf();
+        $this->prepareHeaders();
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
+        $data .= $crlf;
+
+        $hasAlternative = $this->getHtmlMessage() !== null || $this->getPlainMessage() !== null;
+        if ($hasAlternative) {
+            $boundary2 = $this->makeBoundary();
+            $data .= '--' . $boundary . $crlf;
+            $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
+            $data .= $crlf;
+
+            $message = $this->getHtmlMessage();
+            if ($message !== null) {
+                $data .= '--' . $boundary2 . $crlf;
+                $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
+                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+                $data .= $crlf;
+                $message = \base64_encode($message);
+                $data .= \chunk_split($message) . $crlf;
+            }
+
+            $message = $this->getPlainMessage();
+            if ($message !== null) {
+                $data .= '--' . $boundary2 . $crlf;
+                $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
+                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+                $data .= $crlf;
+                $message = \base64_encode($message);
+                $data .= \chunk_split($message) . $crlf;
+            }
+            $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
+        }
+
+        $part = '';
+        foreach ($this->getAttachments() as $attachment) {
+            $part .= '--' . $boundary . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $part .= $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
+        }
+        $data .= $part;
+
+        $data .= '--' . $boundary . '--';
+        return $data;
+    }
+
+    protected function isInline() : bool
+    {
+        return  $this->getInlineAttachments() !== [];
+    }
+
+    protected function renderInline() : string
+    {
+        $boundary = $this->getBoundary();
+        $crlf = $this->getCrlf();
+        $this->prepareHeaders();
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: multipart/related; boundary="' . $boundary . '"' . $crlf;
+        $data .= $crlf;
+
+        $hasAlternative = $this->getHtmlMessage() !== null || $this->getPlainMessage() !== null;
+        if ($hasAlternative) {
+            $boundary2 = $this->makeBoundary();
+            $data .= '--' . $boundary . $crlf;
+            $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
+            $data .= $crlf;
+
+            $message = $this->getHtmlMessage();
+            if ($message !== null) {
+                $data .= '--' . $boundary2 . $crlf;
+                $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
+                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+                $data .= $crlf;
+                $message = \base64_encode($message);
+                $data .= \chunk_split($message) . $crlf;
+            }
+
+            $message = $this->getPlainMessage();
+            if ($message !== null) {
+                $data .= '--' . $boundary2 . $crlf;
+                $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
+                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+                $data .= $crlf;
+                $message = \base64_encode($message);
+                $data .= \chunk_split($message) . $crlf;
+            }
+            $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
+        }
+
+        $part = '';
+        foreach ($this->getAttachments() as $attachment) {
+            $part .= '--' . $boundary . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $part .= $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
+        }
+        $data .= $part;
+
+        $part = '';
+        foreach ($this->getInlineAttachments() as $cid => $attachment) {
+            $part .= '--' . $boundary . $crlf;
+            $part .= 'Content-ID: <' . $cid . '>' . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
+            $part .= 'Content-Disposition: inline' . $crlf;
+            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $part .= $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
+        }
+        $data .= $part;
+
+        $data .= '--' . $boundary . '--';
+        return $data;
+    }
+
+    protected function isMixedAndInline() : bool
+    {
+        return $this->getAttachments() !== []
+            && $this->getInlineAttachments() !== [];
+    }
+
+    protected function renderMixedAndInline() : string
+    {
+        $boundary = $this->getBoundary();
+        //$boundary = 'mixed_raiz_aaa';
+        $crlf = $this->getCrlf();
+        $this->prepareHeaders();
+        $data = $this->renderHeaders() . $crlf;
+        $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
+        $data .= $crlf;
+
+        $boundary2 = $this->makeBoundary();
+        //$boundary2 = 'alternative_nivel2_bbb';
+        $data .= '--' . $boundary . $crlf;
+        $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
+        $data .= $crlf;
+
+        $message = $this->getPlainMessage();
+        if ($message !== null) {
+            $data .= '--' . $boundary2 . $crlf;
+            $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
+            $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $data .= $crlf;
+            $message = \base64_encode($message);
+            $data .= \chunk_split($message) . $crlf;
+        }
+
+        $boundary3 = $this->makeBoundary();
+        //$boundary3 = 'related_nivel3_ccc';
+        $data .= '--' . $boundary2 . $crlf;
+        $data .= 'Content-Type: multipart/related; boundary="' . $boundary3 . '"' . $crlf;
+        $data .= $crlf;
+
+        $message = $this->getHtmlMessage();
+        if ($message !== null) {
+            $data .= '--' . $boundary3 . $crlf;
+            $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
+            $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $data .= $crlf;
+            $message = \base64_encode($message);
+            $data .= \chunk_split($message) . $crlf;
+        }
+
+        $part = '';
+        foreach ($this->getInlineAttachments() as $cid => $attachment) {
+            $part .= '--' . $boundary3 . $crlf;
+            $part .= 'Content-ID: <' . $cid . '>' . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
+            $part .= 'Content-Disposition: inline' . $crlf;
+            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $part .= $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
+        }
+        $data .= $part;
+
+        $data .= '--' . $boundary3 . '--' . $crlf . $crlf;
+        $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
+
+        $part = '';
+        foreach ($this->getAttachments() as $attachment) {
+            $part .= '--' . $boundary . $crlf;
+            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
+            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $part .= $crlf;
+            $part .= $attachment->getBase64SplitContents() . $crlf;
+        }
+        $data .= $part;
+
+        $data .= '--' . $boundary . '--';
         return $data;
     }
 
