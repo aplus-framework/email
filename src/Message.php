@@ -227,6 +227,19 @@ class Message implements Stringable
         }
     }
 
+    /**
+     * Encode string with base64 and split into smaller chunks.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function encodeSplit(string $string) : string
+    {
+        $string = \base64_encode($string);
+        return \chunk_split($string);
+    }
+
     protected function renderData() : string
     {
         if ($this->isHtmlOnly()) {
@@ -266,8 +279,7 @@ class Message implements Stringable
         $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $message = \base64_encode($this->getHtmlMessage());
-        $data .= \chunk_split($message);
+        $data .= $this->encodeSplit($this->getHtmlMessage());
         return $data;
     }
 
@@ -287,8 +299,7 @@ class Message implements Stringable
         $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $message = \base64_encode($this->getPlainMessage());
-        $data .= \chunk_split($message);
+        $data .= $this->encodeSplit($this->getPlainMessage());
         return $data;
     }
 
@@ -312,14 +323,12 @@ class Message implements Stringable
         $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $message = \base64_encode($this->getHtmlMessage());
-        $data .= \chunk_split($message) . $crlf;
+        $data .= $this->encodeSplit($this->getHtmlMessage()) . $crlf;
         $data .= '--' . $boundary . $crlf;
         $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $message = \base64_encode($this->getPlainMessage());
-        $data .= \chunk_split($message) . $crlf;
+        $data .= $this->encodeSplit($this->getPlainMessage()) . $crlf;
         $data .= '--' . $boundary . '--';
         return $data;
     }
@@ -352,8 +361,7 @@ class Message implements Stringable
                 $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
                 $data .= 'Content-Transfer-Encoding: base64' . $crlf;
                 $data .= $crlf;
-                $message = \base64_encode($message);
-                $data .= \chunk_split($message) . $crlf;
+                $data .= $this->encodeSplit($message) . $crlf;
             }
 
             $message = $this->getPlainMessage();
@@ -362,8 +370,7 @@ class Message implements Stringable
                 $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
                 $data .= 'Content-Transfer-Encoding: base64' . $crlf;
                 $data .= $crlf;
-                $message = \base64_encode($message);
-                $data .= \chunk_split($message) . $crlf;
+                $data .= $this->encodeSplit($message) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
@@ -410,8 +417,7 @@ class Message implements Stringable
                 $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
                 $data .= 'Content-Transfer-Encoding: base64' . $crlf;
                 $data .= $crlf;
-                $message = \base64_encode($message);
-                $data .= \chunk_split($message) . $crlf;
+                $data .= $this->encodeSplit($message) . $crlf;
             }
 
             $message = $this->getPlainMessage();
@@ -420,8 +426,7 @@ class Message implements Stringable
                 $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
                 $data .= 'Content-Transfer-Encoding: base64' . $crlf;
                 $data .= $crlf;
-                $message = \base64_encode($message);
-                $data .= \chunk_split($message) . $crlf;
+                $data .= $this->encodeSplit($message) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
@@ -481,8 +486,7 @@ class Message implements Stringable
             $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
             $data .= 'Content-Transfer-Encoding: base64' . $crlf;
             $data .= $crlf;
-            $message = \base64_encode($message);
-            $data .= \chunk_split($message) . $crlf;
+            $data .= $this->encodeSplit($message) . $crlf;
         }
 
         $boundary3 = $this->makeBoundary();
@@ -497,8 +501,7 @@ class Message implements Stringable
             $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
             $data .= 'Content-Transfer-Encoding: base64' . $crlf;
             $data .= $crlf;
-            $message = \base64_encode($message);
-            $data .= \chunk_split($message) . $crlf;
+            $data .= $this->encodeSplit($message) . $crlf;
         }
 
         $part = '';
