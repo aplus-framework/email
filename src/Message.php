@@ -224,11 +224,6 @@ class Message implements Stringable
         if (!$this->getDate()) {
             $this->setDate();
         }
-        $multipart = $this->getInlineAttachments() ? 'related' : 'mixed';
-        $this->setHeader(
-            Header::CONTENT_TYPE,
-            'multipart/' . $multipart . '; boundary="mixed-' . $this->getBoundary() . '"'
-        );
     }
 
     protected function renderData() : string
