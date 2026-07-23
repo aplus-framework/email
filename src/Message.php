@@ -116,8 +116,13 @@ class Message implements Stringable
      */
     public function setBoundary(?string $boundary = null) : static
     {
-        $this->boundary = $boundary ?? \bin2hex(\random_bytes(16));
+        $this->boundary = $boundary ?? $this->makeBoundary();
         return $this;
+    }
+
+    protected function makeBoundary() : string
+    {
+        return \bin2hex(\random_bytes(16));
     }
 
     /**
