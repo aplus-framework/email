@@ -324,16 +324,8 @@ class Message implements Stringable
         $data = $this->renderHeaders() . $crlf;
         $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
-        $data .= '--' . $boundary . $crlf;
-        $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
-        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-        $data .= $crlf;
-        $data .= $this->encodeSplit($this->getHtmlMessage()) . $crlf;
-        $data .= '--' . $boundary . $crlf;
-        $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
-        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-        $data .= $crlf;
-        $data .= $this->encodeSplit($this->getPlainMessage()) . $crlf;
+        $data .= $this->makeHtmlBlock($this->getHtmlMessage()) . $crlf;
+        $data .= $this->makePlainBlock($this->getPlainMessage()) . $crlf;
         $data .= '--' . $boundary . '--';
         return $data;
     }
@@ -362,32 +354,19 @@ class Message implements Stringable
 
             $message = $this->getHtmlMessage();
             if ($message !== null) {
-                $data .= '--' . $boundary2 . $crlf;
-                $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
-                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-                $data .= $crlf;
-                $data .= $this->encodeSplit($message) . $crlf;
+                $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
 
             $message = $this->getPlainMessage();
             if ($message !== null) {
-                $data .= '--' . $boundary2 . $crlf;
-                $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
-                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-                $data .= $crlf;
-                $data .= $this->encodeSplit($message) . $crlf;
+                $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
 
         $part = '';
         foreach ($this->getAttachments() as $attachment) {
-            $part .= '--' . $boundary . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $part .= $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
+            $part .= $this->makeAttachmentBlock($attachment, $boundary) . $crlf;
         }
         $data .= $part;
 
@@ -418,44 +397,19 @@ class Message implements Stringable
 
             $message = $this->getHtmlMessage();
             if ($message !== null) {
-                $data .= '--' . $boundary2 . $crlf;
-                $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
-                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-                $data .= $crlf;
-                $data .= $this->encodeSplit($message) . $crlf;
+                $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
 
             $message = $this->getPlainMessage();
             if ($message !== null) {
-                $data .= '--' . $boundary2 . $crlf;
-                $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
-                $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-                $data .= $crlf;
-                $data .= $this->encodeSplit($message) . $crlf;
+                $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
 
         $part = '';
-        foreach ($this->getAttachments() as $attachment) {
-            $part .= '--' . $boundary . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $part .= $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
-        }
-        $data .= $part;
-
-        $part = '';
         foreach ($this->getInlineAttachments() as $cid => $attachment) {
-            $part .= '--' . $boundary . $crlf;
-            $part .= 'Content-ID: <' . $cid . '>' . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
-            $part .= 'Content-Disposition: inline' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $part .= $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
+            $part .= $this->makeInlineAttachmentBlock($cid, $attachment, $boundary) . $crlf;
         }
         $data .= $part;
 
@@ -487,11 +441,7 @@ class Message implements Stringable
 
         $message = $this->getPlainMessage();
         if ($message !== null) {
-            $data .= '--' . $boundary2 . $crlf;
-            $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
-            $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $data .= $crlf;
-            $data .= $this->encodeSplit($message) . $crlf;
+            $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
         }
 
         $boundary3 = $this->makeBoundary();
@@ -502,22 +452,12 @@ class Message implements Stringable
 
         $message = $this->getHtmlMessage();
         if ($message !== null) {
-            $data .= '--' . $boundary3 . $crlf;
-            $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
-            $data .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $data .= $crlf;
-            $data .= $this->encodeSplit($message) . $crlf;
+            $data .= $this->makeHtmlBlock($message, $boundary3) . $crlf;
         }
 
         $part = '';
         foreach ($this->getInlineAttachments() as $cid => $attachment) {
-            $part .= '--' . $boundary3 . $crlf;
-            $part .= 'Content-ID: <' . $cid . '>' . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
-            $part .= 'Content-Disposition: inline' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $part .= $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
+            $part .= $this->makeInlineAttachmentBlock($cid, $attachment, $boundary3) . $crlf;
         }
         $data .= $part;
 
@@ -536,6 +476,55 @@ class Message implements Stringable
         $data .= $part;
 
         $data .= '--' . $boundary . '--';
+        return $data;
+    }
+
+    protected function makeBlock(string $message, string $type, ?string $boundary = null) : string
+    {
+            $boundary ??= $this->getBoundary();
+            $crlf = $this->getCrlf();
+            $data = '--' . $boundary . $crlf;
+            $data .= 'Content-Type: ' . $type . '; charset="utf-8"' . $crlf;
+            $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+            $data .= $crlf;
+            $data .= $this->encodeSplit($message);
+            return $data;
+    }
+
+    protected function makePlainBlock(string $message, ?string $boundary = null) : string
+    {
+        return $this->makeBlock($message, 'text/plain', $boundary);
+    }
+
+    protected function makeHtmlBlock(string $message, ?string $boundary = null) : string
+    {
+        return $this->makeBlock($message, 'text/html', $boundary);
+    }
+
+    protected function makeAttachmentBlock(Attachment $attachment, ?string $boundary = null) : string
+    {
+        $boundary ??= $this->getBoundary();
+        $crlf = $this->getCrlf();
+        $data = '--' . $boundary . $crlf;
+        $data .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
+        $data .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $data .= $attachment->getBase64SplitContents();
+        return $data;
+    }
+
+    protected function makeInlineAttachmentBlock(string $cid, Attachment $attachment, ?string $boundary = null) : string
+    {
+        $boundary ??= $this->getBoundary();
+        $crlf = $this->getCrlf();
+        $data = '--' . $boundary . $crlf;
+        $data .= 'Content-ID: <' . $cid . '>' . $crlf;
+        $data .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
+        $data .= 'Content-Disposition: inline' . $crlf;
+        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
+        $data .= $crlf;
+        $data .= $attachment->getBase64SplitContents();
         return $data;
     }
 
