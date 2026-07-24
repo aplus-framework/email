@@ -111,6 +111,7 @@ class EmailCollector extends Collector
                         <th>File</th>
                         <th>Name</th>
                         <th>MIME-Type</th>
+                        <th>Size</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -119,6 +120,7 @@ class EmailCollector extends Collector
                             <td><?= \htmlentities($attachment->getFilename()); ?></td>
                             <td><?= \htmlentities($attachment->getName()); ?></td>
                             <td><?= \htmlentities($attachment->getMimeType()); ?></td>
+                            <td><?= Debugger::convertSize($attachment->getSize()); ?></td>
                         </tr>
                     <?php endforeach ?>
                     </tbody>
@@ -133,6 +135,7 @@ class EmailCollector extends Collector
                         <th>File</th>
                         <th>Content-ID</th>
                         <th>MIME-Type</th>
+                        <th>Size</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -141,6 +144,7 @@ class EmailCollector extends Collector
                             <td><?= \htmlentities($attachment->getFilename()); ?></td>
                             <td><?= \htmlentities($cid) ?></td>
                             <td><?= \htmlentities($attachment->getMimeType()); ?></td>
+                            <td><?= Debugger::convertSize($attachment->getSize()); ?></td>
                         </tr>
                     <?php endforeach ?>
                     </tbody>
