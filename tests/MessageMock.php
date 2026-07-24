@@ -10,54 +10,47 @@
 namespace Tests\Email;
 
 use Framework\Email\Message;
+use Override;
 
 class MessageMock extends Message
 {
+    #[Override]
+    public function getCharset() : string
+    {
+        return parent::getCharset();
+    }
+
+    #[Override]
+    public function getCrlf() : string
+    {
+        return parent::getCrlf();
+    }
+
+    #[Override]
     public function getBoundary() : string
     {
         return parent::getBoundary();
     }
 
+    #[Override]
     public function renderHeaders() : string
     {
         return parent::renderHeaders();
     }
 
-    public function renderAttachments() : string
-    {
-        return parent::renderAttachments();
-    }
-
-    public function renderInlineAttachments() : string
-    {
-        return parent::renderInlineAttachments();
-    }
-
-    public function renderPlainMessage() : ?string
-    {
-        return parent::renderPlainMessage();
-    }
-
-    public function renderHtmlMessage() : ?string
-    {
-        return parent::renderHtmlMessage();
-    }
-
-    public function renderData() : string
-    {
-        return parent::renderData();
-    }
-
+    #[Override]
     public function extractEmails(?string $header) : array
     {
         return parent::extractEmails($header);
     }
 
+    #[Override]
     public static function formatAddress(string $address, ?string $name = null) : string
     {
         return parent::formatAddress($address, $name);
     }
 
+    #[Override]
     public static function formatAddressList(array $addresses) : string
     {
         return parent::formatAddressList($addresses);

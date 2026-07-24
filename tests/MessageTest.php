@@ -26,6 +26,44 @@ final class MessageTest extends TestCase
         $this->message->setMailer(new Mailer('localhost'));
     }
 
+    public function testToString() : void
+    {
+        $this->message->setPlainMessage('Foo baz');
+        $base64 = \base64_encode('Foo baz');
+        self::assertStringContainsString($base64, $this->message->toString());
+        self::assertStringContainsString($base64, (string) $this->message);
+    }
+
+    public function testCrlf() : void
+    {
+        self::assertSame("\r\n", $this->message->getCrlf());
+        $message = $this->makeMessage();
+        self::assertSame("\r\n", $message->getCrlf());
+    }
+
+    protected function makeMessage() : MessageMock
+    {
+        return new class() extends MessageMock
+        {
+            public function getCharset() : string
+            {
+                return parent::getCharset();
+            }
+
+            public function getCrlf() : string
+            {
+                return parent::getCrlf();
+            }
+        };
+    }
+
+    public function testCharset() : void
+    {
+        self::assertSame('utf-8', $this->message->getCharset());
+        $message = $this->makeMessage();
+        self::assertSame('utf-8', $message->getCharset());
+    }
+
     public function testBoundary() : void
     {
         self::assertSame(32, \strlen($this->message->getBoundary()));
@@ -246,27 +284,6 @@ final class MessageTest extends TestCase
         self::assertSame('Hello', $this->message->getSubject());
     }
 
-    public function testAttachments() : void
-    {
-        self::assertEmpty($this->message->getAttachments());
-        $this->message->addAttachment(__FILE__);
-        $attachments = [];
-        $attachments[] = new Attachment(__FILE__);
-        self::assertEquals($attachments, $this->message->getAttachments());
-        $attachments[] = new Attachment(__DIR__ . '/logo-circle.png');
-        $this->message->addAttachment(__DIR__ . '/logo-circle.png');
-        self::assertEquals($attachments, $this->message->getAttachments());
-        $contents = $this->message->renderAttachments();
-        self::assertStringContainsString(
-            'text/x-php; name="MessageTest.php"',
-            $contents
-        );
-        self::assertStringContainsString(
-            'image/png; name="logo-circle.png"',
-            $contents
-        );
-    }
-
     public function testInvalidAttachmentPath() : void
     {
         $this->expectException(\LogicException::class);
@@ -289,18 +306,6 @@ final class MessageTest extends TestCase
         $this->message->setInlineAttachment(__DIR__, 'foobar');
     }
 
-    public function testInlineAttachmentsContents() : void
-    {
-        self::assertEmpty($this->message->getInlineAttachments());
-        $this->message->setInlineAttachment(__FILE__, 'foobar');
-        $attachments['foobar'] = new Attachment(__FILE__);
-        self::assertEquals($attachments, $this->message->getInlineAttachments());
-        self::assertStringContainsString(
-            'Content-ID: foobar',
-            $this->message->renderInlineAttachments()
-        );
-    }
-
     public function testRecipients() : void
     {
         self::assertSame([], $this->message->getRecipients());
@@ -313,28 +318,6 @@ final class MessageTest extends TestCase
             'baz@bar',
             'foo@baz',
         ], $this->message->getRecipients());
-    }
-
-    public function testPlainMessage() : void
-    {
-        self::assertNull($this->message->getPlainMessage());
-        $this->message->setPlainMessage('Hi');
-        self::assertSame('Hi', $this->message->getPlainMessage());
-        self::assertStringContainsString(
-            'Content-Type: text/plain; charset=utf-8',
-            $this->message->renderPlainMessage()
-        );
-    }
-
-    public function testHtmlMessage() : void
-    {
-        self::assertNull($this->message->getHtmlMessage());
-        $this->message->setHtmlMessage('<b>Hi</b>');
-        self::assertSame('<b>Hi</b>', $this->message->getHtmlMessage());
-        self::assertStringContainsString(
-            'Content-Type: text/html; charset=utf-8',
-            $this->message->renderHtmlMessage()
-        );
     }
 
     public function testBody() : void
@@ -361,45 +344,6 @@ final class MessageTest extends TestCase
                 'foo@foo' => 'Foo',
             ])
         );
-    }
-
-    protected function getRenderedResult() : string
-    {
-        $this->message->setFrom('foo@bar');
-        $boundary = $this->message->getBoundary();
-        return "MIME-Version: 1.0\r\n"
-            . "From: foo@bar\r\n"
-            . 'Date: ' . \date('r') . "\r\n"
-            . "Content-Type: multipart/mixed; boundary=\"mixed-{$boundary}\"\r\n"
-            . "\r\n"
-            . "--mixed-{$boundary}\r\n"
-            . "Content-Type: multipart/alternative; boundary=\"alt-{$boundary}\"\r\n"
-            . "\r\n"
-            . "--alt-{$boundary}--\r\n"
-            . "\r\n"
-            . "--mixed-{$boundary}--";
-    }
-
-    public function _testRenderData() : void
-    {
-        self::assertStringContainsString(
-            $this->getRenderedResult(),
-            $this->message->renderData()
-        );
-    }
-
-    public function _testToString() : void
-    {
-        self::assertStringContainsString(
-            $this->getRenderedResult(),
-            (string) $this->message
-        );
-        $message = (string) new Message();
-        self::assertStringContainsString('MIME-Version', $message);
-        self::assertStringContainsString('Date', $message);
-        $message = new Message();
-        $message->setPlainMessage('Hello!');
-        self::assertStringContainsString('charset=utf-8', (string) $message);
     }
 
     public function testSendWithEmptyFromAddress() : void
@@ -501,5 +445,107 @@ final class MessageTest extends TestCase
             'foo@baz' => null,
             'foo@foo.com' => 'Foo Foo',
         ], $this->message->extractEmails($header));
+    }
+
+    public function testHtmlOnly() : void
+    {
+        $this->message->setHtmlMessage('Foo bar');
+        self::assertStringContainsString(
+            'Content-Type: text/html',
+            $this->message->toString()
+        );
+    }
+
+    public function testPlainOnly() : void
+    {
+        $this->message->setPlainMessage('Foo bar');
+        self::assertStringContainsString(
+            'Content-Type: text/plain',
+            $this->message->toString()
+        );
+    }
+
+    public function testAlternative() : void
+    {
+        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setPlainMessage('Foo bar');
+        $message = $this->message->toString();
+        self::assertStringContainsString(
+            'Content-Type: multipart/alternative',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: text/html',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: text/plain',
+            $message
+        );
+    }
+
+    public function testMixedAndInline() : void
+    {
+        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setPlainMessage('Foo bar');
+        $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');
+        $this->message->addAttachment(__DIR__ . '/logo-circle.png');
+        $message = $this->message->toString();
+        self::assertStringContainsString(
+            'Content-Type: multipart/mixed',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: multipart/alternative',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: multipart/related',
+            $message
+        );
+    }
+
+    public function testMixed() : void
+    {
+        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setPlainMessage('Foo bar');
+        $this->message->addAttachment(__DIR__ . '/logo-circle.png');
+        $message = $this->message->toString();
+        self::assertStringContainsString(
+            'Content-Type: multipart/mixed',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: multipart/alternative',
+            $message
+        );
+        self::assertStringNotContainsString(
+            'Content-Type: multipart/related',
+            $message
+        );
+    }
+
+    public function testInline() : void
+    {
+        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setPlainMessage('Foo bar');
+        // $this->message->addAttachment(__DIR__ . '/logo-circle.png');
+        $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');
+        $message = $this->message->toString();
+        self::assertStringContainsString(
+            'Content-Type: multipart/related',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: multipart/alternative',
+            $message
+        );
+    }
+
+    public function testNoMethodToRenderData() : void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No method found to render data');
+        $this->message->toString();
     }
 }
