@@ -466,12 +466,7 @@ class Message implements Stringable
 
         $part = '';
         foreach ($this->getAttachments() as $attachment) {
-            $part .= '--' . $boundary . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . '; name="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf;
-            $part .= $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
+            $part .= $this->makeAttachmentBlock($attachment, $boundary) . $crlf;
         }
         $data .= $part;
 
@@ -551,12 +546,6 @@ class Message implements Stringable
         return $this->plainMessage ?? null;
     }
 
-    protected function renderPlainMessage() : ?string
-    {
-        $message = $this->getPlainMessage();
-        return $message !== null ? $this->renderMessage($message, 'text/plain') : null;
-    }
-
     /**
      * Alias of {@see Framework\Email\Message::setHtmlMessage()}.
      *
@@ -600,26 +589,6 @@ class Message implements Stringable
     public function getHtmlMessage() : ?string
     {
         return $this->htmlMessage ?? null;
-    }
-
-    protected function renderHtmlMessage() : ?string
-    {
-        $message = $this->getHtmlMessage();
-        return $message !== null ? $this->renderMessage($message) : null;
-    }
-
-    protected function renderMessage(
-        string $message,
-        string $contentType = 'text/html'
-    ) : string {
-        $message = \base64_encode($message);
-        $crlf = $this->getCrlf();
-        $part = '--alt-' . $this->getBoundary() . $crlf;
-        $part .= 'Content-Type: ' . $contentType . '; charset='
-            . $this->getCharset() . $crlf;
-        $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
-        $part .= \chunk_split($message) . $crlf;
-        return $part;
     }
 
     /**
@@ -676,36 +645,6 @@ class Message implements Stringable
     public function getInlineAttachments() : array
     {
         return $this->inlineAttachments;
-    }
-
-    protected function renderAttachments() : string
-    {
-        $part = '';
-        $crlf = $this->getCrlf();
-        foreach ($this->getAttachments() as $attachment) {
-            $part .= '--mixed-' . $this->getBoundary() . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType()
-                . '; name="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Disposition: attachment; filename="' . $attachment->getName() . '"' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
-        }
-        return $part;
-    }
-
-    protected function renderInlineAttachments() : string
-    {
-        $part = '';
-        $crlf = $this->getCrlf();
-        foreach ($this->getInlineAttachments() as $cid => $attachment) {
-            $part .= '--mixed-' . $this->getBoundary() . $crlf;
-            $part .= 'Content-ID: ' . $cid . $crlf;
-            $part .= 'Content-Type: ' . $attachment->getMimeType() . $crlf;
-            $part .= 'Content-Disposition: inline' . $crlf;
-            $part .= 'Content-Transfer-Encoding: base64' . $crlf . $crlf;
-            $part .= $attachment->getBase64SplitContents() . $crlf;
-        }
-        return $part;
     }
 
     /**
