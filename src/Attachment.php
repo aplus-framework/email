@@ -16,15 +16,18 @@ class Attachment
     protected string $filename;
     protected ?string $name;
     protected ?string $mimeType;
+    protected ?int $size;
 
     public function __construct(
         string $filename,
         ?string $name = null,
-        ?string $mimeType = null
+        ?string $mimeType = null,
+        ?int $size = null,
     ) {
         $this->setFilename($filename);
         $this->setName($name);
         $this->setMimeType($mimeType);
+        $this->setSize($size);
     }
 
     public function setFilename(string $filename) : static
@@ -68,6 +71,20 @@ class Attachment
             return $this->mimeType;
         }
         return \mime_content_type($this->getFilename()) ?: 'application/octet-stream';
+    }
+
+    public function setSize(?int $size) : static
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+    public function getSize() : ?int
+    {
+        if (isset($this->size)) {
+            return $this->size;
+        }
+        return \filesize($this->getFilename()); // @phpstan-ignore-line
     }
 
     public function getContents() : string

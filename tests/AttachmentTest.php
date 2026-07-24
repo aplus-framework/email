@@ -52,6 +52,18 @@ final class AttachmentTest extends TestCase
         self::assertSame('image/jpeg', $attachment->getMimeType());
     }
 
+    public function testSize() : void
+    {
+        $attachment = new Attachment(__FILE__);
+        self::assertSame(\filesize(__FILE__), $attachment->getSize());
+    }
+
+    public function testCustomSize() : void
+    {
+        $attachment = new Attachment(__FILE__, size: 1024);
+        self::assertSame(1024, $attachment->getSize());
+    }
+
     public function testContents() : void
     {
         $attachment = new Attachment(__FILE__);
