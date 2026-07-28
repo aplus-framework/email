@@ -8,9 +8,9 @@ Aplus Framework Email Library.
 
 - `Installation`_
 - `Sending Emails`_
-- `Plain Message`_
-- `HTML Message`_
-- `Plain and HTML Messages`_
+- `Plain Content`_
+- `HTML Content`_
+- `Plain and HTML Contents`_
 - `Attachments`_
 - `Headers`_
 - `Mailer Connection`_
@@ -42,7 +42,7 @@ The process of sending messages by email follows the example code below.
     $message->setFrom('johndoe@domain.tld')
             ->addTo('mary@domain.tld')
             ->setSubject('Hello!')
-            ->setPlainMessage('Hello, Mary! How are you?');
+            ->setPlainContent('Hello, Mary! How are you?');
 
     // Try to send the message
     $sent = $mailer->send($message); // false or true
@@ -54,52 +54,51 @@ The process of sending messages by email follows the example code below.
         echo $mailer->getLastResponse();
     }
 
-Plain Message
+Plain Content
 -------------
 
-It is possible to set the plain text version of the message:
+It is possible to set the plain text version of the content:
 
 .. code-block:: php
 
-    $message->setPlainMessage('Hello, John Doe!');
+    $message->setPlainContent('Hello, John Doe!');
 
-HTML Message
+HTML Content
 ------------
 
-It is also possible to set the message as HTML:
+It is also possible to set the HTML content:
 
 .. code-block:: php
 
-    $message->setHtmlMessage('Hello, <b>John Doe</b>!');
+    $message->setHtmlContent('Hello, <b>John Doe</b>!');
 
-An alias for ``setHtmlMessage`` is ``setBody``:
+An alias for ``setHtmlContent`` is ``setBody``:
 
 .. code-block:: php
 
     $message->setBody('Hello, <b>John Doe</b>!');
 
-Plain and HTML Messages
+Plain and HTML Contents
 -----------------------
 
 It is also possible to set both versions of the message body:
 
 .. code-block:: php
 
-    $message->setPlainMessage('Hello, John Doe!')
-            ->setHtmlMessage('Hello, <b>John Doe</b>!');
+    $message->setPlainContent('Hello, John Doe!')
+            ->setHtmlContent('Hello, <b>John Doe</b>!');
 
 Embed Images
 ############
 
-When sending HTML messages it may be necessary to place images in the body of
-the message.
+When sending HTML content it may be necessary to place images in the body.
 
 This is done through an inline attachment with the **cid** in the *src*
 attribute of the image:
 
 .. code-block:: php
 
-    $message->setHtmlMessage('Hello, <b>John Doe</b>!<br>
+    $message->setHtmlContent('Hello, <b>John Doe</b>!<br>
     See how beautiful the sky was today:
     <img src="cid:sky" width="200">');
     $message->setInlineAttachment(__DIR__ . '/blue-sky.png', 'sky')
