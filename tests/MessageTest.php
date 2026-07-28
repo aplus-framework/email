@@ -325,7 +325,7 @@ final class MessageTest extends TestCase
         self::assertNull($this->message->getBody());
         $this->message->setBody('<b>Hi</b>');
         self::assertSame('<b>Hi</b>', $this->message->getBody());
-        self::assertSame('<b>Hi</b>', $this->message->getHtmlMessage());
+        self::assertSame('<b>Hi</b>', $this->message->getHtmlContent());
     }
 
     public function testFormatAddress() : void
@@ -404,7 +404,7 @@ final class MessageTest extends TestCase
         $this->message->setFrom('foo@bar.com')
             ->addTo('foo@baz')
             ->setSubject('Foo bar')
-            ->setHtmlMessage('');
+            ->setHtmlContent('');
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(
             'The message body is empty'
@@ -449,7 +449,7 @@ final class MessageTest extends TestCase
 
     public function testHtmlOnly() : void
     {
-        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setHtmlContent('Foo bar');
         self::assertStringContainsString(
             'Content-Type: text/html',
             $this->message->toString()
@@ -467,7 +467,7 @@ final class MessageTest extends TestCase
 
     public function testAlternative() : void
     {
-        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setHtmlContent('Foo bar');
         $this->message->setPlainMessage('Foo bar');
         $message = $this->message->toString();
         self::assertStringContainsString(
@@ -486,7 +486,7 @@ final class MessageTest extends TestCase
 
     public function testMixedAndInline() : void
     {
-        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setHtmlContent('Foo bar');
         $this->message->setPlainMessage('Foo bar');
         $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');
         $this->message->addAttachment(__DIR__ . '/logo-circle.png');
@@ -507,7 +507,7 @@ final class MessageTest extends TestCase
 
     public function testMixed() : void
     {
-        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setHtmlContent('Foo bar');
         $this->message->setPlainMessage('Foo bar');
         $this->message->addAttachment(__DIR__ . '/logo-circle.png');
         $message = $this->message->toString();
@@ -527,7 +527,7 @@ final class MessageTest extends TestCase
 
     public function testInline() : void
     {
-        $this->message->setHtmlMessage('Foo bar');
+        $this->message->setHtmlContent('Foo bar');
         $this->message->setPlainMessage('Foo bar');
         // $this->message->addAttachment(__DIR__ . '/logo-circle.png');
         $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');

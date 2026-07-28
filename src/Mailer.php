@@ -306,7 +306,7 @@ class Mailer
                 'recipients' => $message->getRecipients(),
                 'headers' => $message->getHeaders(),
                 'plain' => $message->getPlainMessage(),
-                'html' => $message->getHtmlMessage(),
+                'html' => $message->getHtmlContent(),
                 'attachments' => $message->getAttachments(),
                 'inlineAttachments' => $message->getInlineAttachments(),
             ]);

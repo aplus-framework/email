@@ -94,7 +94,7 @@ class EmailCollector extends Collector
             </table>
             <?php
             if (isset($data['html'])): ?>
-                <h3>HTML Message</h3>
+                <h3>HTML Content</h3>
                 <pre><code class="language-html"><?= \htmlentities($data['html']) ?></code></pre>
             <?php
             endif;

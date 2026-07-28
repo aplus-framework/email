@@ -93,14 +93,14 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         self::assertStringNotContainsString(
-            'HTML Message',
+            'HTML Content',
             $contents
         );
         self::assertStringNotContainsString(
             'Inline Attachments',
             $contents
         );
-        $message->setHtmlMessage('<b>Hello!</b><img src="cid:foo">')
+        $message->setHtmlContent('<b>Hello!</b><img src="cid:foo">')
             ->setInlineAttachment(__DIR__ . '/../logo-circle.png', 'foo');
         \sleep(5);
         $sent = $mailer->send($message);
@@ -123,7 +123,7 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         self::assertStringContainsString(
-            'HTML Message',
+            'HTML Content',
             $contents
         );
         self::assertStringContainsString(

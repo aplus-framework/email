@@ -61,11 +61,11 @@ class Message implements Stringable
      */
     protected string $plainMessage;
     /**
-     * The HTML message.
+     * The HTML content.
      *
      * @var string
      */
-    protected string $htmlMessage;
+    protected string $htmlContent;
 
     /**
      * Render the Message as string.
@@ -270,7 +270,7 @@ class Message implements Stringable
 
     protected function isHtmlOnly() : bool
     {
-        return $this->getHtmlMessage() !== null
+        return $this->getHtmlContent() !== null
             && $this->getPlainMessage() === null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
@@ -284,13 +284,13 @@ class Message implements Stringable
         $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $data .= $this->encodeSplit($this->getHtmlMessage());
+        $data .= $this->encodeSplit($this->getHtmlContent());
         return $data;
     }
 
     protected function isPlainOnly() : bool
     {
-        return $this->getHtmlMessage() === null
+        return $this->getHtmlContent() === null
             && $this->getPlainMessage() !== null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
@@ -310,7 +310,7 @@ class Message implements Stringable
 
     protected function isAlternative() : bool
     {
-        return $this->getHtmlMessage() !== null
+        return $this->getHtmlContent() !== null
             && $this->getPlainMessage() !== null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
@@ -324,7 +324,7 @@ class Message implements Stringable
         $data = $this->renderHeaders() . $crlf;
         $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
-        $data .= $this->makeHtmlBlock($this->getHtmlMessage()) . $crlf;
+        $data .= $this->makeHtmlBlock($this->getHtmlContent()) . $crlf;
         $data .= $this->makePlainBlock($this->getPlainMessage()) . $crlf;
         $data .= '--' . $boundary . '--';
         return $data;
@@ -345,14 +345,14 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
-        $hasAlternative = $this->getHtmlMessage() !== null || $this->getPlainMessage() !== null;
+        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainMessage() !== null;
         if ($hasAlternative) {
             $boundary2 = $this->makeBoundary();
             $data .= '--' . $boundary . $crlf;
             $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
             $data .= $crlf;
 
-            $message = $this->getHtmlMessage();
+            $message = $this->getHtmlContent();
             if ($message !== null) {
                 $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
@@ -388,14 +388,14 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/related; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
-        $hasAlternative = $this->getHtmlMessage() !== null || $this->getPlainMessage() !== null;
+        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainMessage() !== null;
         if ($hasAlternative) {
             $boundary2 = $this->makeBoundary();
             $data .= '--' . $boundary . $crlf;
             $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
             $data .= $crlf;
 
-            $message = $this->getHtmlMessage();
+            $message = $this->getHtmlContent();
             if ($message !== null) {
                 $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
@@ -450,7 +450,7 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/related; boundary="' . $boundary3 . '"' . $crlf;
         $data .= $crlf;
 
-        $message = $this->getHtmlMessage();
+        $message = $this->getHtmlContent();
         if ($message !== null) {
             $data .= $this->makeHtmlBlock($message, $boundary3) . $crlf;
         }
@@ -547,48 +547,48 @@ class Message implements Stringable
     }
 
     /**
-     * Alias of {@see Framework\Email\Message::setHtmlMessage()}.
+     * Alias of {@see Framework\Email\Message::setHtmlContent()}.
      *
-     * @param string $body The text/html message
+     * @param string $body The text/html content
      *
      * @return static
      */
     public function setBody(#[Language('HTML')] string $body) : static
     {
-        return $this->setHtmlMessage($body);
+        return $this->setHtmlContent($body);
     }
 
     /**
-     * Alias of {@see Framework\Email\Message::getHtmlMessage()}.
+     * Alias of {@see Framework\Email\Message::getHtmlContent()}.
      *
-     * @return string|null The text/html message or null if not set
+     * @return string|null The text/html content or null if not set
      */
     public function getBody() : ?string
     {
-        return $this->getHtmlMessage();
+        return $this->getHtmlContent();
     }
 
     /**
-     * Set the text/html message.
+     * Set the text/html content.
      *
-     * @param string $message The text/html message
+     * @param string $content The text/html content
      *
      * @return static
      */
-    public function setHtmlMessage(#[Language('HTML')] string $message) : static
+    public function setHtmlContent(#[Language('HTML')] string $content) : static
     {
-        $this->htmlMessage = $message;
+        $this->htmlContent = $content;
         return $this;
     }
 
     /**
-     * Get the text/html message.
+     * Get the text/html content.
      *
-     * @return string|null The text/html message or null if not set
+     * @return string|null The text/html content or null if not set
      */
-    public function getHtmlMessage() : ?string
+    public function getHtmlContent() : ?string
     {
-        return $this->htmlMessage ?? null;
+        return $this->htmlContent ?? null;
     }
 
     /**
@@ -982,7 +982,7 @@ class Message implements Stringable
             throw new LogicException("The message 'Subject' is empty");
         }
         if ($this->isNullOrEmptyString($this->getPlainMessage())
-            && $this->isNullOrEmptyString($this->getHtmlMessage())
+            && $this->isNullOrEmptyString($this->getHtmlContent())
         ) {
             throw new LogicException('The message body is empty');
         }
