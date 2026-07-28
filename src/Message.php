@@ -352,14 +352,14 @@ class Message implements Stringable
             $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
             $data .= $crlf;
 
-            $message = $this->getHtmlContent();
-            if ($message !== null) {
-                $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
+            $content = $this->getHtmlContent();
+            if ($content !== null) {
+                $data .= $this->makeHtmlBlock($content, $boundary2) . $crlf;
             }
 
-            $message = $this->getPlainContent();
-            if ($message !== null) {
-                $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
+            $content = $this->getPlainContent();
+            if ($content !== null) {
+                $data .= $this->makePlainBlock($content, $boundary2) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
@@ -395,14 +395,14 @@ class Message implements Stringable
             $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
             $data .= $crlf;
 
-            $message = $this->getHtmlContent();
-            if ($message !== null) {
-                $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
+            $content = $this->getHtmlContent();
+            if ($content !== null) {
+                $data .= $this->makeHtmlBlock($content, $boundary2) . $crlf;
             }
 
-            $message = $this->getPlainContent();
-            if ($message !== null) {
-                $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
+            $content = $this->getPlainContent();
+            if ($content !== null) {
+                $data .= $this->makePlainBlock($content, $boundary2) . $crlf;
             }
             $data .= '--' . $boundary2 . '--' . $crlf . $crlf;
         }
@@ -439,9 +439,9 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
         $data .= $crlf;
 
-        $message = $this->getPlainContent();
-        if ($message !== null) {
-            $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
+        $content = $this->getPlainContent();
+        if ($content !== null) {
+            $data .= $this->makePlainBlock($content, $boundary2) . $crlf;
         }
 
         $boundary3 = $this->makeBoundary();
@@ -450,9 +450,9 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/related; boundary="' . $boundary3 . '"' . $crlf;
         $data .= $crlf;
 
-        $message = $this->getHtmlContent();
-        if ($message !== null) {
-            $data .= $this->makeHtmlBlock($message, $boundary3) . $crlf;
+        $content = $this->getHtmlContent();
+        if ($content !== null) {
+            $data .= $this->makeHtmlBlock($content, $boundary3) . $crlf;
         }
 
         $part = '';
@@ -474,7 +474,7 @@ class Message implements Stringable
         return $data;
     }
 
-    protected function makeBlock(string $message, string $type, ?string $boundary = null) : string
+    protected function makeBlock(string $content, string $type, ?string $boundary = null) : string
     {
             $boundary ??= $this->getBoundary();
             $crlf = $this->getCrlf();
@@ -482,18 +482,18 @@ class Message implements Stringable
             $data .= 'Content-Type: ' . $type . '; charset="utf-8"' . $crlf;
             $data .= 'Content-Transfer-Encoding: base64' . $crlf;
             $data .= $crlf;
-            $data .= $this->encodeSplit($message);
+            $data .= $this->encodeSplit($content);
             return $data;
     }
 
-    protected function makePlainBlock(string $message, ?string $boundary = null) : string
+    protected function makePlainBlock(string $content, ?string $boundary = null) : string
     {
-        return $this->makeBlock($message, 'text/plain', $boundary);
+        return $this->makeBlock($content, 'text/plain', $boundary);
     }
 
-    protected function makeHtmlBlock(string $message, ?string $boundary = null) : string
+    protected function makeHtmlBlock(string $content, ?string $boundary = null) : string
     {
-        return $this->makeBlock($message, 'text/html', $boundary);
+        return $this->makeBlock($content, 'text/html', $boundary);
     }
 
     protected function makeAttachmentBlock(Attachment $attachment, ?string $boundary = null) : string
