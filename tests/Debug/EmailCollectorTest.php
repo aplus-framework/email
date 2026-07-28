@@ -65,7 +65,7 @@ final class EmailCollectorTest extends TestCase
         $message->addTo((string) \getenv('SMTP_ADDRESS'))
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setSubject('Foo bar bazzz')
-            ->setPlainMessage('Hello!')
+            ->setPlainContent('Hello!')
             ->addAttachment(__FILE__);
         $mailer = $this->makeMailer();
         \sleep(5);
@@ -85,7 +85,7 @@ final class EmailCollectorTest extends TestCase
             $contents
         );
         self::assertStringContainsString(
-            'Plain Message',
+            'Plain Content',
             $contents
         );
         self::assertStringContainsString(
@@ -150,7 +150,7 @@ final class EmailCollectorTest extends TestCase
         $message->addTo((string) \getenv('SMTP_ADDRESS'))
             ->setFrom((string) \getenv('SMTP_ADDRESS'))
             ->setSubject('Me dê sua força, Pégasus!')
-            ->setPlainMessage('Foo');
+            ->setPlainContent('Foo');
         \sleep(5);
         $sent = $this->makeMailer()->send($message);
         self::assertTrue($sent);

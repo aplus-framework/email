@@ -28,7 +28,7 @@ final class MessageTest extends TestCase
 
     public function testToString() : void
     {
-        $this->message->setPlainMessage('Foo baz');
+        $this->message->setPlainContent('Foo baz');
         $base64 = \base64_encode('Foo baz');
         self::assertStringContainsString($base64, $this->message->toString());
         self::assertStringContainsString($base64, (string) $this->message);
@@ -458,7 +458,7 @@ final class MessageTest extends TestCase
 
     public function testPlainOnly() : void
     {
-        $this->message->setPlainMessage('Foo bar');
+        $this->message->setPlainContent('Foo bar');
         self::assertStringContainsString(
             'Content-Type: text/plain',
             $this->message->toString()
@@ -468,7 +468,7 @@ final class MessageTest extends TestCase
     public function testAlternative() : void
     {
         $this->message->setHtmlContent('Foo bar');
-        $this->message->setPlainMessage('Foo bar');
+        $this->message->setPlainContent('Foo bar');
         $message = $this->message->toString();
         self::assertStringContainsString(
             'Content-Type: multipart/alternative',
@@ -487,7 +487,7 @@ final class MessageTest extends TestCase
     public function testMixedAndInline() : void
     {
         $this->message->setHtmlContent('Foo bar');
-        $this->message->setPlainMessage('Foo bar');
+        $this->message->setPlainContent('Foo bar');
         $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');
         $this->message->addAttachment(__DIR__ . '/logo-circle.png');
         $message = $this->message->toString();
@@ -508,7 +508,7 @@ final class MessageTest extends TestCase
     public function testMixed() : void
     {
         $this->message->setHtmlContent('Foo bar');
-        $this->message->setPlainMessage('Foo bar');
+        $this->message->setPlainContent('Foo bar');
         $this->message->addAttachment(__DIR__ . '/logo-circle.png');
         $message = $this->message->toString();
         self::assertStringContainsString(
@@ -528,7 +528,7 @@ final class MessageTest extends TestCase
     public function testInline() : void
     {
         $this->message->setHtmlContent('Foo bar');
-        $this->message->setPlainMessage('Foo bar');
+        $this->message->setPlainContent('Foo bar');
         // $this->message->addAttachment(__DIR__ . '/logo-circle.png');
         $this->message->setInlineAttachment(__DIR__ . '/logo-circle.png', 'logo');
         $message = $this->message->toString();

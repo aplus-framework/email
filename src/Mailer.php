@@ -305,7 +305,7 @@ class Mailer
                 'length' => \strlen((string) $message),
                 'recipients' => $message->getRecipients(),
                 'headers' => $message->getHeaders(),
-                'plain' => $message->getPlainMessage(),
+                'plain' => $message->getPlainContent(),
                 'html' => $message->getHtmlContent(),
                 'attachments' => $message->getAttachments(),
                 'inlineAttachments' => $message->getInlineAttachments(),

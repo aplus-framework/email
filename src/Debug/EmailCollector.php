@@ -99,7 +99,7 @@ class EmailCollector extends Collector
             <?php
             endif;
             if (isset($data['plain'])): ?>
-                <h3>Plain Message</h3>
+                <h3>Plain Content</h3>
                 <pre><code class="language-none"><?= \htmlentities($data['plain']) ?></code></pre>
             <?php
             endif;

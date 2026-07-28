@@ -55,11 +55,11 @@ class Message implements Stringable
      */
     protected array $inlineAttachments = [];
     /**
-     * The plain text message.
+     * The plain text content.
      *
      * @var string
      */
-    protected string $plainMessage;
+    protected string $plainContent;
     /**
      * The HTML content.
      *
@@ -271,7 +271,7 @@ class Message implements Stringable
     protected function isHtmlOnly() : bool
     {
         return $this->getHtmlContent() !== null
-            && $this->getPlainMessage() === null
+            && $this->getPlainContent() === null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
     }
@@ -291,7 +291,7 @@ class Message implements Stringable
     protected function isPlainOnly() : bool
     {
         return $this->getHtmlContent() === null
-            && $this->getPlainMessage() !== null
+            && $this->getPlainContent() !== null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
     }
@@ -304,14 +304,14 @@ class Message implements Stringable
         $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
         $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
-        $data .= $this->encodeSplit($this->getPlainMessage());
+        $data .= $this->encodeSplit($this->getPlainContent());
         return $data;
     }
 
     protected function isAlternative() : bool
     {
         return $this->getHtmlContent() !== null
-            && $this->getPlainMessage() !== null
+            && $this->getPlainContent() !== null
             && $this->getAttachments() === []
             && $this->getInlineAttachments() === [];
     }
@@ -325,7 +325,7 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
         $data .= $this->makeHtmlBlock($this->getHtmlContent()) . $crlf;
-        $data .= $this->makePlainBlock($this->getPlainMessage()) . $crlf;
+        $data .= $this->makePlainBlock($this->getPlainContent()) . $crlf;
         $data .= '--' . $boundary . '--';
         return $data;
     }
@@ -345,7 +345,7 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
-        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainMessage() !== null;
+        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainContent() !== null;
         if ($hasAlternative) {
             $boundary2 = $this->makeBoundary();
             $data .= '--' . $boundary . $crlf;
@@ -357,7 +357,7 @@ class Message implements Stringable
                 $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
 
-            $message = $this->getPlainMessage();
+            $message = $this->getPlainContent();
             if ($message !== null) {
                 $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
             }
@@ -388,7 +388,7 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/related; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
-        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainMessage() !== null;
+        $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainContent() !== null;
         if ($hasAlternative) {
             $boundary2 = $this->makeBoundary();
             $data .= '--' . $boundary . $crlf;
@@ -400,7 +400,7 @@ class Message implements Stringable
                 $data .= $this->makeHtmlBlock($message, $boundary2) . $crlf;
             }
 
-            $message = $this->getPlainMessage();
+            $message = $this->getPlainContent();
             if ($message !== null) {
                 $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
             }
@@ -439,7 +439,7 @@ class Message implements Stringable
         $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary2 . '"' . $crlf;
         $data .= $crlf;
 
-        $message = $this->getPlainMessage();
+        $message = $this->getPlainContent();
         if ($message !== null) {
             $data .= $this->makePlainBlock($message, $boundary2) . $crlf;
         }
@@ -524,26 +524,26 @@ class Message implements Stringable
     }
 
     /**
-     * Set the text/plain message.
+     * Set the text/plain content.
      *
-     * @param string $message The text/plain message
+     * @param string $content The text/plain content
      *
      * @return static
      */
-    public function setPlainMessage(string $message) : static
+    public function setPlainContent(string $content) : static
     {
-        $this->plainMessage = $message;
+        $this->plainContent = $content;
         return $this;
     }
 
     /**
-     * Get the text/plain message.
+     * Get the text/plain content.
      *
-     * @return string|null The message or null if not set
+     * @return string|null The content or null if not set
      */
-    public function getPlainMessage() : ?string
+    public function getPlainContent() : ?string
     {
-        return $this->plainMessage ?? null;
+        return $this->plainContent ?? null;
     }
 
     /**
@@ -981,7 +981,7 @@ class Message implements Stringable
         if ($this->isNullOrEmptyString($this->getSubject())) {
             throw new LogicException("The message 'Subject' is empty");
         }
-        if ($this->isNullOrEmptyString($this->getPlainMessage())
+        if ($this->isNullOrEmptyString($this->getPlainContent())
             && $this->isNullOrEmptyString($this->getHtmlContent())
         ) {
             throw new LogicException('The message body is empty');
