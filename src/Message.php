@@ -278,11 +278,11 @@ class Message implements Stringable
 
     protected function renderHtmlOnly() : string
     {
+        $this->setHeader(Header::CONTENT_TYPE, 'text/html; charset="utf-8"');
+        $this->setHeader(Header::CONTENT_TRANSFER_ENCODING, 'base64');
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: text/html; charset="utf-8"' . $crlf;
-        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
         $data .= $this->encodeSplit($this->getHtmlContent());
         return $data;
@@ -298,11 +298,11 @@ class Message implements Stringable
 
     protected function renderPlainOnly() : string
     {
+        $this->setHeader(Header::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+        $this->setHeader(Header::CONTENT_TRANSFER_ENCODING, 'base64');
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: text/plain; charset="utf-8"' . $crlf;
-        $data .= 'Content-Transfer-Encoding: base64' . $crlf;
         $data .= $crlf;
         $data .= $this->encodeSplit($this->getPlainContent());
         return $data;
@@ -319,10 +319,10 @@ class Message implements Stringable
     protected function renderAlternative() : string
     {
         $boundary = $this->getBoundary();
+        $this->setHeader(Header::CONTENT_TYPE, 'multipart/alternative; boundary="' . $boundary . '"');
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: multipart/alternative; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
         $data .= $this->makeHtmlBlock($this->getHtmlContent()) . $crlf;
         $data .= $this->makePlainBlock($this->getPlainContent()) . $crlf;
@@ -339,10 +339,10 @@ class Message implements Stringable
     protected function renderMixed() : string
     {
         $boundary = $this->getBoundary();
+        $this->setHeader(Header::CONTENT_TYPE, 'multipart/mixed; boundary="' . $boundary . '"');
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
         $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainContent() !== null;
@@ -382,10 +382,10 @@ class Message implements Stringable
     protected function renderInline() : string
     {
         $boundary = $this->getBoundary();
+        $this->setHeader(Header::CONTENT_TYPE, 'multipart/related; boundary="' . $boundary . '"');
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: multipart/related; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
         $hasAlternative = $this->getHtmlContent() !== null || $this->getPlainContent() !== null;
@@ -426,11 +426,11 @@ class Message implements Stringable
     protected function renderMixedAndInline() : string
     {
         $boundary = $this->getBoundary();
+        $this->setHeader(Header::CONTENT_TYPE, 'multipart/mixed; boundary="' . $boundary . '"');
         //$boundary = 'mixed_raiz_aaa';
         $crlf = $this->getCrlf();
         $this->prepareHeaders();
         $data = $this->renderHeaders() . $crlf;
-        $data .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . $crlf;
         $data .= $crlf;
 
         $boundary2 = $this->makeBoundary();
