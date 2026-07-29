@@ -20,6 +20,7 @@ class Header
     public const string BCC = 'Bcc';
     public const string CC = 'Cc';
     public const string COMMENTS = 'Comments';
+    public const string CONTENT_TRANSFER_ENCODING = 'Content-Transfer-Encoding';
     public const string CONTENT_TYPE = 'Content-Type';
     public const string DATE = 'Date';
     public const string DKIM_SIGNATURE = 'DKIM-Signature';
@@ -59,6 +60,7 @@ class Header
         'bcc' => 'Bcc',
         'cc' => 'Cc',
         'comments' => 'Comments',
+        'content-transfer-encoding' => 'Content-Transfer-Encoding',
         'content-type' => 'Content-Type',
         'date' => 'Date',
         'dkim-signature' => 'DKIM-Signature',
