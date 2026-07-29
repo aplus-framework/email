@@ -242,7 +242,7 @@ class Message implements Stringable
     protected function encodeSplit(string $string) : string
     {
         $string = \base64_encode($string);
-        return \chunk_split($string);
+        return \chunk_split($string, separator: $this->getCrlf());
     }
 
     protected function renderData() : string
