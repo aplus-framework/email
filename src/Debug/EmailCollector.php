@@ -49,7 +49,7 @@ class EmailCollector extends Collector
         \ob_start();
         if (!isset($this->mailer)) {
             echo '<p>This collector has not been added to a Mailer instance.</p>';
-            return \ob_get_clean(); // @phpstan-ignore-line
+            return \ob_get_clean();
         }
         echo $this->showHeader();
         if (!$this->hasData()) {

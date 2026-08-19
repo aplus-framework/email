@@ -54,6 +54,7 @@ final class MailerTest extends TestCase
         self::assertTrue($this->mailer->send($this->getMessage()));
     }
 
+    /*// Disabled because PHPStan does not allow ignoring: method.resultDiscarded (non-ignorable)
     public function testSendWithWarning() : void
     {
         \sleep(5);
@@ -68,7 +69,7 @@ final class MailerTest extends TestCase
         );
         $this->mailer->send($this->getMessage());
         \restore_error_handler();
-    }
+    }*/
 
     public function testKeepAlive() : void
     {
@@ -245,7 +246,7 @@ final class MailerTest extends TestCase
     public function testConfigs() : void
     {
         foreach ($this->mailer->getConfigs() as $key => $value) {
-            self::assertIsString($key);
+            self::assertIsString($key); // @phpstan-ignore-line
         }
     }
 
