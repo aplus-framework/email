@@ -10,7 +10,7 @@
 namespace Framework\Email\Debug;
 
 use Framework\Debug\Collector;
-use Framework\Debug\Debugger;
+use Framework\Debug\Debugger as D;
 use Framework\Email\Header;
 use Framework\Email\Mailer;
 
@@ -66,14 +66,14 @@ class EmailCollector extends Collector
             <h2>Message <?= $index + 1 ?></h2>
             <p><strong>Status:</strong>
                 <?= $data['success'] ? 'OK' : 'Error' ?></p>
-            <p><strong>Last Response:</strong> <?= $data['last_response'] ?></p>
-            <p><strong>From:</strong> <?= \htmlentities($data['from']) ?></p>
+            <p><strong>Last Response:</strong> <?= D::esc($data['last_response']) ?></p>
+            <p><strong>From:</strong> <?= D::esc($data['from']) ?></p>
             <p>
-                <strong>Recipients:</strong> <?= \htmlentities(\implode(', ', $data['recipients'])) ?>
+                <strong>Recipients:</strong> <?= D::esc(\implode(', ', $data['recipients'])) ?>
             </p>
-            <p><strong>Size:</strong> <?= Debugger::convertSize($data['length']) ?></p>
+            <p><strong>Size:</strong> <?= D::convertSize($data['length']) ?></p>
             <p>
-                <strong>Time Sending:</strong> <?= Debugger::roundSecondsToMilliseconds($data['end'] - $data['start']) ?> ms
+                <strong>Time Sending:</strong> <?= D::roundSecondsToMilliseconds($data['end'] - $data['start']) ?> ms
             </p>
             <h3>Headers</h3>
             <table>
@@ -86,8 +86,8 @@ class EmailCollector extends Collector
                 <tbody>
                 <?php foreach ($data['headers'] as $name => $value): ?>
                     <tr>
-                        <td><?= \htmlentities(Header::getName($name)) ?></td>
-                        <td><?= \htmlentities($value) ?></td>
+                        <td><?= D::esc(Header::getName($name)) ?></td>
+                        <td><?= D::esc($value) ?></td>
                     </tr>
                 <?php endforeach ?>
                 </tbody>
@@ -95,12 +95,12 @@ class EmailCollector extends Collector
             <?php
             if (isset($data['html'])): ?>
                 <h3>HTML Content</h3>
-                <pre><code class="language-html"><?= \htmlentities($data['html']) ?></code></pre>
+                <pre><code class="language-html"><?= D::esc($data['html']) ?></code></pre>
             <?php
             endif;
             if (isset($data['plain'])): ?>
                 <h3>Plain Content</h3>
-                <pre><code class="language-none"><?= \htmlentities($data['plain']) ?></code></pre>
+                <pre><code class="language-none"><?= D::esc($data['plain']) ?></code></pre>
             <?php
             endif;
             if ($data['attachments']): ?>
@@ -117,10 +117,10 @@ class EmailCollector extends Collector
                     <tbody>
                     <?php foreach ($data['attachments'] as $attachment): ?>
                         <tr>
-                            <td><?= \htmlentities($attachment->getFilename()); ?></td>
-                            <td><?= \htmlentities($attachment->getName()); ?></td>
-                            <td><?= \htmlentities($attachment->getMimeType()); ?></td>
-                            <td><?= Debugger::convertSize($attachment->getSize()); ?></td>
+                            <td><?= D::esc($attachment->getFilename()); ?></td>
+                            <td><?= D::esc($attachment->getName()); ?></td>
+                            <td><?= D::esc($attachment->getMimeType()); ?></td>
+                            <td><?= D::convertSize($attachment->getSize()); ?></td>
                         </tr>
                     <?php endforeach ?>
                     </tbody>
@@ -141,10 +141,10 @@ class EmailCollector extends Collector
                     <tbody>
                     <?php foreach ($data['inlineAttachments'] as $cid => $attachment): ?>
                         <tr>
-                            <td><?= \htmlentities($attachment->getFilename()); ?></td>
-                            <td><?= \htmlentities($cid) ?></td>
-                            <td><?= \htmlentities($attachment->getMimeType()); ?></td>
-                            <td><?= Debugger::convertSize($attachment->getSize()); ?></td>
+                            <td><?= D::esc($attachment->getFilename()); ?></td>
+                            <td><?= D::esc($cid) ?></td>
+                            <td><?= D::esc($attachment->getMimeType()); ?></td>
+                            <td><?= D::convertSize($attachment->getSize()); ?></td>
                         </tr>
                     <?php endforeach ?>
                     </tbody>
@@ -160,10 +160,10 @@ class EmailCollector extends Collector
         \ob_start();
         $configs = $this->mailer->getConfigs();
         ?>
-        <p><strong>Host:</strong> <?= \htmlentities($configs['host']) ?></p>
-        <p><strong>Port:</strong> <?= \htmlentities((string) $configs['port']) ?></p>
+        <p><strong>Host:</strong> <?= D::esc($configs['host']) ?></p>
+        <p><strong>Port:</strong> <?= D::esc($configs['port']) ?></p>
         <p><strong>TLS:</strong> <?= $configs['tls'] ? 'Yes' : 'No' ?></p>
-        <p><strong>Username:</strong> <?= \htmlentities((string) $configs['username']) ?></p>
+        <p><strong>Username:</strong> <?= D::esc($configs['username']) ?></p>
         <p><strong>Keep Alive:</strong> <?= $configs['keep_alive'] ? 'Yes' : 'No' ?></p>
         <p><strong>Save Logs:</strong> <?= $configs['save_logs'] ? 'Yes' : 'No' ?></p>
         <?php
