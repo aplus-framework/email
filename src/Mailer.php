@@ -239,7 +239,7 @@ class Mailer
         return $this->authenticate();
     }
 
-    protected function disconnect() : bool
+    public function disconnect() : bool
     {
         if (\is_resource($this->socket)) {
             $this->sendCommand('QUIT');

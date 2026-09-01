@@ -83,6 +83,7 @@ final class MailerTest extends TestCase
         self::assertTrue($smtp->send($this->getMessage()));
         \sleep(5);
         self::assertTrue($smtp->send($this->getMessage()));
+        $smtp->disconnect();
     }
 
     public function testLastResponse() : void
