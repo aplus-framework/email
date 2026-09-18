@@ -22,6 +22,27 @@ use SensitiveParameter;
  */
 class Mailer
 {
+    protected const array DEFAULT_CONFIG = [
+            'host' => 'localhost',
+            'port' => 587,
+            'tls' => true,
+            'options' => [
+                'ssl' => [
+                    'allow_self_signed' => false,
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
+                ],
+            ],
+            'username' => null,
+            'password' => null,
+            'charset' => 'utf-8',
+            'crlf' => "\r\n",
+            'connection_timeout' => 10,
+            'response_timeout' => 5,
+            'hostname' => 'localhost',
+            'keep_alive' => false,
+            'save_logs' => false,
+        ];
     /**
      * @var array<string,mixed>
      */
