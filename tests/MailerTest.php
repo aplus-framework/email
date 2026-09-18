@@ -20,9 +20,9 @@ final class MailerTest extends TestCase
     public function setup() : void
     {
         $this->mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
-            'username' => \getenv('SMTP_USERNAME'),
-            'password' => \getenv('SMTP_PASSWORD'),
+            'host' => (string) \getenv('SMTP_HOST'),
+            'username' => (string) \getenv('SMTP_USERNAME'),
+            'password' => (string) \getenv('SMTP_PASSWORD'),
         ]);
     }
 
@@ -75,9 +75,9 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $smtp = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
-            'username' => \getenv('SMTP_USERNAME'),
-            'password' => \getenv('SMTP_PASSWORD'),
+            'host' => (string) \getenv('SMTP_HOST'),
+            'username' => (string) \getenv('SMTP_USERNAME'),
+            'password' => (string) \getenv('SMTP_PASSWORD'),
             'keep_alive' => true,
         ]);
         self::assertTrue($smtp->send($this->getMessage()));
@@ -108,7 +108,7 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
+            'host' => (string) \getenv('SMTP_HOST'),
             'username' => null,
             'password' => 'foo',
         ]);
@@ -123,9 +123,9 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
+            'host' => (string) \getenv('SMTP_HOST'),
             'username' => 'foo',
-            'password' => \getenv('SMTP_PASSWORD'),
+            'password' => (string) \getenv('SMTP_PASSWORD'),
             'save_logs' => true,
         ]);
         self::assertFalse($mailer->send($this->getMessage()));
@@ -139,7 +139,7 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
+            'host' => (string) \getenv('SMTP_HOST'),
             'username' => 'foo',
             'password' => null,
         ]);
@@ -154,8 +154,8 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
-            'username' => \getenv('SMTP_USERNAME'),
+            'host' => (string) \getenv('SMTP_HOST'),
+            'username' => (string) \getenv('SMTP_USERNAME'),
             'password' => 'foo',
             'save_logs' => true,
         ]);
@@ -190,9 +190,9 @@ final class MailerTest extends TestCase
     {
         \sleep(5);
         $mailer = new Mailer([
-            'host' => \getenv('SMTP_HOST'),
-            'username' => \getenv('SMTP_USERNAME'),
-            'password' => \getenv('SMTP_PASSWORD'),
+            'host' => (string) \getenv('SMTP_HOST'),
+            'username' => (string) \getenv('SMTP_USERNAME'),
+            'password' => (string) \getenv('SMTP_PASSWORD'),
             'save_logs' => true,
         ]);
         $sent = $mailer->send($this->getMessage());

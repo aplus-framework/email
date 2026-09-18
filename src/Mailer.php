@@ -11,7 +11,6 @@ namespace Framework\Email;
 
 use Framework\Email\Debug\EmailCollector;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use NoDiscard;
 use SensitiveParameter;
 
@@ -44,15 +43,37 @@ class Mailer
             'save_logs' => false,
         ];
     /**
-     * @var array<string,mixed>
+     * @var array{
+     *      host: string,
+     *      port: int,
+     *      tls: bool,
+     *      options: array{
+     *          ssl: array{
+     *              allow_self_signed: bool,
+     *              verify_peer: bool,
+     *              verify_peer_name: bool,
+     *          }
+     *      },
+     *      username: string|null,
+     *      password: string|null,
+     *      crlf: string,
+     *      connection_timeout: int,
+     *      response_timeout: int,
+     *      hostname: string,
+     *      keep_alive: bool,
+     *      save_logs: bool,
+     * }
      */
-    protected array $config = [];
+    protected array $config = self::DEFAULT_CONFIG;
     /**
      * @var false|resource $socket
      */
     protected $socket = false;
     /**
-     * @var array<int,array<string,mixed>>
+     * @var array<int,array{
+     *      command: string,
+     *      responses: array<int,string>
+     * }>
      */
     protected array $logs = [];
     protected EmailCollector $debugCollector;
@@ -61,7 +82,26 @@ class Mailer
     /**
      * Mailer constructor.
      *
-     * @param array<string,mixed>|string $username
+     * @param array{
+     *      host?: string,
+     *      port?: int,
+     *      tls?: bool,
+     *      options?: array{
+     *          ssl: array{
+     *              allow_self_signed?: bool,
+     *              verify_peer?: bool,
+     *              verify_peer_name?: bool,
+     *          }
+     *      },
+     *      username?: string|null,
+     *      password?: string|null,
+     *      crlf?: string,
+     *      connection_timeout?: int,
+     *      response_timeout?: int,
+     *      hostname?: string,
+     *      keep_alive?: bool,
+     *      save_logs?: bool,
+     * }|string $username
      * @param string|null $password
      * @param string $host
      * @param int $port
@@ -83,7 +123,7 @@ class Mailer
                 'password' => $password,
                 'host' => $host,
                 'port' => $port,
-                'hostname' => $hostname ?? \gethostname(),
+                'hostname' => $hostname ?? (string) \gethostname(),
             ]);
     }
 
@@ -98,50 +138,53 @@ class Mailer
     /**
      * Make Base configurations.
      *
-     * @param array<string,mixed> $config
+     * @param array{
+     *      host?: string,
+     *      port?: int,
+     *      tls?: bool,
+     *      options?: array{
+     *          ssl?: array{
+     *              allow_self_signed?: bool,
+     *              verify_peer?: bool,
+     *              verify_peer_name?: bool,
+     *          }
+     *      },
+     *      username?: string|null,
+     *      password?: string|null,
+     *      crlf?: string,
+     *      connection_timeout?: int,
+     *      response_timeout?: int,
+     *      hostname?: string,
+     *      keep_alive?: bool,
+     *      save_logs?: bool,
+     * } $config
      *
-     * @return array<string,mixed>
+     * @return array{
+     *      host: string,
+     *      port: int,
+     *      tls: bool,
+     *      options: array{
+     *          ssl: array{
+     *              allow_self_signed: bool,
+     *              verify_peer: bool,
+     *              verify_peer_name: bool,
+     *          }
+     *      },
+     *      username: string|null,
+     *      password: string|null,
+     *      crlf: string,
+     *      connection_timeout: int,
+     *      response_timeout: int,
+     *      hostname: string,
+     *      keep_alive: bool,
+     *      save_logs: bool,
+     * }
      */
-    #[ArrayShape([
-        'host' => 'string',
-        'port' => 'int',
-        'tls' => 'bool',
-        'options' => 'array',
-        'username' => 'string|null',
-        'password' => 'string|null',
-        'charset' => 'string',
-        'crlf' => 'string',
-        'connection_timeout' => 'int',
-        'response_timeout' => 'int',
-        'hostname' => 'string',
-        'keep_alive' => 'bool',
-        'save_logs' => 'bool',
-    ])]
     protected function makeConfig(#[SensitiveParameter] array $config) : array
     {
-        $config = \array_replace_recursive([
-            'host' => 'localhost',
-            'port' => 587,
-            'tls' => true,
-            'options' => [
-                'ssl' => [
-                    'allow_self_signed' => false,
-                    'verify_peer' => true,
-                    'verify_peer_name' => true,
-                ],
-            ],
-            'username' => null,
-            'password' => null,
-            'charset' => 'utf-8',
-            'crlf' => "\r\n",
-            'connection_timeout' => 10,
-            'response_timeout' => 5,
-            'hostname' => \gethostname(),
-            'keep_alive' => false,
-            'save_logs' => false,
-        ], $config);
+        $config = \array_replace_recursive(static::DEFAULT_CONFIG, $config);
         $this->validateConfigKeys(\array_keys($config));
-        return $config;
+        return $config; // @phpstan-ignore-line
     }
 
     /**
@@ -187,23 +230,27 @@ class Mailer
     /**
      * Get all configs.
      *
-     * @return array<string,mixed>
+     * @return array{
+     *      host: string,
+     *      port: int,
+     *      tls: bool,
+     *      options: array{
+     *          ssl: array{
+     *              allow_self_signed: bool,
+     *              verify_peer: bool,
+     *              verify_peer_name: bool,
+     *          }
+     *      },
+     *      username: string|null,
+     *      password: string|null,
+     *      crlf: string,
+     *      connection_timeout: int,
+     *      response_timeout: int,
+     *      hostname: string,
+     *      keep_alive: bool,
+     *      save_logs: bool,
+     * }
      */
-    #[ArrayShape([
-        'host' => 'string',
-        'port' => 'int',
-        'tls' => 'bool',
-        'options' => 'array',
-        'username' => 'string|null',
-        'password' => 'string|null',
-        'charset' => 'string',
-        'crlf' => 'string',
-        'connection_timeout' => 'int',
-        'response_timeout' => 'int',
-        'hostname' => 'string',
-        'keep_alive' => 'bool',
-        'save_logs' => 'bool',
-    ])]
     public function getConfigs() : array
     {
         return $this->config;
@@ -417,7 +464,10 @@ class Mailer
      *
      * Contains commands and responses from the Mailer server.
      *
-     * @return array<int,array<string,mixed>>
+     * @return array<int,array{
+     *      command: string,
+     *      responses: array<int,string>
+     * }>
      */
     public function getLogs() : array
     {
