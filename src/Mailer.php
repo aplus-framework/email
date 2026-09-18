@@ -98,7 +98,7 @@ class Mailer
      *      crlf?: string,
      *      connection_timeout?: int,
      *      response_timeout?: int,
-     *      hostname?: string,
+     *      hostname?: string|null,
      *      keep_alive?: bool,
      *      save_logs?: bool,
      * }|string $username
@@ -123,7 +123,7 @@ class Mailer
                 'password' => $password,
                 'host' => $host,
                 'port' => $port,
-                'hostname' => $hostname ?? (string) \gethostname(),
+                'hostname' => $hostname,
             ]);
     }
 
@@ -154,7 +154,7 @@ class Mailer
      *      crlf?: string,
      *      connection_timeout?: int,
      *      response_timeout?: int,
-     *      hostname?: string,
+     *      hostname?: string|null,
      *      keep_alive?: bool,
      *      save_logs?: bool,
      * } $config
@@ -182,6 +182,7 @@ class Mailer
      */
     protected function makeConfig(#[SensitiveParameter] array $config) : array
     {
+        $config['hostname'] ??= \gethostname() ?: 'localhost';
         $config = \array_replace_recursive(static::DEFAULT_CONFIG, $config);
         $this->validateConfigKeys(\array_keys($config));
         return $config; // @phpstan-ignore-line
