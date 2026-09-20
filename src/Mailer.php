@@ -525,7 +525,7 @@ class Mailer
      */
     public function createMessage() : Message
     {
-        return (new Message())->setMailer($this);
+        return new Message()->setMailer($this);
     }
 
     protected function isSuccessCode(false | int $code) : bool
