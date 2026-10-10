@@ -9,6 +9,7 @@
  */
 namespace Tests\Email\Debug;
 
+use Framework\Debug\Activity;
 use Framework\Email\Debug\EmailCollector;
 use Framework\Email\Mailer;
 use Framework\Email\Message;
@@ -154,15 +155,9 @@ final class EmailCollectorTest extends TestCase
         \sleep(5);
         $sent = $this->makeMailer()->send($message);
         self::assertTrue($sent);
-        self::assertSame(
-            [
-                'collector',
-                'class',
-                'description',
-                'start',
-                'end',
-            ],
-            \array_keys($this->collector->getActivities()[0])
+        self::assertInstanceOf(
+            Activity::class,
+            $this->collector->getActivities()[0]
         );
     }
 }
