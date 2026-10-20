@@ -9,7 +9,7 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Mailer;
+use Aplus\Email\Mailer;
 
 class MailerMock extends Mailer
 {

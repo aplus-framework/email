@@ -9,8 +9,8 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Mailer;
-use Framework\Email\Message;
+use Aplus\Email\Mailer;
+use Aplus\Email\Message;
 use PHPUnit\Framework\TestCase;
 
 final class MailerTest extends TestCase

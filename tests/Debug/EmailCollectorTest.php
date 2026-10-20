@@ -9,10 +9,10 @@
  */
 namespace Tests\Email\Debug;
 
-use Framework\Debug\Activity;
-use Framework\Email\Debug\EmailCollector;
-use Framework\Email\Mailer;
-use Framework\Email\Message;
+use Aplus\Debug\Activity;
+use Aplus\Email\Debug\EmailCollector;
+use Aplus\Email\Mailer;
+use Aplus\Email\Message;
 use PHPUnit\Framework\TestCase;
 
 final class EmailCollectorTest extends TestCase

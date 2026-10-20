@@ -9,7 +9,7 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Header;
+use Aplus\Email\Header;
 use PHPUnit\Framework\TestCase;
 
 final class HeaderTest extends TestCase

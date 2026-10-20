@@ -9,7 +9,7 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Message;
+use Aplus\Email\Message;
 use Override;
 
 class MessageMock extends Message

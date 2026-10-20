@@ -9,7 +9,7 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Attachment;
+use Aplus\Email\Attachment;
 use PHPUnit\Framework\TestCase;
 
 final class AttachmentTest extends TestCase

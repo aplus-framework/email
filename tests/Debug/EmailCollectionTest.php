@@ -9,7 +9,7 @@
  */
 namespace Tests\Email\Debug;
 
-use Framework\Email\Debug\EmailCollection;
+use Aplus\Email\Debug\EmailCollection;
 use PHPUnit\Framework\TestCase;
 
 final class EmailCollectionTest extends TestCase

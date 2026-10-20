@@ -9,11 +9,11 @@
  */
 namespace Tests\Email;
 
-use Framework\Email\Attachment;
-use Framework\Email\Header;
-use Framework\Email\Mailer;
-use Framework\Email\Message;
-use Framework\Email\XPriority;
+use Aplus\Email\Attachment;
+use Aplus\Email\Header;
+use Aplus\Email\Mailer;
+use Aplus\Email\Message;
+use Aplus\Email\XPriority;
 use PHPUnit\Framework\TestCase;
 
 final class MessageTest extends TestCase

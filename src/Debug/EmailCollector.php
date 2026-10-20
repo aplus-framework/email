@@ -7,13 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\Email\Debug;
+namespace Aplus\Email\Debug;
 
-use Framework\Debug\Activity;
-use Framework\Debug\Collector;
-use Framework\Debug\Debugger as D;
-use Framework\Email\Header;
-use Framework\Email\Mailer;
+use Aplus\Debug\Activity;
+use Aplus\Debug\Collector;
+use Aplus\Debug\Debugger as D;
+use Aplus\Email\Header;
+use Aplus\Email\Mailer;
 
 /**
  * Class EmailCollector.
