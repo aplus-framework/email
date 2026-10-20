@@ -48,7 +48,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Framework\\Email\\": "src/"
+            "Aplus\\Email\\": "src/"
         }
     },
     "autoload-dev": {
