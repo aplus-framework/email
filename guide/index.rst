@@ -32,7 +32,7 @@ The process of sending messages by email follows the example code below.
 
 .. code-block:: php
 
-    use Framework\Email\Mailer;
+    use Aplus\Email\Mailer;
 
     // Set the mailer that will send the messages
     $mailer = new Mailer('johndoe', 'p$$word');
@@ -129,7 +129,7 @@ Message header fields can be set directly using the ``setHeader`` method:
 
 .. code-block:: php
 
-    use Framework\Email\Header;
+    use Aplus\Email\Header;
 
     $message->setHeader(Header::SUBJECT, 'How are you?')
             ->setHeader(Header::FROM, 'johndoe@domain.tld')
@@ -150,7 +150,7 @@ The X-Priority can be set as below:
 
 .. code-block:: php
 
-    use Framework\Email\XPriority
+    use Aplus\Email\XPriority
 
     $message->setXPriority(XPriority::HIGH);
 
@@ -161,7 +161,7 @@ The default configs for connecting to the mail server are as follows:
 
 .. code-block:: php
 
-    use Framework\Email\Mailer;
+    use Aplus\Email\Mailer;
 
     $config = [
         'host' => 'localhost',
