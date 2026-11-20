@@ -846,7 +846,7 @@ class Message implements Stringable
      * @return array{
      *      address?: string,
      *      name?: string|null,
-     * } Two keys: address and name
+     * }
      */
     public function getFrom() : array
     {
