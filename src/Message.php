@@ -10,7 +10,6 @@
 namespace Aplus\Email;
 
 use DateTime;
-use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Language;
 use LogicException;
 use Random\RandomException;
@@ -844,9 +843,11 @@ class Message implements Stringable
     /**
      * Get the 'From' header items.
      *
-     * @return array<string,string|null> Two keys: address and name
+     * @return array{
+     *      address?: string,
+     *      name?: string|null,
+     * } Two keys: address and name
      */
-    #[ArrayShape(['address' => 'string', 'name' => 'string|null'])]
     public function getFrom() : array
     {
         $from = $this->extractEmails($this->getHeader(Header::FROM));
@@ -1061,9 +1062,11 @@ class Message implements Stringable
      *
      * @param string $headerPart A header part like: `"Baz" <foo@baz>`
      *
-     * @return array<string,string>
+     * @return array{
+     *      address: string,
+     *      name: string,
+     * }
      */
-    #[ArrayShape(['address' => 'string', 'name' => 'string'])]
     protected function extractAddressAndName(string $headerPart) : array
     {
         $headerPart = $this->sanitizeSpaces($headerPart);
